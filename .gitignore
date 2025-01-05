@@ -285,7 +285,12 @@ FakesAssemblies/
 
 # Node.js Tools for Visual Studio
 .ntvs_analysis.dat
-node_modules/
+/BussinesApplication.Angular.Cli/node_modules/
+/BussinesApplication.Angular.Cli/dist/
+!/BussinesApplication.Angular.Cli/src/
+!/BussinesApplication.Angular.Cli/package.json
+!/BussinesApplication.Angular.Cli/angular.json
+
 
 # Visual Studio 6 build log
 *.plg
