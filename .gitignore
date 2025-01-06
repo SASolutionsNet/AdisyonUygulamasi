@@ -1,83 +1,61 @@
-# .NET Core
-**/bin/
-**/obj/
-**/out/
-*.user
-*.suo
-*.userosscache
-*.sln.docstates
-*.vspcc
-*.vspcc.*
-
-# ASP.NET Scaffolding
-ScaffoldingReadMe.txt
-
-# dotnet command artifacts
-project.lock.json
-project.fragment.lock.json
-artifacts/
-
-# Rider
-.idea/
-*.sln.iml
-
-# Visual Studio Code
-.vscode/
-
-# Windows specific files
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-$RECYCLE.BIN/
-
-# macOS specific files
-.DS_Store
-.AppleDouble
-.LSOverride
-
-# Node.js dependencies
+# Ignore node_modules
 node_modules/
 
-# Angular specific
-/dist/
-/build/
-/.angular/
-/.angular-cache/
-/coverage/
+# Ignore build output folders
+dist/
+bin/
+obj/
 
-# Logs and debug output
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Logs
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 
-# Compiled files
-*.dll
-*.exe
-*.so
-*.dylib
-*.pyc
-*.pyo
+# OS-generated files
+.DS_Store
+Thumbs.db
 
-# Temporary files
-*.swp
-*.tmp
-*.temp
-*.pid
-*.seed
-*.backup
-*.bak
-*.orig
+# Dependency directories
+node_modules/
+bower_components/
 
-# Environment variables
+# Environment files
 .env
-.env.local
 .env.*.local
 
-# IDEs and Editors
-.idea/
+# Angular generated files
+.angular/cache/
+
+# Package manager files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Coverage reports
+coverage/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Ignore Visual Studio Code folder
 .vscode/
-.vscode-test/
-*.code-workspace
-*.sublime-workspace
-*.sublime-project
+
+# Ignore Rider IDE folder
+.idea/
+
+# Ignore local debug configurations
+launchSettings.json
+
+# Ignore temporary files for JetBrains IDEs
+*.iml
+*.ipr
+*.iws
+
+# Exclude any folder with specific naming conventions
+!BusinessApplication.sln
