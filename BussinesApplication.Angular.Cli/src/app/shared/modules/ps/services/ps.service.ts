@@ -12,16 +12,16 @@ interface Post {
 @Injectable({
   providedIn: 'root'
 })
-export class PostService {
-  private apiUrl = 'https://localhost:5001/api/post'; // API URL'si
+export class PSService {
+  private apiUrl = 'https://localhost:5001/api/ps'; // API URL'si
 
   constructor(private http: HttpClient) { }
 
-  getPosts(): Observable<Post[]> {
-    return this.http.get<Post[]>(this.apiUrl);
+  getPosts(): Observable<PS[]> {
+    return this.http.get<PS[]>(this.apiUrl);
   }
 
-  getPostById(id: number): Observable<Post> {
-    return this.http.get<Post>(`${this.apiUrl}/${id}`);
+  getPostById(id: number): Observable<PS> {
+    return this.http.get<PS>(`${this.apiUrl}/${id}`);
   }
 }

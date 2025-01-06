@@ -1,0 +1,18 @@
+<h2 mat-dialog-title>{{title}}</h2>
+<hr />
+<mat-dialog-content>
+  <div *ngIf="status != null">
+    <p><strong>Hata Durumu</strong></p>
+    <p>{{status}}</p>
+  </div>
+  <div *ngIf="returnCode != null">
+    <p><strong>Hata Kodu</strong></p>
+    <p>{{returnCode}}</p>
+  </div>
+  <p><strong>Mesaj</strong></p>
+  <p>{{message}}</p>
+</mat-dialog-content>
+<hr />
+<mat-dialog-actions [attr.align]="'end'">
+  <button mat-raised-button color="primary" mat-dialog-close>Kapat</button>
+</mat-dialog-actions>

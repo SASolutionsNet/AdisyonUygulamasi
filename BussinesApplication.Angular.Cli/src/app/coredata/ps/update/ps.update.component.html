@@ -1,0 +1,61 @@
+<mat-card>
+  <mat-card-title>Ürün/Hizmet Düzenle</mat-card-title>
+  <mat-card-subtitle>Lütfen tüm bilgileri girin</mat-card-subtitle>
+  <mat-card-content>
+    <netakil-ps-form [ps]="ps"
+                     [crudType]="'update'"
+                     [showFieldIsDeleted]="true"
+                     [showFieldPSCategory]="true"
+                     [showFieldName]="true"
+                     [showFieldDescription]="true"
+                     [showFieldDescriptionShort]="true"
+                     [showFieldManufacturerProvider]="false"
+                     [showFieldModelName]="true"
+                     [showFieldModelCode]="true"
+                     [showFieldGTIN]="true"
+                     [showFieldTags]="true"
+                     (formValuesChangedEvent)="onPSFormValuesChanged($event)">
+    </netakil-ps-form>
+    <br />
+    <p><strong>Özellikler</strong></p>
+    <netakil-psfeaturevalue-list *ngIf="ps != null"
+                                 [psId]="ps.id"
+                                 [ps]="ps"
+                                 [isEditable]="true"
+                                 (psFeatureValueChangedEvent)="onPSFeatureValueChanged($event)"
+                                 [showFilter]="false"
+                                 [showCreateButton]="false"
+                                 [rowHeight]="30"
+                                 [loadDataFromService]="false"
+                                 [rowCountPerPage]="25"
+                                 [selectionModelType]="'single'"
+                                 [showActionButtonOne]="false"
+                                 [columnNameActionButtonOne]="'Değiştir'"
+                                 [iconNameActionButtonOne]="'edit'"
+                                 (actionButtonOneClickedEvent)="onPSFeatureValueListActionButtonOneClicked($event)"></netakil-psfeaturevalue-list>
+  </mat-card-content>
+  <hr />
+  <mat-card-actions>
+    <button mat-raised-button color="primary" type="submit" [disabled]="!isPSValid()" (click)="save()">Kaydet</button>
+  </mat-card-actions>
+</mat-card>
+<mat-card *ngIf="this.authService.hasRoleClaim('power.user') || this.authService.hasRoleClaim('it.manager') || this.authService.hasRoleClaim('project.manager')">
+  <mat-card-title>Ürün/Hizmet Fiyatları</mat-card-title>
+  <mat-card-content>
+    <netakil-psprice-list [showCreateButton]="true"
+                          [filteringEnabled]="false"
+                          [showFilter]="true"
+                          [showPSName]="true"
+                          [loadDataFromService]="false"
+                          [rows]="rowsPSPrices"
+                          [rowCountPerPage]="5"
+                          (dataLoadedEvent)="onPSPriceDataLoaded($event)"
+                          [showActionButtonOne]="showUpdatePriceActionButton"
+                          [columnNameActionButtonOne]="'Düzenle'"
+                          [iconNameActionButtonOne]="'edit'"
+                          (createButtonClickedEvent)="onPSPriceCreateButtonCliecked($event)"
+                          (actionButtonOneClickedEvent)="onPSPriceActionButtonOneClicked($event)"
+                          (filterChangedEvent)="onPSPriceFilterUpdated($event)"
+                          (searchKeywordChangedEvent)="onPSPriceSearchKeywordChanged($event)"></netakil-psprice-list>
+  </mat-card-content>
+</mat-card>

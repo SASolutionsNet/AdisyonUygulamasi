@@ -1,0 +1,67 @@
+<mat-card>
+  <mat-card-content>
+    <mat-tab-group dynamicHeight mat-stretch-tabs [(selectedIndex)]="this.currentState">
+      <mat-tab [disabled]="this.currentState != 0">
+        <ng-template matTabLabel><strong>1. Ürün/Hizmet Kategorisi</strong></ng-template>
+        <div class="tab-content">
+          <br />
+          <p><strong>Kategori Belirleyin</strong></p>
+          <p class="small">Aramak istediğiniz kategoriyi yazın, satınalım talebi istediğinize tıklayın (Hizmet, Malzeme, Hammadde, Sarf Malzeme, Mamul, Yarı Mamul, vs.)</p>
+          <netakil-pscategory-list [loadDataFromService]="true"
+                                   [rowCountPerPage]="3"
+                                   [selectionModelType]="'single'"
+                                   (dataLoadedEvent)="onPSCategoryDataLoaded($event)"
+                                   (filterChangedEvent)="onPSCategoryFilterUpdated($event)"
+                                   (selectionChangedEvent)="onSelectPSCategories($event)"></netakil-pscategory-list>
+          <br />
+          <button mat-raised-button color="primary" [disabled]="this.selectedPSCategory == null" (click)="setState(1)">Devam</button>
+        </div>
+      </mat-tab>
+      <mat-tab [disabled]="this.currentState != 1">
+        <ng-template matTabLabel><strong>2. Ürün/Hizmet Özellikleri</strong></ng-template>
+        <div class="tab-content">
+          <br />
+          <netakil-ps-form *ngIf="ps != null"
+                           [ps]="ps"
+                           [crudType]="'create'"
+                           [showFieldIsDeleted]="false"
+                           [showFieldPSCategory]="true"
+                           [showFieldName]="true"
+                           [showFieldDescription]="true"
+                           [showFieldDescriptionShort]="true"
+                           [showFieldManufacturerProvider]="true"
+                           [showFieldModelName]="true"
+                           [showFieldModelCode]="true"
+                           [showFieldGTIN]="false"
+                           [showFieldTags]="false"
+                           (formValuesChangedEvent)="onPSFormValuesChanged($event)"></netakil-ps-form>
+          <br />
+          <p>Lütfen tüm özellikleri girin</p>
+          <br />
+          <netakil-psfeaturevalue-list *ngIf="ps != null"
+                                       [psId]="ps.id"
+                                       [ps]="ps"
+                                       [isEditable]="true"
+                                       (psFeatureValueChangedEvent)="onPSFeatureValueChanged($event)"
+                                       [showCreateButton]="false"
+                                       [loadDataFromService]="false"
+                                       [rowCountPerPage]="20"
+                                       [selectionModelType]="'single'"
+                                       [showActionButtonOne]="false"
+                                       [columnNameActionButtonOne]="'Değiştir'"
+                                       [iconNameActionButtonOne]="'edit'"
+                                       (actionButtonOneClickedEvent)="onPSFeatureValueListActionButtonOneClicked($event)"></netakil-psfeaturevalue-list>
+          <br />
+          <div *ngIf="this.warningMessage != null">
+            <p class="alert-danger"><strong>{{this.warningMessage}}</strong></p>
+            <br />
+          </div>
+          <button mat-raised-button color="primary" [disabled]="this.selectedPSCategory == null" (click)="setState(0)">Geri</button>
+          <button mat-raised-button color="primary" [disabled]="!isPSValid()" (click)="save()">Kaydet</button>
+        </div>
+      </mat-tab>
+    </mat-tab-group>
+  </mat-card-content>
+</mat-card>
+
+

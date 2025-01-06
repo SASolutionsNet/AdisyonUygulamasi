@@ -1,0 +1,21 @@
+<mat-card>
+  <mat-card-title>Ürün/Hizmet Kategorileri Listesi (kullandığınız ya da tedarik ettiğiniz tüm malzeme, hammadde, sarf malzeme, hizmet, vs.)</mat-card-title>
+  <mat-card-subtitle>Aramak istediğiniz kategorileri yazın</mat-card-subtitle>
+  <mat-card-content>
+    <!--<p>Ürün Sayısı: {{psTotalCount}}</p>
+    <p>Kategori Bazında En Fazla Ürün Sayısı: {{maxPSCount}}</p>
+    <p>En Fazla Ürün Sayısı Olan Kategori: {{psCategoryWithMaxPSCount ? psCategoryWithMaxPSCount.name : ''}}</p>-->
+    <netakil-pscategory-list [showCreateButton]="this.authService.isUserAllowed('coredata', 'pscategory/create')"
+                             (createButtonClickedEvent)="onCreateButtonClicked($event)"
+                             [loadDataFromService]="true"
+                             [rowCountPerPage]="50"
+                             [selectionModelType]="'single'"
+                             (dataLoadedEvent)="onDataLoaded($event)"
+                             [showActionButtonOne]="this.authService.isUserAllowed('coredata', 'pscategory/update')"
+                             [columnNameActionButtonOne]="'Düzenle'"
+                             [iconNameActionButtonOne]="'edit'"
+                             (actionButtonOneClickedEvent)="onActionButtonOneClicked($event)"
+                             (filterChangedEvent)="onFilterUpdated($event)"
+                             (selectionChangedEvent)="onSelectionChanged($event)"></netakil-pscategory-list>
+  </mat-card-content>
+</mat-card>

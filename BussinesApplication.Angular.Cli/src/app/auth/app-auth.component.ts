@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { AuthService } from '../shared/modules/auth/auth.service';
-import { environment } from '../../environments/environment';
+//import { AuthService } from '../shared/modules/auth/auth.service';
+//import { environment } from '../../environments/environment';
 
 @Component({
   selector: 'app-auth',
@@ -15,32 +15,32 @@ export class AppAuthComponent implements OnInit {
 
   environment: any;
 
-  constructor(private router: Router, private authService: AuthService) {
+  //constructor(private router: Router, private authService: AuthService) {
 
-    this.environment = environment;
+  //  this.environment = environment;
+
+  //  // IMPORTANT: 2021-03-21 for new tab opening
+  //  this.loadedUserSub = this.authService.userLoadededEvent
+  //    .subscribe(user => {
+  //      this.user = user;
+
+  //      if (user) {
+  //        if (!environment.production) {
+  //          console.log("AppAuthComponent.constructor authService.userLoadededEvent: user: ", user);
+  //        }
+
+  //        this.router.navigate(['/dashboard']);
+  //      }
+  //      else {
+  //        if (!environment.production) {
+  //          console.log("AppAuthComponent.constructor UserManager.signInSilent(): user: ", user);
+  //        }
+  //        this.authService.startSigninMainWindow();
+  //      }
+  //    });
 
     // IMPORTANT: 2021-03-21 for new tab opening
-    this.loadedUserSub = this.authService.userLoadededEvent
-      .subscribe(user => {
-        this.user = user;
-
-        if (user) {
-          if (!environment.production) {
-            console.log("AppAuthComponent.constructor authService.userLoadededEvent: user: ", user);
-          }
-
-          this.router.navigate(['/dashboard']);
-        }
-        else {
-          if (!environment.production) {
-            console.log("AppAuthComponent.constructor UserManager.signInSilent(): user: ", user);
-          }
-          this.authService.startSigninMainWindow();
-        }
-      });
-
-    // IMPORTANT: 2021-03-21 for new tab opening
-    this.authService.getUser();
+    //this.authService.getUser();
 
     //if (this.authService.currentUser) {
     //  this.user = this.authService.currentUser;
@@ -52,7 +52,7 @@ export class AppAuthComponent implements OnInit {
     //else {
     //  this.authService.startSigninMainWindow();
     //}
-  }
+  /*}*/
 
   ngOnInit() {
 

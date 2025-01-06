@@ -22,9 +22,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 //import { CoreDataPSCategoryCreateComponent } from './pscategory/create/pscategory.create.component';
 //import { CoreDataPSCategoryUpdateComponent } from './pscategory/update/pscategory.update.component';
 
-//import { CoreDataPSListComponent } from './ps/list/ps.list.component';
-//import { CoreDataPSCreateComponent } from './ps/create/ps.create.component';
-//import { CoreDataPSUpdateComponent } from './ps/update/ps.update.component';
+import { CoreDataPSListComponent } from './ps/list/ps.list.component';
+import { CoreDataPSCreateComponent } from './ps/create/ps.create.component';
+import { CoreDataPSUpdateComponent } from './ps/update/ps.update.component';
 //import { CoreDataPSFeatureValueUpdateComponent } from './ps/featurevalue/update/psfeaturevalue.update.component';
 //import { CoreDataPSPriceCreateComponent } from './ps/price/create/psprice.create.component';
 //import { CoreDataPSPriceUpdateComponent } from './ps/price/update/psprice.update.component';
@@ -57,8 +57,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 //import { PSCategoryModule } from '../shared/modules/pscategory/pscategory.module';
 //import { PSCategoryService } from '../shared/modules/pscategory/pscategory.service';
 
-//import { PSModule } from '../shared/modules/ps/ps.module';
-//import { PSService } from '../shared/modules/ps/services/ps.service';
+/*import { PSModule } from '../shared/modules/ps/ps.module';*/
+/*import { PSService } from '../shared/modules/ps/services/ps.service';*/
 
 //import { PSFeatureModule } from '../shared/modules/psfeature/psfeature.module';
 //import { PSFeatureService } from '../shared/modules/psfeature/services/psfeature.service';
@@ -115,9 +115,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     //CoreDataPSCategoryCreateComponent,
     //CoreDataPSCategoryUpdateComponent,
 
-    //CoreDataPSListComponent,
-    //CoreDataPSCreateComponent,
-    //CoreDataPSUpdateComponent,
+    CoreDataPSListComponent,
+    CoreDataPSCreateComponent,
+    CoreDataPSUpdateComponent,
     //CoreDataPSFeatureValueUpdateComponent,
     //CoreDataPSPriceCreateComponent,
     //CoreDataPSPriceUpdateComponent,
@@ -147,9 +147,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     //PricePipeTr,
 
     //PartyService,
-    //PSCategoryService,
+    PSCategoryService,
     //PSFeatureService,
-    //PSService,
+    PSService,
     //PSFeatureValueService,
     //PSPriceService,
     //FacilityService,

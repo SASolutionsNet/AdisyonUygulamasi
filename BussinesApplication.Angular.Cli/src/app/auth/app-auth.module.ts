@@ -1,9 +1,12 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { MatIconModule, MatCardModule, MatInputModule, MatCheckboxModule, MatButtonModule } from '@angular/material';
+import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatInputModule } from '@angular/material/input';
+import { MatCardModule } from '@angular/material/card';
+import { MatIconModule } from '@angular/material/icon';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { AppAuthRoutes } from './app-auth.routing';
 import { AppAuthComponent } from './app-auth.component';
@@ -17,7 +20,6 @@ import { AppAuthComponent } from './app-auth.component';
         MatInputModule,
         MatCheckboxModule,
         MatButtonModule,
-        FlexLayoutModule,
         FormsModule,
         ReactiveFormsModule
     ],

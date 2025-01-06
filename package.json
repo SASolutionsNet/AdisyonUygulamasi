@@ -1,5 +1,13 @@
 {
   "devDependencies": {
     "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "@angular/animations": "^19.0.5",
+    "@angular/cdk": "^19.0.4",
+    "@angular/material": "^19.0.4",
+    "@angular/router": "^19.0.5",
+    "ngx-chips": "^3.0.0",
+    "screenfull": "^6.0.2"
   }
 }
