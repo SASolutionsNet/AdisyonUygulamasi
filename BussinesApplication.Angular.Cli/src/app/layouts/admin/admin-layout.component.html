@@ -1,0 +1,243 @@
+<div class="app mat-typography" [dir]="dir" [ngClass]="{'app-dark': dark, 'boxed': boxed, 'collapsed-sidebar': collapseSidebar, 'compact-sidebar': compactSidebar}">
+  <mat-toolbar class="main-header" color="primary">
+    <button (click)="sidemenu.toggle()" mat-icon-button>
+      <mat-icon>menu</mat-icon>
+    </button>
+    <div class="branding" *ngIf="environment.name == 'production' || environment.name == 'staging'">
+      <div class="logo"></div>
+    </div>
+    <div class="branding" *ngIf="environment.name == 'development'">
+      <div class="logo-netakil-white"></div>
+    </div>
+    <div class="search-bar" fxFlex>
+      <form class="search-form" fxShow="false" fxShow.gt-xs>
+        <mat-icon>search</mat-icon>
+        <input type="text" placeholder="Ara" autofocus="true" />
+      </form>
+    </div>
+    <!--<button mat-raised-button color="accent" (click)="callTestService()">Call Test Service</button>-->
+    <button appToggleFullscreen mat-icon-button>
+      <mat-icon>fullscreen</mat-icon>
+    </button>
+    <button (click)="end.toggle()" mat-icon-button class="ml-xs overflow-visible">
+      <mat-icon>notifications</mat-icon>
+      <span class="notification-label">{{inAppNotifications ? inAppNotifications.length : 0}}</span>
+    </button>
+    <button [matMenuTriggerFor]="user" mat-icon-button class="ml-xs">
+      <mat-icon>person</mat-icon>
+    </button>
+    <mat-menu #user="matMenu" x-position="before">
+      <!--<button mat-menu-item>
+      <mat-icon>settings</mat-icon>
+      Ayarlar
+    </button>-->
+      <button mat-menu-item *ngIf="this.authService.currentUser">
+        <mat-icon>account_box</mat-icon>
+        {{this.authService.currentUser.profile.given_name}} {{this.authService.currentUser.profile.family_name}}
+      </button>
+      <button mat-menu-item *ngIf="this.authService.currentUser" (click)="this.authService.startSignoutMainWindow()">
+        <mat-icon>exit_to_app</mat-icon>
+        Çıkış
+      </button>
+    </mat-menu>
+  </mat-toolbar>
+  <mat-sidenav-container class="app-inner">
+    <mat-sidenav #sidemenu class="sidebar-panel" id="sidebar-panel" [mode]="isOver() ? 'over' : 'side'" [opened]="!isOver()" (mouseover)="menuMouseOver()" (mouseout)="menuMouseOut()">
+      <mat-nav-list appAccordion class="navigation" (click)="updatePS()">
+        <mat-list-item appAccordionLink *ngFor="let menuitem of menuItems.getAll()" group="{{menuitem.state}}">
+          <a appAccordionToggle class="relative" [routerLink]="['/', menuitem.state]" *ngIf="menuitem.type === 'link'">
+            <mat-icon>{{ menuitem.icon }}</mat-icon>
+            <span>{{ menuitem.name | translate }}</span>
+            <span fxFlex></span>
+            <span class="menu-badge mat-{{ badge.type }}" *ngFor="let badge of menuitem.badge">{{ badge.value }}</span>
+          </a>
+          <a appAccordionToggle class="relative" href="{{menuitem.state}}" *ngIf="menuitem.type === 'extLink'">
+            <mat-icon>{{ menuitem.icon }}</mat-icon>
+            <span>{{ menuitem.name | translate }}</span>
+            <span fxFlex></span>
+            <span class="menu-badge mat-{{ badge.type }}" *ngFor="let badge of menuitem.badge">{{ badge.value }}</span>
+          </a>
+          <a appAccordionToggle class="relative" href="{{menuitem.state}}" target="_blank" *ngIf="menuitem.type === 'extTabLink'">
+            <mat-icon>{{ menuitem.icon }}</mat-icon>
+            <span>{{ menuitem.name | translate }}</span>
+            <span fxFlex></span>
+            <span class="menu-badge mat-{{ badge.type }}" *ngFor="let badge of menuitem.badge">{{ badge.value }}</span>
+          </a>
+          <a appAccordionToggle class="relative" href="javascript:;" *ngIf="menuitem.type === 'sub'">
+            <mat-icon>{{ menuitem.icon }}</mat-icon>
+            <span>{{ menuitem.name | translate }}</span>
+            <span fxFlex></span>
+            <span class="menu-badge mat-{{ badge.type }}" *ngFor="let badge of menuitem.badge">{{ badge.value }}</span>
+            <mat-icon class="menu-caret">arrow_drop_down</mat-icon>
+          </a>
+
+          <mat-nav-list class="sub-menu" *ngIf="menuitem.type === 'sub'">
+            <mat-list-item *ngFor="let childitem of menuitem.children" routerLinkActive="open">
+              <span>
+                <a *ngIf="childitem.type === undefined" [routerLink]="['/', menuitem.state, childitem.state ]" class="relative" mat-ripple>
+                  <mat-icon *ngIf="childitem.icon">{{ childitem.icon }}</mat-icon>
+                  <span>{{ childitem.name | translate }}</span>
+                </a>
+                <a *ngIf="childitem.type === 'subvirtual' && isUserAllowed(menuitem.state, childitem.state)" [routerLink]="getVirtualPath(menuitem.state, childitem.state)" class="relative" mat-ripple>
+                  <mat-icon *ngIf="childitem.icon">{{ childitem.icon }}</mat-icon>
+                  <span>{{ childitem.name | translate }}</span>
+                  <span fxFlex></span>
+                  <span class="menu-badge mat-{{ badge.type }}" *ngFor="let badge of childitem.badge">{{ badge.value }}</span>
+                </a>
+              </span>
+            </mat-list-item>
+          </mat-nav-list>
+        </mat-list-item>
+        <mat-divider></mat-divider>
+        <!--<mat-list-item>
+          <a (click)="addMenuItem()">
+            <mat-icon>add</mat-icon>
+            <span>Add</span>
+          </a>
+        </mat-list-item>-->
+      </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav #end position="end" class="chat-panel" mode="over" opened="false">
+      <mat-tab-group [selectedIndex]="1" mat-stretch-tabs>
+        <mat-tab>
+          <ng-template matTabLabel>Bugün</ng-template>
+          <div class="scroll">
+            <mat-list class="pt-1 pb-1">
+              <mat-list-item>
+                <div fxLayout="column">
+                  <h2 class="ma-0">{{ today | date:'EEEE' }}</h2>
+                  <h6 class="mat-text-muted ma-0"><span>{{ today | date:'dd' }}</span>&nbsp;<span>{{ today | date:'MMMM' }}</span>&nbsp;<span>{{ today | date:'yyyy' }}</span></h6>
+                </div>
+              </mat-list-item>
+            </mat-list>
+            <!--<mat-nav-list>
+              <mat-divider></mat-divider>
+              <h3 mat-subheader class="text-uppercase font-weight-bold">Stocks</h3>
+              <mat-list-item>
+                <a matLine href="javascript:;">NASDAQ</a>
+                <span class="mat-text-muted text-mat mr-xs ml-xs">4,492.87</span>
+                <span>-0.29%</span>
+              </mat-list-item>
+              <mat-list-item>
+                <a matLine href="javascript:;">NYSE</a>
+                <span class="mat-text-muted text-mat mr-xs ml-xs">10,692.07</span>
+                <span>-0.53%</span>
+              </mat-list-item>
+              <mat-list-item>
+                <a matLine href=javascript:;>DOW J</a>
+                <span class="mat-text-muted text-mat mr-xs ml-xs">17,046.81</span>
+                <span>-0.14%</span>
+              </mat-list-item>
+              <mat-list-item>
+                <a matLine href="javascript:;">APPL</a>
+                <span class="mat-text-muted text-mat mr-xs ml-xs">100,89</span>
+                <span>+0.75%</span>
+              </mat-list-item>
+              <mat-divider></mat-divider>
+              <h3 mat-subheader class="text-uppercase font-weight-bold">Weather</h3>
+              <mat-list-item>
+                <a matLine href="javascript:;">{{ today | date:'shortTime' }}</a>
+                <p matLine class="mat-text-muted">London</p>
+                <span class="h4 pe-is-w-blizzard mr-1"></span>
+                <span class="h4">26°</span>
+              </mat-list-item>
+              <mat-divider></mat-divider>
+              <h3 mat-subheader class="text-uppercase font-weight-bold">Todo</h3>
+              <mat-list-item>
+                <a matLine href="javascript:;">Learn Angular 2.0</a>
+                <p matLine class="mat-text-muted text-mat">2:45PM</p>
+              </mat-list-item>
+              <mat-list-item>
+                <a matLine href="javascript:;">Learn Angular Material</a>
+                <p matLine class="mat-text-muted text-mat">3:20PM</p>
+              </mat-list-item>
+              <mat-list-item>
+                <a matLine href="javascript:;">Write documentation</a>
+                <p matLine class="mat-text-muted text-mat">6:00PM</p>
+              </mat-list-item>
+              <mat-divider class="mt-xs mb-xs"></mat-divider>
+              <h3 mat-subheader class="text-uppercase font-weight-bold">Stats</h3>
+              <mat-list-item>
+                <p class="text-mat" matLine>Local Storage (4023 / 10690)</p>
+                <mat-progress-bar matLine mode="determinate" color="warn" value="40"></mat-progress-bar>
+              </mat-list-item>
+              <mat-list-item>
+                <p class="text-mat" matLine>Cloud Storage (700 / 1030)</p>
+                <mat-progress-bar matLine mode="determinate" color="accent" value="70"></mat-progress-bar>
+              </mat-list-item>
+              <mat-list-item>
+                <p class="text-mat" matLine>Local Storage (20 / 100)</p>
+                <mat-progress-bar matLine mode="determinate" value="20"></mat-progress-bar>
+              </mat-list-item>
+            </mat-nav-list>-->
+          </div>
+        </mat-tab>
+        <mat-tab>
+          <ng-template matTabLabel>Bildirimler</ng-template>
+          <div class="scroll">
+            <mat-nav-list>
+              <mat-list-item *ngFor="let inAppNotification of inAppNotifications">
+                <mat-icon mat-list-avatar class="mat-text-primary">info</mat-icon>
+                <mat-checkbox [checked]="isInAppNotificationChecked(inAppNotification)"
+                              (change)="inAppNotificationToggle(inAppNotification)"
+                              name="inAppNotification"
+                              color="warn"
+                              [indeterminate]="false"
+                              [align]="'start'">
+                </mat-checkbox>
+                <p matLine style="font-size: 12px; color:royalblue" *ngIf="inAppNotification.url != null"><a href="{{inAppNotification.url}}">{{ inAppNotification.title }} ({{ this.valueFormatterService.getDateDDMMYYYYFormat(inAppNotification.createdDate) }})</a></p>
+                <p matLine style="font-size: 12px; color:royalblue" *ngIf="inAppNotification.url != null"><a href="{{inAppNotification.url}}">{{ inAppNotification.message }}</a></p>
+                <p matLine style="font-size: 12px;" *ngIf="inAppNotification.url == null">{{ inAppNotification.title }} ({{ this.valueFormatterService.getDateDDMMYYYYFormat(inAppNotification.createdDate) }})</p>
+                <p matLine style="font-size: 12px;" *ngIf="inAppNotification.url == null">{{ inAppNotification.message }}</p>
+              </mat-list-item>
+            </mat-nav-list>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-sidenav>
+    <router-outlet></router-outlet>
+  </mat-sidenav-container>
+  <!-- Demo Purposes Only -->
+  <!--
+    <button mat-fab color="warn" class="mat-fab-bottom-right" (click)="showSettings = true">
+      <mat-icon class="mat-24">settings</mat-icon>
+    </button>
+    <mat-card class="settings-panel" *ngIf="showSettings">
+      <mat-toolbar color="warn">
+        <span fxFlex>Options</span>
+        <button mat-icon-button (click)="showSettings = false">
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-toolbar>
+      <mat-card-content class="demo-checkbox">
+        <div class="pb-1">
+          <span>{{this.environment.name
+  }}</span>
+        </div>
+        <div class="pb-1">
+          <mat-checkbox [(ngModel)]="collapseSidebar" (change)="compactSidebar = false" [align]="end">Collapsed Sidebar</mat-checkbox>
+        </div>
+        <div class="pb-1">
+          <mat-checkbox [(ngModel)]="compactSidebar" (change)="collapseSidebar = false" [align]="end">Compact Sidebar</mat-checkbox>
+        </div>
+        <div class="pb-1">
+          <mat-checkbox [(ngModel)]="boxed" [align]="end">Boxed Layout</mat-checkbox>
+        </div>
+        <div class="pb-1">
+          <mat-checkbox [(ngModel)]="dark" [align]="end">Dark Mode</mat-checkbox>
+        </div>
+        <div class="pb-1">
+          <mat-checkbox (change)="dir = (dir == 'rtl' ? 'ltr' : 'rtl')" [align]="end">RTL</mat-checkbox>
+        </div>
+        <div class="pb-0">
+          <mat-form-field>
+            <mat-select placeholder="Language" class="mt-1" [(ngModel)]="currentLang" #langSelect="ngModel" (ngModelChange)="translate.use(currentLang)">
+              <mat-option *ngFor="let lang of translate.getLangs()" [value]="lang">{{ lang }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+       </div>
+      </mat-card-content>
+    </mat-card>
+    -->
+  <!-- /Demo Purposes Only -->
+</div>

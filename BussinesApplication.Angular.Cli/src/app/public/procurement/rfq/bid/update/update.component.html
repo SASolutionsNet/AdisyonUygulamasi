@@ -1,0 +1,597 @@
+<div class="app mat-typography" [dir]="dir" [ngClass]="{'app-dark': dark, 'boxed': boxed, 'collapsed-sidebar': collapseSidebar, 'compact-sidebar': compactSidebar}">
+  <mat-toolbar class="main-header" color="primary">
+    <button mat-icon-button>
+      <mat-icon>menu</mat-icon>
+    </button>
+    <div class="branding">
+      <div class="logo"></div>
+    </div>
+  </mat-toolbar>
+  <mat-sidenav-container class="app-inner">
+    <mat-card *ngIf="this.procurementRFQBid != null && ! isRFQBidSent() && isRFQBidStateOk()">
+      <mat-card-content>
+        <div class="mb-1">
+          <h2 class="mt-0"><strong>Satınalım Teklif Formu</strong></h2>
+          <p><strong>Teklif Verme Son Tarihi:</strong> {{this.valueFormatterService.getDateDDMMYYYYFormat(this.procurementRFQBid.deadlineDateRFQBid)}}</p>
+        </div>
+        <div fxLayout="row" fxLayoutWrap="wrap">
+          <div fxFlex.gt-xs="50" fxFlex="100">
+            <span><strong>Teklif İstenilen</strong></span>
+            <div fxLayout="column">
+              <span><strong>Ad/Ünvan:</strong> {{this.partyService.getName(this.procurementRFQBid?.supplier)}}</span>
+              <span><strong>E-mail:</strong> {{this.procurementRFQBid?.supplier.email}}</span>
+              <span><strong>Telefon:</strong> {{this.procurementRFQBid?.supplier.landPhone}}</span>
+              <span><strong>Web Site:</strong> <a href="{{this.procurementRFQBid?.supplier.webSiteUrl}}" target="_blank" style="text-decoration:underline; color:#0000bb;">{{this.procurementRFQBid?.supplier.webSiteUrl}}</a></span>
+              <span>
+                <strong>Adres:</strong> {{this.procurementRFQBid?.supplier.addressDistrictNeighborhoodVillage ? this.procurementRFQBid?.supplier.addressDistrictNeighborhoodVillage : ''}}
+                {{this.procurementRFQBid?.supplier.addressStreetBlvAveName ? this.procurementRFQBid?.supplier.addressStreetBlvAveName : ''}}
+                {{this.procurementRFQBid?.supplier.addressStreetNo ? this.procurementRFQBid?.supplier.addressStreetNo : ''}}
+                {{this.procurementRFQBid?.supplier.addressTown ? this.procurementRFQBid?.supplier.addressTown : ''}}
+                {{this.procurementRFQBid?.supplier.addressCity ? this.procurementRFQBid?.supplier.addressCity : ''}}
+                {{this.countryService.getCountryName(this.procurementRFQBid?.supplier.addressCountryCodeISO3)}}
+              </span>
+            </div>
+          </div>
+          <div fxFlex.gt-xs="50" fxFlex="100" class="text-sm-right text-xs-left">
+            <span><strong>Teklif Talep Eden</strong></span>
+            <div fxLayout="column">
+              <span><strong>Ad/Ünvan:</strong> {{this.procurementRFQBid?.tenant.name}}</span>
+              <span><strong>E-mail:</strong> {{this.procurementRFQBid?.createdUser.email}}</span>
+              <span><strong>Telefon:</strong> {{this.procurementRFQBid?.tenant.landPhone}}</span>
+              <span><strong>Web Site:</strong> <a href="{{this.procurementRFQBid?.tenant.webSiteUrl}}" target="_blank" style="text-decoration:underline; color:#0000bb;">{{this.procurementRFQBid?.tenant.webSiteUrl}}</a></span>
+              <span>
+                <strong>Adres:</strong> {{this.procurementRFQBid?.tenant.addressDistrictNeighborhoodVillage ? this.procurementRFQBid?.tenant.addressDistrictNeighborhoodVillage : ''}}
+                {{this.procurementRFQBid?.tenant.addressStreetBlvAveName ? this.procurementRFQBid?.tenant.addressStreetBlvAveName : ''}}
+                {{this.procurementRFQBid?.tenant.addressStreetNo ? this.procurementRFQBid?.tenant.addressStreetNo : ''}}
+                {{this.procurementRFQBid?.tenant.addressTown ? this.procurementRFQBid?.tenant.addressTown : ''}}
+                {{this.procurementRFQBid?.tenant.addressCity ? this.procurementRFQBid?.tenant.addressCity : ''}}
+                {{this.countryService.getCountryName(this.procurementRFQBid?.tenant.addressCountryCodeISO3)}}
+              </span>
+            </div>
+          </div>
+        </div>
+        <ol>
+          <li>
+            Teklif vermek için listelenen kalemlerin birim fiyatlarını (KDV hariç) girin.
+          </li>
+          <li>
+            Teklife ait fiyat, teslimat, ödeme, (varsa) şartları ve teklifi hazırlayana ait bilgileri girin.
+          </li>
+          <li>
+            Eğer şirketinize ait kendi teklif formunuz varsa kaşeli, imzalı olarak tarayıp yükleyebilirsiniz.
+          </li>
+          <li>
+            Şirketiniz ve teklif istenilen kalemlere ait ISO, TSE, vb. sertifika ve belgelerinizi (PDF ya da resim) olarak yükleyip onaylayarak kaydedip gönderin.
+          </li>
+          <li>
+            Teklifiniz için bilgileri girip en alttaki butona tıklayarak kaydedip gönderebilirsiniz. Teklifinizi kaydedip gönderdiğinizde tarafımıza ulaşacaktır. Eğer teklifinizde güncelleme yapmak isterseniz bu linki tekrar açıp güncelleme yapabilirsiniz. Teşekkür ederiz.
+          </li>
+        </ol>
+      </mat-card-content>
+      <mat-card-content>
+        <h3><strong>Teklif İstenilenler Listesi</strong></h3>
+        <p>Lütfen miktar, fiyat, teslimat bilgilerini giriniz. Giriş yapmak için tablodaki ilgili alana tıklayın.</p>
+        <p style="color:red;">Sipariş verilirse, irsaliye ve faturada ürünün "Talep Ref." kodunu yazarak göndermenizi rica ederiz.</p>
+        <ngx-datatable class='material'
+                       [rows]="rows"
+                       [columnMode]="'flex'"
+                       [sortType]="'multi'"
+                       [headerHeight]="'auto'"
+                       [footerHeight]="'auto'"
+                       [rowHeight]="'auto'">
+          <!-- IMPORTANT: TODO: when this column is un-commented, then table cells can not be edited ??? -->
+          <!--<ngx-datatable-column name="Durum" [flexGrow]="0.5">
+            <ng-template ngx-datatable-cell-template let-row="row">
+              <span>{{this.procurementRFQService.getStateTypeName(row.stateId)}}</span>
+            </ng-template>
+          </ngx-datatable-column>-->
+          <ngx-datatable-column name="Talep Ref." [flexGrow]="0.5">
+            <ng-template ngx-datatable-cell-template let-row="row">
+              <span>{{ row.soNo != null ? (row.soNo) : '' }}</span>
+              <span> {{ row.stateId == 'canceled' ? 'İptal' : '' }} </span>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Talep Edilen" [flexGrow]="3">
+            <ng-template ngx-datatable-cell-template let-row="row">
+              <span>{{ row.ps.name}}</span><br />
+              <span>{{row.procurementRequest.descriptionRequest != null ? '(' + row.procurementRequest.descriptionRequest + ')' : ''}}</span>
+            </ng-template>
+          </ngx-datatable-column>
+          <!--<ngx-datatable-column name="Açıklama" [flexGrow]="1">
+            <ng-template ngx-datatable-cell-template let-row="row">
+            </ng-template>
+          </ngx-datatable-column>-->
+          <ngx-datatable-column name="Termin" [flexGrow]="0.5">
+            <ng-template ngx-datatable-cell-template let-row="row">
+              <span>{{this.valueFormatterService.getDateDDMMYYYYFormat(row.procurementRequest.deadlineDateRequest)}}</span><br />
+              <span>{{row.procurementRequest.addressRequest}}</span>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Talep Miktarı" [flexGrow]="1" headerClass="datatable-header-right-align" cellClass="datatable-column-right-align">
+            <ng-template ngx-datatable-cell-template let-row="row">
+              <span>{{row.procurementRequest.amountRequest}}</span><br />
+              <span>{{ this.unitService.getPurchaseUnitDisplayName(row.psCategory.purchaseUnit) }}</span>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="<strong>Marka</strong>" [flexGrow]="0.5">
+            <ng-template ngx-datatable-cell-template let-row="row" let-rowIndex="rowIndex">
+              <mat-form-field>
+                <input matInput
+                       placeholder="Marka"
+                       title="tıklayın"
+                       type="text"
+                       (focus)="editing[rowIndex + '-brandName'] = true"
+                       (click)="editing[rowIndex + '-brandName'] = true"
+                       *ngIf="!editing[rowIndex + '-brandName']"
+                       [value]="row.brandName" />
+                <input matInput
+                       placeholder="Marka"
+                       type="text"
+                       (blur)="onCellEditingComplete($event, 'brandName', rowIndex, row)"
+                       (keyup)="updateTableCellValue($event, 'brandName', rowIndex, row)"
+                       *ngIf="editing[rowIndex + '-brandName']"
+                       [value]="row.brandName" />
+              </mat-form-field>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="<strong>Model</strong>" [flexGrow]="0.5">
+            <ng-template ngx-datatable-cell-template let-row="row" let-rowIndex="rowIndex">
+              <mat-form-field>
+                <input matInput
+                       placeholder="Model"
+                       title="tıklayın"
+                       type="text"
+                       (focus)="editing[rowIndex + '-model'] = true"
+                       (click)="editing[rowIndex + '-model'] = true"
+                       *ngIf="!editing[rowIndex + '-model']"
+                       [value]="row.model" />
+                <input matInput
+                       placeholder="Model"
+                       type="text"
+                       (blur)="onCellEditingComplete($event, 'model', rowIndex, row)"
+                       (keyup)="updateTableCellValue($event, 'model', rowIndex, row)"
+                       *ngIf="editing[rowIndex + '-model']"
+                       [value]="row.model" />
+              </mat-form-field>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="<strong>Teslimat Adres</strong>" [flexGrow]="0.5">
+            <ng-template ngx-datatable-cell-template let-row="row" let-rowIndex="rowIndex">
+              <mat-form-field>
+                <input matInput
+                       placeholder="Teslimat Adresi"
+                       title="tıklayın"
+                       type="text"
+                       (focus)="editing[rowIndex + '-deliveryAddress'] = true"
+                       (click)="editing[rowIndex + '-deliveryAddress'] = true"
+                       *ngIf="!editing[rowIndex + '-deliveryAddress']"
+                       [value]="row.deliveryAddress" />
+                <input matInput
+                       placeholder="Teslimat Adresi"
+                       type="text"
+                       (blur)="onCellEditingComplete($event, 'deliveryAddress', rowIndex, row)"
+                       (keyup)="updateTableCellValue($event, 'deliveryAddress', rowIndex, row)"
+                       *ngIf="editing[rowIndex + '-deliveryAddress']"
+                       [value]="row.deliveryAddress" />
+              </mat-form-field>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="<strong>Teslim Edilebilen Tarih</strong>" [flexGrow]="1">
+            <ng-template ngx-datatable-cell-template let-row="row" let-rowIndex="rowIndex">
+              <span style="background-color:orangered;">{{ this.valueFormatterService.getDateDDMMYYYYFormatFromDate(row.deliveryDatePossible) }}</span>
+              <mat-datepicker-toggle [for]="datePickerTableButton"></mat-datepicker-toggle>
+              <mat-form-field>
+                <input matInput
+                       required
+                       style="text-align:right;"
+                       [matDatepicker]="datePickerTableButton"
+                       [min]="datePickerMinDate"
+                       [max]="datePickerMaxDate"
+                       [matDatepickerFilter]="datePickerFilterOdd ? datePickerDateFilter : null"
+                       [value]="row.deliveryDatePossible"
+                       readonly
+                       hidden />
+              </mat-form-field>
+              <mat-datepicker #datePickerTableButton
+                              [touchUi]="datePickerTouch"
+                              [startAt]="datePickerStartDate"
+                              (selectedChanged)="updateTableCellValue($event, 'deliveryDatePossible', rowIndex, row)"
+                              [startView]="datePickerYearView ? 'year' : 'month'">
+              </mat-datepicker>
+              <small *ngIf="this.isEditable && !this.procurementRFQService.validateRFQBidItemValue(row, 'deliveryDatePossible', false, true).isValid" class="mat-text-warn">
+                {{ this.procurementRFQService.validateRFQBidItemValue(row, 'deliveryDatePossible', false, true).errorMessage }}
+              </small>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="<strong>Sunulabilen Miktar</strong>" [flexGrow]="1" headerClass="datatable-header-right-align" cellClass="datatable-column-right-align">
+            <ng-template ngx-datatable-cell-template let-row="row" let-rowIndex="rowIndex">
+              <mat-form-field style="background-color:orangered;">
+                <input matInput
+                       title="tıklayın"
+                       price-formatter-tr
+                       type="text"
+                       (focus)="editing[rowIndex + '-amountAvailable'] = true"
+                       (click)="editing[rowIndex + '-amountAvailable'] = true"
+                       *ngIf="!editing[rowIndex + '-amountAvailable']"
+                       [value]="row.amountAvailable" />
+                <input matInput
+                       required
+                       type="text"
+                       (blur)="onCellEditingComplete($event, 'amountAvailable', rowIndex, row)"
+                       (keyup)="updateTableCellValue($event, 'amountAvailable', rowIndex, row)"
+                       *ngIf="editing[rowIndex + '-amountAvailable']"
+                       [value]="row.amountAvailable" />
+              </mat-form-field>
+              <small *ngIf="this.isEditable && !this.procurementRFQService.validateRFQBidItemValue(row, 'amountAvailable', true, true).isValid" class="mat-text-warn">
+                {{ this.procurementRFQService.validateRFQBidItemValue(row, 'amountAvailable', true, true).errorMessage }}
+              </small>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="<strong>Birim Fiyat (KDV Hariç)</strong>" [flexGrow]="1" headerClass="datatable-header-right-align" cellClass="datatable-column-right-align">
+            <ng-template ngx-datatable-cell-template let-row="row" let-rowIndex="rowIndex">
+              <mat-form-field style="background-color:orangered;">
+                <input matInput
+                       title="tıklayın"
+                       price-formatter-tr
+                       type="text"
+                       (focus)="editing[rowIndex + '-unitPrice'] = true"
+                       (click)="editing[rowIndex + '-unitPrice'] = true"
+                       *ngIf="!editing[rowIndex + '-unitPrice']"
+                       [value]="row.unitPrice" />
+                <input matInput
+                       required
+                       type="text"
+                       (blur)="onCellEditingComplete($event, 'unitPrice', rowIndex, row)"
+                       (keyup)="updateTableCellValue($event, 'unitPrice', rowIndex, row)"
+                       *ngIf="editing[rowIndex + '-unitPrice']"
+                       [value]="row.unitPrice" />
+              </mat-form-field>
+              <small *ngIf="this.isEditable && !this.procurementRFQService.validateRFQBidItemValue(row, 'unitPrice', true, true).isValid" class="mat-text-warn">
+                {{ this.procurementRFQService.validateRFQBidItemValue(row, 'unitPrice', true, true).errorMessage }}
+              </small>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="<strong>KDV Oran (%)</strong>" [flexGrow]="1" headerClass="datatable-header-right-align" cellClass="datatable-column-right-align">
+            <ng-template ngx-datatable-cell-template let-row="row" let-rowIndex="rowIndex">
+              <mat-form-field style="background-color:orangered;">
+                <input matInput
+                       title="tıklayın"
+                       price-formatter-tr
+                       type="text"
+                       (focus)="editing[rowIndex + '-taxPercent'] = true"
+                       (click)="editing[rowIndex + '-taxPercent'] = true"
+                       *ngIf="!editing[rowIndex + '-taxPercent']"
+                       [value]="row.taxPercent" />
+                <input matInput
+                       required
+                       type="text"
+                       (blur)="onCellEditingComplete($event, 'taxPercent', rowIndex, row)"
+                       (keyup)="updateTableCellValue($event, 'taxPercent', rowIndex, row)"
+                       *ngIf="editing[rowIndex + '-taxPercent']"
+                       [value]="row.taxPercent" />
+              </mat-form-field>
+              <small *ngIf="this.isEditable && !this.procurementRFQService.validateRFQBidItemValue(row, 'taxPercent', true, true).isValid" class="mat-text-warn">
+                {{ this.procurementRFQService.validateRFQBidItemValue(row, 'taxPercent', true, true).errorMessage }}
+              </small>
+            </ng-template>
+          </ngx-datatable-column>
+          <ngx-datatable-column name="Dosyalar" [flexGrow]="0.5">
+            <ng-template ngx-datatable-cell-template let-row="row">
+              <button mat-raised-button mat-icon-button class="mr-1" color="accent" (click)="navigateToProcurementRequestMediaList(row)">
+                <mat-icon>find_in_page</mat-icon>
+              </button>
+            </ng-template>
+          </ngx-datatable-column>
+        </ngx-datatable>
+      </mat-card-content>
+      <mat-card>
+        <mat-card-content>
+          <h3>Satınalım Teklif Formu Fiyat, Ödeme, Teslimat, Dolduran Kişi Bilgileri</h3>
+          <p>Lütfen bilgileri girin.</p>
+          <form [formGroup]="form">
+            <div>
+              <mat-form-field>
+                <mat-select placeholder="Döviz/Para Birimi Seçin" [formControl]="form.controls['currency']" required>
+                  <mat-option *ngFor="let type of this.procurementRFQService.getCurrencyCodeISO3Types()" [value]="type.code">
+                    {{ type.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <small *ngIf="form.controls['currency'].hasError('required') && form.controls['currency'].touched" class="mat-text-warn">Döviz/Para Birimi seçin</small>
+            </div>
+            <div>
+              <mat-form-field class="procurement-rfq-bid-number-input-container">
+                <input matInput placeholder="Ürün/Hizmet Fiyat Toplamı (KDV Hariç, otomatik hesaplanır)" [formControl]="form.controls['priceProductServiceTotal']" readonly price-formatter-tr>
+              </mat-form-field>
+            </div>
+            <div>
+              <mat-form-field class="procurement-rfq-bid-number-input-container">
+                <input matInput placeholder="Nakliye Fiyatı (KDV Hariç)" [formControl]="form.controls['priceShipment']" (input)="onPriceChanged($event)" price-formatter-tr />
+              </mat-form-field>
+              <small *ngIf="form.controls['priceShipment'].hasError('required') && form.controls['priceShipment'].touched" class="mat-text-warn">Nakliye fiyatı girin</small>
+            </div>
+            <div>
+              <mat-form-field class="procurement-rfq-bid-number-input-container">
+                <input matInput placeholder="İskonto/İndirim Tutarı (KDV Hariç)" [formControl]="form.controls['priceDiscount']" (input)="onPriceChanged($event)" price-formatter-tr>
+              </mat-form-field>
+            </div>
+            <div>
+              <mat-form-field class="procurement-rfq-bid-number-input-container">
+                <input matInput placeholder="Toplam Fiyat (KDV Hariç, otomatik hesaplanır)" [formControl]="form.controls['priceTotal']" readonly price-formatter-tr>
+              </mat-form-field>
+            </div>
+            <div>
+              <mat-form-field>
+                <mat-select placeholder="Ödeme Şekli Seçin" [formControl]="form.controls['paymentModelType']" required>
+                  <mat-option *ngFor="let type of this.procurementRFQService.getPaymentModelTypes()" [value]="type.code">
+                    {{ type.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <small *ngIf="form.controls['paymentModelType'].hasError('required') && form.controls['paymentModelType'].touched" class="mat-text-warn">Ödeme Şekli seçin.</small>
+            </div>
+            <div>
+              <mat-form-field>
+                <mat-select placeholder="Ödeme Yöntemi/Modeli Seçin" [formControl]="form.controls['paymentMethodType']" required>
+                  <mat-option *ngFor="let type of this.procurementRFQService.getPaymentMethodTypes()" [value]="type.code">
+                    {{ type.name }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+              <small *ngIf="form.controls['paymentMethodType'].hasError('required') && form.controls['paymentMethodType'].touched" class="mat-text-warn">Ödeme Yöntemi/Modeli seçin.</small>
+            </div>
+            <div *ngIf="isPayAfterOrderPricingVisible()">
+              <mat-form-field class="procurement-rfq-bid-number-input-container">
+                <input matInput placeholder="Sipariş/Sözleşme Tarihinden İtibaten Vade Gün Sayısı" [formControl]="form.controls['paymentAfterOrderDueDays']" pattern="^\d+$">
+              </mat-form-field>
+              <small *ngIf="form.controls['paymentAfterOrderDueDays'].hasError('required') && form.controls['paymentAfterOrderDueDays'].touched" class="mat-text-warn">Sipariş/Sözleşme Tarihinden İtibaten Vade Gün Sayısı girin</small>
+              <small *ngIf="form.controls['paymentAfterOrderDueDays'].hasError('pattern') && form.controls['paymentAfterOrderDueDays'].touched" class="mat-text-warn">Sadece tam sayısı girin</small>
+            </div>
+            <div *ngIf="isPayAfterOrderPricingVisible()">
+              <mat-form-field class="procurement-rfq-bid-number-input-container">
+                <input matInput placeholder="Sipariş/Sözleşme Tarihinden Vade Gün Sonrası Ödenecek Tutar (KDV Hariç)" [formControl]="form.controls['paymentAfterOrderPrice']" price-formatter-tr>
+              </mat-form-field>
+              <small *ngIf="form.controls['paymentAfterOrderPrice'].hasError('required') && form.controls['paymentAfterOrderPrice'].touched" class="mat-text-warn">Sipariş/Sözleşme Tarihinden Vade Gün Sonrası Ödenecek Tutar girin</small>
+            </div>
+            <div *ngIf="isPayAfterInvoicePricingVisible()">
+              <mat-form-field class="procurement-rfq-bid-number-input-container">
+                <input matInput placeholder="Fatura Tarihinden İtibaren Vade Gün Sayısı" [formControl]="form.controls['paymentAfterInvoiceDueDays']" pattern="^\d+$">
+              </mat-form-field>
+              <small *ngIf="form.controls['paymentAfterInvoiceDueDays'].hasError('required') && form.controls['paymentAfterInvoiceDueDays'].touched" class="mat-text-warn">Fatura Tarihinden İtibaten Vade Gün Sayısı girin</small>
+              <small *ngIf="form.controls['paymentAfterInvoiceDueDays'].hasError('pattern') && form.controls['paymentAfterInvoiceDueDays'].touched" class="mat-text-warn">Sadece tam sayısı girin</small>
+            </div>
+            <div *ngIf="isPayAfterInvoicePricingVisible()">
+              <mat-form-field class="procurement-rfq-bid-number-input-container">
+                <input matInput placeholder="Fatura Tarihinden Vade Gün Sonrası Ödenecek Tutar (KDV Hariç)" [formControl]="form.controls['paymentAfterInvoicePrice']" price-formatter-tr>
+              </mat-form-field>
+              <small *ngIf="form.controls['paymentAfterInvoicePrice'].hasError('required') && form.controls['paymentAfterInvoicePrice'].touched" class="mat-text-warn">Fatura Tarihinden Vade Gün Sonrası Ödenecek Tutar girin</small>
+            </div>
+            <div *ngIf="isPayAfterDeliveryPricingVisible()">
+              <mat-form-field class="procurement-rfq-bid-number-input-container">
+                <input matInput placeholder="Teslimat Tarihinden İtibaten Vade Gün Sayısı" [formControl]="form.controls['paymentAfterDeliveryDueDays']" pattern="^\d+$">
+              </mat-form-field>
+              <small *ngIf="form.controls['paymentAfterDeliveryDueDays'].hasError('required') && form.controls['paymentAfterDeliveryDueDays'].touched" class="mat-text-warn">Teslimat Tarihinden İtibaten Vade Gün Sayısı girin</small>
+              <small *ngIf="form.controls['paymentAfterDeliveryDueDays'].hasError('pattern') && form.controls['paymentAfterDeliveryDueDays'].touched" class="mat-text-warn">Sadece tam sayısı girin</small>
+            </div>
+            <div *ngIf="isPayAfterDeliveryPricingVisible()">
+              <mat-form-field class="procurement-rfq-bid-number-input-container">
+                <input matInput placeholder="Teslimat Tarihinden Vade Gün Sonrası Ödenecek Tutar (KDV Hariç)" [formControl]="form.controls['paymentAfterDeliveryPrice']" price-formatter-tr>
+              </mat-form-field>
+              <small *ngIf="form.controls['paymentAfterDeliveryPrice'].hasError('required') && form.controls['paymentAfterDeliveryPrice'].touched" class="mat-text-warn">Teslimat Tarihinden Vade Gün Sonrası Ödenecek Tutar girin</small>
+            </div>
+            <div *ngIf="isInstallmentBasedPricingVisible()">
+              <mat-form-field class="procurement-rfq-bid-number-input-container">
+                <input matInput placeholder="Taksit Sayısı" [formControl]="form.controls['paymentInstallmentCount']" type="number" pattern="^\d+$">
+              </mat-form-field>
+              <small *ngIf="form.controls['paymentInstallmentCount'].hasError('required') && form.controls['paymentInstallmentCount'].touched" class="mat-text-warn">Taksit Sayısı girin</small>
+              <small *ngIf="form.controls['paymentInstallmentCount'].hasError('pattern') && form.controls['paymentInstallmentCount'].touched" class="mat-text-warn">Sadece tam sayısı girin</small>
+            </div>
+            <div *ngIf="isInstallmentBasedPricingVisible()">
+              <mat-form-field class="procurement-rfq-bid-number-input-container">
+                <input matInput placeholder="Taksit Aralığı (Ay)" [formControl]="form.controls['paymentInstallmentPeriodMonths']" type="number" pattern="^\d+$">
+              </mat-form-field>
+              <small *ngIf="form.controls['paymentInstallmentPeriodMonths'].hasError('required') && form.controls['paymentInstallmentPeriodMonths'].touched" class="mat-text-warn">Taksit Aralığı (Ay) girin</small>
+              <small *ngIf="form.controls['paymentInstallmentPeriodMonths'].hasError('pattern') && form.controls['paymentInstallmentPeriodMonths'].touched" class="mat-text-warn">Sadece tam sayısı girin</small>
+            </div>
+            <div *ngIf="isMilestoneBasedPricingVisible()">
+              <mat-form-field class="procurement-rfq-bid-number-input-container">
+                <input matInput placeholder="İş/Parça Teslimatı Sayısı" [formControl]="form.controls['paymentMilestoneCount']" type="number" pattern="^\d+$">
+              </mat-form-field>
+              <small *ngIf="form.controls['paymentMilestoneCount'].hasError('required') && form.controls['paymentMilestoneCount'].touched" class="mat-text-warn">Milestone Sayısı girin</small>
+              <small *ngIf="form.controls['paymentMilestoneCount'].hasError('pattern') && form.controls['paymentMilestoneCount'].touched" class="mat-text-warn">Sadece tam sayısı girin</small>
+            </div>
+            <div *ngIf="isMilestoneBasedPricingVisible()">
+              <mat-form-field class="procurement-rfq-bid-number-input-container">
+                <input matInput placeholder="İş/Parça Teslimatı Ödeme Vade Gün Sayısı" [formControl]="form.controls['paymentAfterMilestoneDeliveryDueDays']" pattern="^\d+$">
+              </mat-form-field>
+              <small *ngIf="form.controls['paymentAfterMilestoneDeliveryDueDays'].hasError('required') && form.controls['paymentAfterMilestoneDeliveryDueDays'].touched" class="mat-text-warn">Milestone Teslimat Ödeme Vade (Gün) girin</small>
+              <small *ngIf="form.controls['paymentAfterMilestoneDeliveryDueDays'].hasError('pattern') && form.controls['paymentAfterMilestoneDeliveryDueDays'].touched" class="mat-text-warn">Sadece tam sayısı girin</small>
+            </div>
+            <div *ngIf="isMilestoneBasedPricingVisible()">
+              <mat-form-field class="procurement-rfq-bid-number-input-container">
+                <input matInput placeholder="İş/Parça Teslimatı Başına Ödenecek Tutar (KDV Hariç)" [formControl]="form.controls['paymentMilestonePrice']" price-formatter-tr>
+              </mat-form-field>
+              <small *ngIf="form.controls['paymentMilestonePrice'].hasError('required') && form.controls['paymentMilestonePrice'].touched" class="mat-text-warn">Milestone Başına Ödenecek Tutar girin</small>
+            </div>
+            <div>
+              <mat-form-field style="width: 100%">
+                <textarea matInput placeholder="Teklif Detayları ve Açıklamalar (Teklifiniz ile ilgili şartları, koşulları ve detayları girebilirsiniz)" [formControl]="form.controls['descriptionRFQBid']"
+                          title="Teklif Detayları ve Açıklamalar"
+                          style="height: 200px; resize: none;"></textarea>
+              </mat-form-field>
+            </div>
+            <div>
+              <mat-datepicker-toggle [for]="datePickerButton"></mat-datepicker-toggle>
+              <mat-form-field>
+                <input matInput
+                       formControlName="validityDeadlineDate"
+                       [matDatepicker]="datePickerButton"
+                       [min]="datePickerMinDate"
+                       [max]="datePickerMaxDate"
+                       [matDatepickerFilter]="datePickerFilterOdd ? datePickerDateFilter : null"
+                       placeholder="Teklif Geçerlilik Tarihi"
+                       readonly>
+              </mat-form-field>
+              <mat-datepicker #datePickerButton
+                              [touchUi]="datePickerTouch"
+                              [startAt]="datePickerStartDate"
+                              [startView]="datePickerYearView ? 'year' : 'month'">
+              </mat-datepicker>
+              <small *ngIf="form.controls['validityDeadlineDate']?.hasError('required') && form.controls['validityDeadlineDate']?.touched" class="mat-text-warn">Teklif geçerlilik tarihi girin</small>
+              <small *ngIf="form.controls['validityDeadlineDate']?.hasError('maxlength') && form.controls['validityDeadlineDate']?.touched" class="mat-text-warn">Teklif geçerlilik tarihi girin</small>
+              <small *ngIf="form.controls['validityDeadlineDate']?.hasError('matDatepickerMin')" class="mat-text-warn">En az 1 gün sonra olabilir!</small>
+            </div>
+
+            <div>
+              <mat-form-field class="procurement-rfq-bid-text-input-container">
+                <input matInput placeholder="Adınız" [formControl]="form.controls['providerPersonFirstName']">
+              </mat-form-field>
+              <small *ngIf="form.controls['providerPersonFirstName'].hasError('required') && form.controls['providerPersonFirstName'].touched" class="mat-text-warn">Lütfen Adınızı girin</small>
+            </div>
+            <div>
+              <mat-form-field class="procurement-rfq-bid-text-input-container">
+                <input matInput placeholder="Soyadınız" [formControl]="form.controls['providerPersonLastName']">
+              </mat-form-field>
+              <small *ngIf="form.controls['providerPersonLastName'].hasError('required') && form.controls['providerPersonLastName'].touched" class="mat-text-warn">Lütfen Soyadınızı girin</small>
+            </div>
+            <div>
+              <mat-form-field class="procurement-rfq-bid-text-input-container">
+                <input matInput placeholder="Göreviniz" [formControl]="form.controls['providerPersonPosition']">
+              </mat-form-field>
+              <small *ngIf="form.controls['providerPersonPosition'].hasError('required') && form.controls['providerPersonPosition'].touched" class="mat-text-warn">Lütfen bu formu hangi ünvan/görev ile doldurduğunuzu girin</small>
+            </div>
+            <div>
+              <mat-form-field class="procurement-rfq-bid-text-input-container">
+                <input matInput placeholder="E-mail adresiniz (şirket e-mailinizi girin)" [formControl]="form.controls['providerPersonEmail']" type="email" email>
+              </mat-form-field>
+              <small *ngIf="form.controls['providerPersonEmail'].hasError('required') && form.controls['providerPersonEmail'].touched" class="mat-text-warn">Lütfen size ait şirket e-mailinizi girin</small>
+              <small *ngIf="form.controls['providerPersonEmail'].hasError('email') && form.controls['providerPersonEmail'].touched" class="mat-text-warn">Lütfen geçerli e-mailinizi girin</small>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
+      <mat-card>
+        <mat-card-content>
+          <h3><strong>Şirketinizin Teklif Formu</strong></h3>
+          <p>Eğer isterseniz şirketinize ait kendi teklif formunuz varsa kaşeli, imzalı olarak tarayıp yükleyebilirsiniz.</p>
+          <h4>Yüklemiş Olduğunuz İmzalı Teklif Formunuz</h4>
+          <p *ngIf="!hasRFQBidDocument()">İmzalı kaşeli teklif formu yüklenmemiştir</p>
+          <button mat-raised-button color="primary" (click)="getRFQBidDocument()" [disabled]="!hasRFQBidDocument()">
+            Dosyayı İndir ve Görüntüle
+          </button>
+
+          <h4>Yüklemek İstediğiniz Dosyayı Seçin ve "Dosya Yükle" Butonuna Tıklayın</h4>
+          <p>Sadece PDF (*.pdf uzantılı) ya da resim (*.jpg, *.jpeg, *.png uzantılı) yükleyebilirsiniz. Dosya boyutu en fazla 5 MB (Mega Bayt) olabilir.</p>
+
+          <input type="file" ng2FileSelect [uploader]="uploaderRFQBidDocument" />
+          <br />
+          <div class="clearfix mb-1"></div>
+
+          <div class="mb-1">
+            <p>Dosya Yükleme Durumu:</p>
+            <mat-progress-bar mode="determinate" value="{{uploaderRFQBidDocument?.progress}}"></mat-progress-bar>
+          </div>
+          <button mat-raised-button color="primary"
+                  (click)="uploaderRFQBidDocument.uploadAll()" [disabled]="!uploaderRFQBidDocument?.getNotUploadedItems().length">
+            Dosya Yükle
+          </button>
+        </mat-card-content>
+      </mat-card>
+      <mat-card>
+        <mat-card-content>
+          <h3><strong>Şirket ve Ürünlere ait Kalite, Standard, vb. Belge ve Sertifikalar</strong></h3>
+          <p>Lütfen şirketinize ve teklif verdiğiniz ürünlere ait ISO, TSE gibi kalite ve standart belge ve sertifikalarınızı yükleyin. Not: Belge ve sertifika yüklemeniz, tedarikçi puanınızı yükseltir ve tercih önceliği sağlar.</p>
+          <h4>Yüklemiş Olduğunuz Kalite, Standard, vb. Belge ve Sertifikalar</h4>
+          <ngx-datatable class='material striped'
+                         [rows]="rowsQASCertificate"
+                         [columnMode]="'flex'"
+                         [headerHeight]="'auto'"
+                         [footerHeight]="0"
+                         [rowHeight]="'auto'">
+            <ngx-datatable-column name="Dosya Adı" [flexGrow]="3">
+              <ng-template ngx-datatable-cell-template let-row="row">
+                {{ row.name }}
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Yükleme Tarih-Saat" *ngIf="uploaderQASCertificate?.options.isHTML5" [flexGrow]="1">
+              <ng-template ngx-datatable-cell-template let-row="row">
+                {{ row.createdDate }}
+              </ng-template>
+            </ngx-datatable-column>
+            <ngx-datatable-column name="Sertifika/Belge Dosyası İndir" [flexGrow]="1">
+              <ng-template ngx-datatable-cell-template let-row="row">
+                <button mat-raised-button mat-icon-button class="mr-1" color="accent" (click)="getQASCertificateDocument(row)">
+                  <mat-icon>file_download</mat-icon>
+                </button>
+              </ng-template>
+            </ngx-datatable-column>
+          </ngx-datatable>
+          <h4>Yüklemek İstediğiniz Dosyayı Seçin ve "Dosya Yükle" Butonuna Tıklayın</h4>
+          <p>Sadece PDF (*.pdf uzantılı) ya da resim (*.jpg, *.jpeg, *.png uzantılı) yükleyebilirsiniz. Dosya boyutu en fazla 10 MB (Mega Bayt) olabilir.</p>
+
+          <input type="file" ng2FileSelect [uploader]="uploaderQASCertificate" />
+          <br />
+          <div class="clearfix mb-1"></div>
+
+          <div class="mb-1">
+            <p>Dosya Yükleme Durumu:</p>
+            <mat-progress-bar mode="determinate" value="{{uploaderQASCertificate?.progress}}"></mat-progress-bar>
+          </div>
+          <button mat-raised-button color="primary"
+                  (click)="uploaderQASCertificate.uploadAll()" [disabled]="!uploaderQASCertificate?.getNotUploadedItems().length">
+            Dosya Yükle
+          </button>
+        </mat-card-content>
+      </mat-card>
+      <mat-card-content>
+        <p class="text-mat">
+          <strong>
+            SATIN ALIM ŞARTLARI ve KOŞULLARI
+          </strong>
+        </p>
+        <p>
+          {{this.procurementRFQBid?.tenant.name}} tarafından talep edilen bu teklif hiç bir koşulda {{this.procurementRFQBid?.tenant.name}} için bağlayıcı nitelikte olmayıp, sizden satınalım yapılacağını garantilemez.
+          Teklif talebi ile ilgili tüm soru ve görüşleriniz için belirtilen sorumlu ile iletişime geçmeniz rica olunur.
+        </p>
+      </mat-card-content>
+      <mat-card-actions *ngIf="isRFQBidStateOk()">
+        &nbsp; &nbsp; <mat-checkbox [(ngModel)]="this.isTermsAccepted"
+                                    name="cb"
+                                    color="primary"
+                                    (change)="checkboxChechedChanged($event.checked)"
+                                    [indeterminate]="false"
+                                    [disabled]="false"
+                                    [align]="'start'">
+          {{this.procurementRFQBid?.tenant.name}} tarafından talep edilen ürünlere veya hizmetlere teklif sunduğumuzu ve şartları kabul ettiğimizi beyan ederim.
+        </mat-checkbox>
+        <br />
+        <br />
+        <button mat-raised-button color="primary" [disabled]="!isValid() || !isTermsAccepted" (click)="save()">Teklifi Kaydet ve Gönder</button>
+      </mat-card-actions>
+      <br />
+    </mat-card>
+    <mat-card *ngIf="this.procurementRFQBid != null && (! isRFQBidStateOk()) && ! isRFQBidSent()">
+      <mat-card-content>
+        <div class="mb-1">
+          <h2 class="mt-0"><strong>Satınalım Teklif Formu</strong></h2><span><strong>Teklif Verme Son Tarihi:</strong> {{this.valueFormatterService.getDateDDMMYYYYFormat(this.procurementRFQBid.deadlineDateRFQBid)}}</span>
+          <p><strong>Satınalım teklif talebi artık aktif değildir. İlginiz için teşekkür ederiz.</strong></p>
+          <p>Saygılarımızla,</p>
+          <p>{{this.procurementRFQBid?.tenant.name}}</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card *ngIf="this.procurementRFQBid != null && isRFQBidSent() && isRFQBidStateOk()">
+      <mat-card-content>
+        <div class="mb-1">
+          <h2 class="mt-0"><strong>Satınalım Teklif Formu</strong></h2><span><strong>Teklif Verme Son Tarihi:</strong> {{this.valueFormatterService.getDateDDMMYYYYFormat(this.procurementRFQBid.deadlineDateRFQBid)}}</span>
+          <p>Teklifiniz gönderilmiştir ve değerlendirilecektir. İlginiz için teşekkür ederiz.</p>
+          <p><strong>Eğer teklifinizde güncelleme yapmak isterseniz bu linki tekrar açıp güncelleme yapabilirsiniz.</strong></p>
+          <p>Saygılarımızla,</p>
+          <p>{{this.procurementRFQBid?.tenant.name}}</p>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <br />
+    <br />
+  </mat-sidenav-container>
+</div>

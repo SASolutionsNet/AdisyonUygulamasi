@@ -1,0 +1,376 @@
+
+<div fxLayout="row" fxLayoutWrap="wrap">
+  <div fxFlex.gt-sm="25" fxFlex.gt-xs="50" fxFlex="100">
+    <mat-card class="card-widget">
+      <div mat-card-widget>
+        <button mat-mini-fab color="teal" mat-card-icon class="shadow-none">
+          <mat-icon>business</mat-icon>
+        </button>
+        <div class="pl-1 pr-1">
+          <h2 mat-card-widget-title>{{partyCount}}</h2>
+          <p class="mat-text-muted text-mat">Kurum/Şirket/Kişi Kaydı</p>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+  <div fxFlex.gt-sm="25" fxFlex.gt-xs="50" fxFlex="100">
+    <mat-card class="card-widget">
+      <div mat-card-widget>
+        <button mat-mini-fab color="purple" mat-card-icon class="shadow-none">
+          <mat-icon>style</mat-icon>
+        </button>
+        <div class="pl-1 pr-1">
+          <h2 mat-card-widget-title>{{psCategoryCount}}</h2>
+          <p class="mat-text-muted text-mat">Malz./Ham M./Ürün/Hiz. Kategorisi</p>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+  <div fxFlex.gt-sm="25" fxFlex.gt-xs="50" fxFlex="100">
+    <mat-card class="card-widget">
+      <div mat-card-widget>
+        <button mat-mini-fab color="warn" mat-card-icon class="shadow-none">
+          <mat-icon>people</mat-icon>
+        </button>
+        <div class="pl-1 pr-1">
+          <h2 mat-card-widget-title>{{userCount}}</h2>
+          <p class="mat-text-muted text-mat">Kullanıcı Sayısı</p>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+  <div fxFlex.gt-sm="25" fxFlex.gt-xs="50" fxFlex="100">
+    <mat-card class="card-widget">
+      <div mat-card-widget>
+        <button mat-mini-fab mat-card-icon class="shadow-none">
+          <mat-icon>notifications</mat-icon>
+        </button>
+        <div class="pl-1 pr-1">
+          <h2 mat-card-widget-title>{{inAppNotificationCount}}</h2>
+          <p class="mat-text-muted text-mat">Toplam Bildirim</p>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+</div>
+<!-- Satinalma -->
+<div fxLayout="row" fxLayoutWrap="wrap" *ngIf="this.viewProcurementSummaryRow()">
+  <div fxFlex.gt-sm="25" fxFlex.gt-xs="50" fxFlex="100">
+    <mat-card class="card-widget mat-teal">
+      <div mat-card-widget>
+        <div mat-card-float-icon>
+          <mat-icon>check</mat-icon>
+        </div>
+        <div class="pl-0">
+          <h2 mat-card-widget-title>{{this.procurementRequestWaitingApproveCount}}</h2>
+          <p>Onay Bekleyen Talepler</p>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+  <div fxFlex.gt-sm="25" fxFlex.gt-xs="50" fxFlex="100">
+    <mat-card class="card-widget mat-purple">
+      <div mat-card-widget>
+        <div mat-card-float-icon>
+          <mat-icon>shopping_cart</mat-icon>
+        </div>
+        <div class="pl-0">
+          <h2 mat-card-widget-title>{{this.procurementRequestWaitingRFQCount}}</h2>
+          <p>Satınalım Bekleyen Talepler</p>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+  <div fxFlex.gt-sm="25" fxFlex.gt-xs="50" fxFlex="100">
+    <mat-card class="card-widget mat-red">
+      <div mat-card-widget>
+        <div mat-card-float-icon>
+          <mat-icon>schedule</mat-icon>
+        </div>
+        <div class="pl-0">
+          <h2 mat-card-widget-title>{{this.procurementRequestWaitingBidCount}}</h2>
+          <p>Teklif Bekleyen Talepler</p>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+  <div fxFlex.gt-sm="25" fxFlex.gt-xs="50" fxFlex="100">
+    <mat-card class="card-widget mat-yellow">
+      <div mat-card-widget>
+        <div mat-card-float-icon>
+          <mat-icon>timelapse</mat-icon>
+        </div>
+        <div class="pl-0">
+          <h2 mat-card-widget-title>{{this.purchaseOrderItemWaitingDeliveryCount}}</h2>
+          <p>Teslimat Bekleyen Ürünler</p>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+</div>
+
+<!-- Satis ozet -->
+<div fxLayout="row" fxLayoutWrap="wrap" *ngIf="viewSalesSummaryRow()">
+  <div fxFlex.gt-sm="25" fxFlex.gt-xs="50" fxFlex="100">
+    <mat-card class="card-widget mat-teal">
+      <div mat-card-widget>
+        <div mat-card-float-icon>
+          <mat-icon>business</mat-icon>
+        </div>
+        <div class="pl-0">
+          <h2 mat-card-widget-title>{{this.salesModuleCustomerCount}}</h2>
+          <p>Müşteri Sayısı</p>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+  <div fxFlex.gt-sm="25" fxFlex.gt-xs="50" fxFlex="100">
+    <mat-card class="card-widget mat-purple">
+      <div mat-card-widget>
+        <div mat-card-float-icon>
+          <mat-icon>group</mat-icon>
+        </div>
+        <div class="pl-0">
+          <h2 mat-card-widget-title>{{this.salesModuleCustomerInteractionCount}}</h2>
+          <p>Müşteri Görüşme Sayısı</p>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+  <div fxFlex.gt-sm="25" fxFlex.gt-xs="50" fxFlex="100">
+    <mat-card class="card-widget" style="background-color:#3f51b5; color:white;">
+      <div mat-card-widget>
+        <div mat-card-float-icon>
+          <mat-icon>description</mat-icon>
+        </div>
+        <div class="pl-0">
+          <h2 mat-card-widget-title>{{this.salesModuleSalesOfferCount}}</h2>
+          <p>Teklif Sayısı</p>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+  <div fxFlex.gt-sm="25" fxFlex.gt-xs="50" fxFlex="100">
+    <mat-card class="card-widget" style="background-color:#4caf50;">
+      <div mat-card-widget>
+        <div mat-card-float-icon>
+          <mat-icon>monetization_on</mat-icon>
+        </div>
+        <div class="pl-0">
+          <h2 mat-card-widget-title>{{this.salesModuleSalesOfferStateOrderCount}}</h2>
+          <p>Sipariş Sayısı</p>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+</div>
+
+<!-- Satis ozet counts -->
+<div fxLayout="row" fxLayoutWrap="wrap" *ngIf="viewSalesSummaryRow()">
+  <div fxFlex.gt-sm="25" fxFlex.gt-xs="25" fxFlex="100">
+    <mat-card class="card-widget mat-yellow">
+      <div mat-card-widget>
+        <div mat-card-float-icon>
+          <mat-icon>%</mat-icon>
+        </div>
+        <div class="pl-0">
+          <h2 mat-card-widget-title>% {{ this.getOfferToOrderRatio()}}</h2>
+          <p>Teklifin Siparişe Dönme Oranı</p>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+  <div fxFlex.gt-sm="25" fxFlex.gt-xs="25" fxFlex="100">
+    <mat-card class="card-widget mat-yellow">
+      <div mat-card-widget>
+        <div mat-card-float-icon>
+          <mat-icon>count</mat-icon>
+        </div>
+        <div class="pl-0">
+          <h2 mat-card-widget-title>{{ this.getCountSalesOrderCanceledTotal() }}</h2>
+          <p>İptal Edilen Sipariş Sayısı</p>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+  <div fxFlex.gt-sm="25" fxFlex.gt-xs="25" fxFlex="100">
+    <mat-card class="card-widget mat-yellow">
+      <div mat-card-widget>
+        <div mat-card-float-icon>
+          <mat-icon>count</mat-icon>
+        </div>
+        <div class="pl-0">
+          <h2 mat-card-widget-title>{{ this.getCountSalesOrderRevisionTotal() }}</h2>
+          <p>Sipariş Revizyon Sayısı</p>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+</div>
+
+<!-- Satis ozet ciro -->
+<div fxLayout="row" fxLayoutWrap="wrap" *ngIf="viewSalesSummaryRow()">
+  <div fxFlex.gt-sm="50" fxFlex.gt-xs="50" fxFlex="100">
+    <mat-card>
+      <mat-card-title>Şirket Ciro ( {{ this.currentYear }} ) : {{ getPriceTotalUSD() }} USD</mat-card-title>
+      <mat-card-content>
+        <canvas *ngIf="isReadyBarChartDataThisYearUntilAllTotalsUSD()"
+                height="250"
+                width="600"
+                baseChart
+                class="chart"
+                [datasets]="barChartDataThisYearUntilAllTotalsUSD"
+                [labels]="barChartLabelsThisYearUntilAllTotalsUSD"
+                [colors]="barChartColorsThisYearUntilAllTotalsUSD"
+                [options]="barChartHorizontalOptionsThisYearUntilAllTotalsUSD"
+                [chartType]="'horizontalBar'"></canvas>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div fxFlex.gt-sm="50" fxFlex.gt-xs="50" fxFlex="100">
+    <mat-card>
+      <mat-card-title>Şirket Ciro Aylara Göre Dağılım ( {{ this.currentYear }} ) : {{ this.getPriceTotalUSD() }} USD</mat-card-title>
+      <mat-card-content>
+        <canvas *ngIf="isReadyBarChartDataThisYearUntilAllTotalsUSD()"
+                height="250"
+                width="600"
+                baseChart
+                class="chart"
+                [datasets]="barChartDataThisYearUntilAllMonthlyUSD"
+                [labels]="barChartLabelsThisYearUntilAllMonthlyUSD"
+                [colors]="barChartColorsThisYearUntilAllMonthlyUSD"
+                [options]="barChartHorizontalOptionsThisYearUntilAllMonthlyUSD"
+                [chartType]="'bar'"></canvas>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+<!-- Satis tum firmadaki kişi bazlı ciro ve siparis sayisi -->
+<div fxLayout="row" fxLayoutWrap="wrap" *ngIf="isSalesManagerOrProjectManagerOrCeo()">
+  <div fxFlex.gt-sm="50" fxFlex.gt-xs="50" fxFlex="100">
+    <mat-card>
+      <mat-card-title>Satış Yapan Personel Bazında Ciro (USD)</mat-card-title>
+      <mat-card-content>
+        <canvas *ngIf="isReadyBarChartDataThisYearUntilAllTotalsUSD()"
+                baseChart
+                class="chart"
+                [datasets]="barChartDataThisYearUntilSalesPersonBasedTotalsUSD"
+                [labels]="barChartLabelsThisYearUntilSalesPersonBasedTotalsUSD"
+                [colors]="barChartColorsThisYearUntilSalesPersonBasedTotalsUSD"
+                [options]="barChartHorizontalOptionsThisYearUntilSalesPersonBasedTotalsUSD"
+                [chartType]="'horizontalBar'"></canvas>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div fxFlex.gt-sm="50" fxFlex.gt-xs="50" fxFlex="100">
+    <mat-card>
+      <mat-card-title>Satış Yapan Personel Bazında Sipariş Sayısı</mat-card-title>
+      <mat-card-content>
+        <canvas *ngIf="isReadyBarChartDataThisYearUntilAllTotalsUSD()"
+                baseChart
+                class="chart"
+                [datasets]="barChartDataThisYearUntilSalesPersonBasedTotalsCount"
+                [labels]="barChartLabelsThisYearUntilSalesPersonBasedTotalsCount"
+                [colors]="barChartColorsThisYearUntilSalesPersonBasedTotalsCount"
+                [options]="barChartHorizontalOptionsThisYearUntilSalesPersonBasedTotalsCount"
+                [chartType]="'horizontalBar'"></canvas>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+<!-- Satis sadece kendi ciro -->
+<div fxLayout="row" fxLayoutWrap="wrap" *ngIf="isSalesPersonOrProjectDesigner()">
+  <div fxFlex.gt-sm="50" fxFlex.gt-xs="50" fxFlex="100">
+    <mat-card>
+      <mat-card-title>Benim Bu Yıl Ciro ( {{ this.currentYear }} ) : {{ this.valueFormatterService.toDecimalNumberStringFromFloat(this.priceTotalMyUSD, 0) }} USD</mat-card-title>
+      <mat-card-content>
+        <canvas *ngIf="isReadyBarChartDataThisYearUntilAllTotalsUSD()"
+                height="250"
+                width="600"
+                baseChart
+                class="chart"
+                [datasets]="barChartDataThisYearUntilMyTotalsUSD"
+                [labels]="barChartLabelsThisYearUntilMyTotalsUSD"
+                [colors]="barChartColorsThisYearUntilMyTotalsUSD"
+                [options]="barChartHorizontalOptionsThisYearUntilMyTotalsUSD"
+                [chartType]="'bar'"></canvas>
+      </mat-card-content>
+    </mat-card>
+  </div>
+  <div fxFlex.gt-sm="50" fxFlex.gt-xs="50" fxFlex="100">
+    <mat-card>
+      <mat-card-title>Benim Ciro Aylara Göre Dağılım ( {{ this.currentYear }} ) : {{ this.valueFormatterService.toDecimalNumberStringFromFloat(this.priceTotalMyUSD, 0) }} USD</mat-card-title>
+      <mat-card-content>
+        <canvas *ngIf="isReadyBarChartDataThisYearUntilAllTotalsUSD()"
+                height="250"
+                width="600"
+                baseChart
+                class="chart"
+                [datasets]="barChartDataThisYearUntilMyMonthlyUSD"
+                [labels]="barChartLabelsThisYearUntilMyMonthlyUSD"
+                [colors]="barChartColorsThisYearUntilMyMonthlyUSD"
+                [options]="barChartHorizontalOptionsThisYearUntilMyMonthlyUSD"
+                [chartType]="'bar'"></canvas>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+<!-- for management.ceo role, cari borc-alacak tablosu -->
+<!-- 2019.08.21 after adding these into accounting reports, removed from dashboard -->
+<!--<div fxLayout="row" fxLayoutWrap="wrap" *ngIf="this.isCeo()">
+  <div fxFlex.gt-md="100" fxFlex="100">
+    <mat-card>
+      <mat-card-title>Cari Hesap Borç-Alacak Tablosu</mat-card-title>
+      <mat-card-subtitle>Şirketin güncel cari hesap borç ve alacaklar tablosu (ETA muhasebe programından)</mat-card-subtitle>
+      <mat-card-content>
+        <netakil-accountingetacurrentbalance-list [showCreateButton]="false"
+                                                  [showCurrency]="true"
+                                                  [rows]="accountingETACurrentBalances"
+                                                  [loadDataFromService]="false"
+                                                  [rowCountPerPage]="20"
+                                                  [selectionModelType]="'single'"
+                                                  [showActionButtonOne]="false"></netakil-accountingetacurrentbalance-list>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>-->
+<!-- for management.ceo role, mizan muhasebe aylik tablosu -->
+<!-- 2019.08.21 after adding these into accounting reports, removed from dashboard -->
+<!--<div fxLayout="row" fxLayoutWrap="wrap" *ngIf="this.isCeo()">
+  <div fxFlex.gt-md="100" fxFlex="100">
+    <mat-card>
+      <mat-card-title>Aylık Mizan Tablosu</mat-card-title>
+      <mat-card-subtitle>Şirketin seçilen yıl ve ay için kesinleşen aylık mizan tablosu (ETA muhasebe programından)</mat-card-subtitle>
+      <mat-card-content>
+        <netakil-accountingetatrialbalance-list [showCreateButton]="false"
+                                                [showCurrency]="true"
+                                                [loadDataFromService]="true"
+                                                [rowCountPerPage]="200"
+                                                [selectionModelType]="'single'"
+                                                [showActionButtonOne]="false"></netakil-accountingetatrialbalance-list>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>-->
+<!-- Merhaba... -->
+<div fxLayout="row" fxLayoutWrap="wrap" *ngIf="this.authService.currentUser">
+  <div fxFlex.gt-md="100" fxFlex="100">
+    <mat-card>
+      <!--<button mat-raised-button color="primary" *ngIf="this.authService.isPowerUser()" (click)="createCurrencyParities()">2018-01-01 den dune kadar CurrencyParity olustur.</button>-->
+      <div fxLayout="row" fxLayoutAlign="center center" class="mr-1">
+        <mat-card-header class="mt-0">
+          <mat-card-subtitle>Merhaba</mat-card-subtitle>
+          <mat-card-title>{{this.authService.currentUser?.profile.given_name}} {{this.authService.currentUser?.profile.family_name}}</mat-card-title>
+        </mat-card-header>
+        <span fxFlex></span>
+      </div>
+      <!--<mat-card-content>
+        <p class="ma-0">Özet ekranınız...</p>
+      </mat-card-content>-->
+      <hr>
+    </mat-card>
+  </div>
+</div>

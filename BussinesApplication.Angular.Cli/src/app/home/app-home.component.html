@@ -1,0 +1,26 @@
+<div class="session mat-indigo">
+  <div class="session-content">
+    <div class="session-wrapper">
+      <mat-card>
+        <mat-card-content>
+          <div class="text-xs-center pb-1"  *ngIf="environment.name == 'production' || environment.name == 'staging'">
+            <img src="assets/images/logo-dark.png" alt="" />
+            <p class="mat-text-muted">Aysan Raf Kurumsal Yazılım.</p>
+          </div>
+          <div class="text-xs-center pb-1" *ngIf="environment.name == 'development'">
+            <img src="assets/images/logo-netakil.png" alt="" />
+            <p class="mat-text-muted">NETAKIL Kurumsal Yazılım ERP.</p>
+          </div>
+          <div fxLayout="column" fxLayoutAlign="space-around" class="text-xs-center pb-1">
+            <div class="pb-1">
+              <button mat-raised-button color="primary" (click)="onSignInClick()">Giriş Yapın</button>
+            </div>
+            <div class="pb-1">
+              <button mat-raised-button color="primary" (click)="onSignUpClick()">Kayıt Olun</button>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

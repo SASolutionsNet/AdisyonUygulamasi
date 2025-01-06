@@ -1,0 +1,139 @@
+
+<!doctype html>
+<html>
+<head>
+  <base href="/">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kurumsal Yazılım</title>
+  <title *ngIf="environment.name == 'production' || environment.name == 'staging'">Aysan Raf Kurumsal Yazılım</title>
+  <title *ngIf="environment.name == 'development'">NETAKIL Kurumsal Yazılım ERP</title>
+  <link rel="icon" type="image/x-icon" href="assets/favicon.png">
+  <link rel="stylesheet" href="assets/vendor/pace/themes/green/pace-theme-flash.css" />
+  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700|Material+Icons" rel="stylesheet">
+  <style type="text/css">
+
+    .pace .pace-activity {
+      top: 50%;
+      left: 50%;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+    }
+
+    .pace .pace-progress-inner {
+      box-shadow: none;
+    }
+
+    @keyframes animation {
+      to {
+        opacity: 0.1;
+      }
+    }
+
+    .pace.pace-active {
+      position: absolute;
+      display: block;
+      top: 0;
+      left: 0;
+      z-index: 1910;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, .6);
+    }
+
+
+    .loading::before,
+    .loading::after {
+      position: fixed;
+      z-index: 3000;
+      top: 0;
+      left: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+    }
+
+    .loading::before {
+      content: '';
+      background-color: #fff;
+    }
+
+    .loading::after {
+      font-family: "Helvetica Neue", Helvetica, sans-serif;
+      content: '...yükleniyor...';
+      text-align: center;
+      white-space: pre;
+      font-weight: normal;
+      font-size: 24px;
+      letter-spacing: 0.04rem;
+      color: #000;
+      opacity: 0.8;
+      animation: animation 1s alternate infinite;
+    }
+  </style>
+  <script type="text/javascript">
+    // https://stackoverflow.com/questions/1850232/turkish-case-conversion-in-javascript/1851922
+    // https://gist.github.com/serkanberksoy/e1df6615730d53eb8593
+    String.prototype.turkishToUpper = function () {
+      var string = this;
+      var letters = { "i": "İ", "ş": "Ş", "ğ": "Ğ", "ü": "Ü", "ö": "Ö", "ç": "Ç", "ı": "I" };
+      string = string.replace(/(([iışğüçö]))/g, function (letter) { return letters[letter]; })
+      return string.toUpperCase();
+    }
+
+    String.prototype.turkishToLower = function () {
+      var string = this;
+      var letters = { "İ": "i", "I": "ı", "Ş": "ş", "Ğ": "ğ", "Ü": "ü", "Ö": "ö", "Ç": "ç" };
+      string = string.replace(/(([İIŞĞÜÇÖ]))/g, function (letter) { return letters[letter]; })
+      return string.toLowerCase();
+    }
+
+    String.prototype.turkishToCapital = function () {
+      var string = this;
+      if (string != "undefined" && string.length > 1) {
+        return string.substring(0, 1).turkishToUpper() + string.substring(1, string.length).turkishToLower();
+      }
+    }
+
+    String.prototype.toLowerEnglish = function () {
+      var string = this;
+      var letters = { "İ": "i", "i": "i", "I": "i", "ı": "i", "Ş": "s", "ş": "s", "Ğ": "g", "ğ": "g", "Ü": "u", "ü": "u", "Ö": "o", "ö": "o", "Ç": "c", "ç": "c" };
+      string = string.replace(/(([İIŞĞÜÇÖiışğüçö]))/g, function (letter) { return letters[letter]; })
+      return string.toLowerCase();
+    }
+
+    window.paceOptions = {
+      // https://github.hubspot.com/pace/
+      // https://github.com/HubSpot/pace/blob/master/pace.js#L8
+      // Disable the 'elements' source
+      elements: false,
+      // Disable Checks the document readyState
+      document: false,
+      eventLag: false,
+      startOnPageLoad: true,
+      // Most users want the progress bar to automatically restart when a pushState event occurs (generally means ajax navigation is occuring)
+      restartOnPushState: false,
+      // Only show the progress on regular and ajax-y page navigation, not every request
+      restartOnRequestAfter: true,
+      ajax: {
+        trackWebSockets: false,
+        trackMethods: ['POST', 'GET', 'PUT', 'DELETE'],
+        // IMPORTANT: Ignore pace loading UI when getting inappnotification
+        // https://github.com/HubSpot/pace/issues/221
+        ignoreURLs: [/.*inappnotification.*/, /.*excel.*/, /.*websocket.*/, /.*sockjs-node.*/]
+      }
+    };
+    window.paceOptions.ajax.trackWebSockets = false;
+  </script>
+  <script src="assets/vendor/pace/pace.js"></script>
+</head>
+<body>
+  <app-root>
+    <div class="loading"></div>
+  </app-root>
+</body>
+</html>
