@@ -1,63 +1,59 @@
-# Ignore node_modules
-node_modules/
+# General ignores for .NET Core and Angular projects
 
-# Ignore build output folders
-dist/
+# Ignore build output directories
 bin/
 obj/
+dist/
 
-# User-specific files
-*.rsuser
+# Ignore temporary files
+*.tmp
+*.temp
+
+# Ignore logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Ignore IDE-specific files
+.vscode/
+.idea/
 *.suo
 *.user
 *.userosscache
 *.sln.docstates
 
-# Logs
-*.log
-
-# OS-generated files
+# Ignore OS-generated files
 .DS_Store
 Thumbs.db
 
-# Dependency directories
+# Ignore dependency directories globally
+# BUT explicitly include Angular's node_modules
 node_modules/
-bower_components/
+!BussinessApplication.Angular.Cli/node_modules/
 
 # Environment files
 .env
 .env.*.local
 
-# Angular generated files
+# Ignore Angular-specific cache files
 .angular/cache/
-
-# Package manager files
-package-lock.json
-yarn.lock
-pnpm-lock.yaml
 
 # Coverage reports
 coverage/
 
-# Temporary files
-*.tmp
-*.temp
+# Ignore npm and package-lock files if not needed
+# Uncomment the following lines if you want to ignore them
+# package-lock.json
+# yarn.lock
 
-# Ignore Visual Studio Code folder
-.vscode/
-
-# Ignore Rider IDE folder
-.idea/
-
-# Ignore local debug configurations
-launchSettings.json
-
-# Ignore temporary files for JetBrains IDEs
+# Rider IDE temporary files
 *.iml
 *.ipr
 *.iws
 
-# Exclude any folder with specific naming conventions
-!BusinessApplication.sln
-# Ignore node_modules except for the one in your Angular project
-!BussinessApplication.Angular.Cli/node_modules/
+# Ignore local debug configuration files
+launchSettings.json
+
+# Ignore Visual Studio folder
+.vs/
