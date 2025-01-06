@@ -59,3 +59,5 @@ launchSettings.json
 
 # Exclude any folder with specific naming conventions
 !BusinessApplication.sln
+# Ignore node_modules except for the one in your Angular project
+!BussinessApplication.Angular.Cli/node_modules/
