@@ -27,12 +27,11 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class CoreDataPSCreateComponent implements OnInit {
 
-  private selectedPSCategory: PSCategory = null;
-  private ps: PS = null;
+  private ps: PS | null = null;
+
 
   private currentState: number = 0;
 
-  private warningMessage: string = null;
 
   constructor(
     private router: Router,
@@ -55,7 +54,7 @@ export class CoreDataPSCreateComponent implements OnInit {
   }
 
   ngAfterViewChecked() {
-    explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
+   // explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
     this.cdRef.detectChanges();
   }
 
@@ -69,9 +68,7 @@ export class CoreDataPSCreateComponent implements OnInit {
       case 1: {
         this.ps = new PS();
         this.ps.id = "0";
-        this.ps.psCategoryId = this.selectedPSCategory.id;
-        this.ps.psCategory = this.selectedPSCategory;
-        this.ps.psTypeDiscriminator = this.selectedPSCategory.psTypeDiscriminator;
+       
 
         //if (!environment.production) {
         //  console.log('CoreDataPSCreateComponent.setState(): ps: ', this.ps);
@@ -87,76 +84,76 @@ export class CoreDataPSCreateComponent implements OnInit {
     }
   }
 
-  onSelectPSCategories(selected) {
-    if (selected && selected.length == 1) {
-      this.selectedPSCategory = selected[0];
-    }
-  }
+  //onSelectPSCategories(selected) {
+  //  if (selected && selected.length == 1) {
+  //    this.selectedPSCategory = selected[0];
+  //  }
+  //}
 
-  onPSCategoryDataLoaded(rows) {
+  //onPSCategoryDataLoaded(rows) {
 
-  }
+  //}
 
-  onPSCategoryFilterUpdated(rows) {
+  //onPSCategoryFilterUpdated(rows) {
 
-  }
+  //}
 
-  onPSFormValuesChanged(psFormChangedEventData: UIEntityChangedEventData) {
-    this.ps = psFormChangedEventData.data;
+  //onPSFormValuesChanged(psFormChangedEventData: UIEntityChangedEventData) {
+  //  this.ps = psFormChangedEventData.data;
 
-    //if (!environment.production) {
-    //  console.log('CoreDataPSCreateComponent.onPSFormValuesChanged(): ps: ', this.ps);
-    //}
-  }
+  //  //if (!environment.production) {
+  //  //  console.log('CoreDataPSCreateComponent.onPSFormValuesChanged(): ps: ', this.ps);
+  //  //}
+  //}
 
-  onPSFeatureValueChanged(psFeatureValueChangedEventData: UIEntityChangedEventData) {
-    //if (!environment.production) {
-    //  console.log('CoreDataPSCreateComponent.onPSFeatureValueChanged(): ps: ', this.ps);
-    //  console.log('CoreDataPSCreateComponent.onPSFeatureValueChanged(): psFeatureValueChangedEventData: ', psFeatureValueChangedEventData);
-    //}
-    this.ps.featureValues = psFeatureValueChangedEventData.data;
-    this.ps.name = this.psService.generatePSNameWithFeatureNames(this.ps);
-  }
+  //onPSFeatureValueChanged(psFeatureValueChangedEventData: UIEntityChangedEventData) {
+  //  //if (!environment.production) {
+  //  //  console.log('CoreDataPSCreateComponent.onPSFeatureValueChanged(): ps: ', this.ps);
+  //  //  console.log('CoreDataPSCreateComponent.onPSFeatureValueChanged(): psFeatureValueChangedEventData: ', psFeatureValueChangedEventData);
+  //  //}
+  //  this.ps.featureValues = psFeatureValueChangedEventData.data;
+  //  this.ps.name = this.psService.generatePSNameWithFeatureNames(this.ps);
+  //}
 
-  isPSValid() {
-    return this.psService.validate(this.ps).isValid;
-  }
+  //isPSValid() {
+  //  return this.psService.validate(this.ps).isValid;
+  //}
 
-  save() {
-    if (this.isPSValid()) {
+  //save() {
+  //  if (this.isPSValid()) {
 
-      //if (!environment.production) {
-      //  console.log('CoreDataPSCreateComponent.save(): ps ', this.ps);
-      //}
+  //    //if (!environment.production) {
+  //    //  console.log('CoreDataPSCreateComponent.save(): ps ', this.ps);
+  //    //}
 
-      this.psService.create(this.ps)
-        .subscribe(httpServiceResult => {
-          if (httpServiceResult.success) {
-            let data: PS = httpServiceResult.result.data;
+  //    this.psService.create(this.ps)
+  //      .subscribe(httpServiceResult => {
+  //        if (httpServiceResult.success) {
+  //          let data: PS = httpServiceResult.result.data;
 
-            this.router.navigate(['/coredata/ps/update/' + data.id]);
-          }
-          else {
-            if (httpServiceResult.result != null) {
-              if (httpServiceResult.result.returnCode == 41) {
-                let dialogRef: MatDialogRef<ErrorDialogComponent> = this.dialog.open(ErrorDialogComponent, { width: '400px', height: '300px', disableClose: true, panelClass: 'custom-overlay-pane-class' });
-                dialogRef.componentInstance.setContent('Hata / Sorun', null, httpServiceResult.result ? httpServiceResult.result.returnCode.toString() : '', 'Bu özelliklere sahip bir ürün zaten kayıtlı.');
-              }
-              else {
-                let dialogRef: MatDialogRef<ErrorDialogComponent> = this.dialog.open(ErrorDialogComponent, { width: '400px', height: '500px', disableClose: true, panelClass: 'custom-overlay-pane-class' });
-                dialogRef.componentInstance.setContent('Hata / Sorun', httpServiceResult.status, httpServiceResult.result ? httpServiceResult.result.returnCode.toString() : '', httpServiceResult.message);
-              }
-            }
-            else {
-              let dialogRef: MatDialogRef<ErrorDialogComponent> = this.dialog.open(ErrorDialogComponent, { width: '400px', height: '500px', disableClose: true, panelClass: 'custom-overlay-pane-class' });
-              dialogRef.componentInstance.setContent('Hata / Sorun', httpServiceResult.status, httpServiceResult.result ? httpServiceResult.result.returnCode.toString() : '', httpServiceResult.message);
-            }
-          }
-        },
-        (err) => {
-          let dialogRef: MatDialogRef<ErrorDialogComponent> = this.dialog.open(ErrorDialogComponent, { width: '400px', height: '500px', disableClose: true, panelClass: 'custom-overlay-pane-class' });
-          dialogRef.componentInstance.setContent('Hata / Sorun', err.status, 'Lütfen hata bilgilerini, ekran görünütüsü ile bildirin. Sonra sayfayı tekrar açıp deneyin.', err.message);
-        });
-    }
-  }
+  //          this.router.navigate(['/coredata/ps/update/' + data.id]);
+  //        }
+  //        else {
+  //          if (httpServiceResult.result != null) {
+  //            if (httpServiceResult.result.returnCode == 41) {
+  //              let dialogRef: MatDialogRef<ErrorDialogComponent> = this.dialog.open(ErrorDialogComponent, { width: '400px', height: '300px', disableClose: true, panelClass: 'custom-overlay-pane-class' });
+  //              dialogRef.componentInstance.setContent('Hata / Sorun', null, httpServiceResult.result ? httpServiceResult.result.returnCode.toString() : '', 'Bu özelliklere sahip bir ürün zaten kayıtlı.');
+  //            }
+  //            else {
+  //              let dialogRef: MatDialogRef<ErrorDialogComponent> = this.dialog.open(ErrorDialogComponent, { width: '400px', height: '500px', disableClose: true, panelClass: 'custom-overlay-pane-class' });
+  //              dialogRef.componentInstance.setContent('Hata / Sorun', httpServiceResult.status, httpServiceResult.result ? httpServiceResult.result.returnCode.toString() : '', httpServiceResult.message);
+  //            }
+  //          }
+  //          else {
+  //            let dialogRef: MatDialogRef<ErrorDialogComponent> = this.dialog.open(ErrorDialogComponent, { width: '400px', height: '500px', disableClose: true, panelClass: 'custom-overlay-pane-class' });
+  //            dialogRef.componentInstance.setContent('Hata / Sorun', httpServiceResult.status, httpServiceResult.result ? httpServiceResult.result.returnCode.toString() : '', httpServiceResult.message);
+  //          }
+  //        }
+  //      },
+  //      (err) => {
+  //        let dialogRef: MatDialogRef<ErrorDialogComponent> = this.dialog.open(ErrorDialogComponent, { width: '400px', height: '500px', disableClose: true, panelClass: 'custom-overlay-pane-class' });
+  //        dialogRef.componentInstance.setContent('Hata / Sorun', err.status, 'Lütfen hata bilgilerini, ekran görünütüsü ile bildirin. Sonra sayfayı tekrar açıp deneyin.', err.message);
+  //      });
+  //  }
+  //}
 }

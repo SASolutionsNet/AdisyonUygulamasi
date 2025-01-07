@@ -2,55 +2,31 @@ import { NgModule } from '@angular/core';
 import { LOCALE_ID } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import {
-  MatSidenavModule,
-  MatMenuModule,
-  MatToolbarModule,
-  MatProgressBarModule,
-  MatDatepickerModule,
-  MatSelectModule,
-  MatAutocompleteModule,
-  MatCheckboxModule,
-  MatIconModule,
-  MatCardModule,
-  MatInputModule,
-  MatButtonModule,
-  MatNativeDateModule,
-  MatDatepickerIntl
-} from '@angular/material';
+
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { NgxDatatableModule } from '@swimlane/ngx-datatable';
-import { FlexLayoutModule } from '@angular/flex-layout';
-import { FileUploadModule } from 'ng2-file-upload/ng2-file-upload';
-
-import { MatDatepickerIntlTr } from '../shared/datepicker/datepicker-intl-tr'
-
 import { SharedModule } from '../shared/shared.module';
 import { PricePipeTr } from '../shared/formatters/price-tr.pipe';
 
 import { PublicRoutes } from './public.routing';
-import { PublicProcurementRFQBidUpdateComponent } from './procurement/rfq/bid/update/update.component';
-import { PublicProcurementRequestMediaListComponent } from './procurement/request/media/list/list.component';
-import { PublicProcurementPurchaseOrderViewComponent } from './procurement/po/view/view.component';
-import { PublicSalesOfferViewDocumentsComponent } from './sales/offer/view/view.documents.component';
 
-import { UnitService } from '../shared/modules/unit/unit.service';
+/*import { UnitService } from '../shared/modules/unit/unit.service';*/
 
-import { PartyModule } from '../shared/modules/party/party.module';
-import { PartyService } from '../shared/modules/party/party.service';
 
 import { PSCategoryModule } from '../shared/modules/pscategory/pscategory.module';
 import { PSCategoryService } from '../shared/modules/pscategory/pscategory.service';
-
-import { ProcurementRequestModule } from '../shared/modules/procurement/request/procurementrequest.module';
-import { ProcurementRequestService } from '../shared/modules/procurement/request/procurementrequest.service';
-import { ProcurementRFQService } from '../shared/modules/procurement/rfq/procurementrfq.service';
-import { ProcurementPurchaseOrderService } from '../shared/modules/procurement/purchaseorder/purchaseorder.service';
-
-import { SalesOfferModule } from '../shared/modules/sales/offer/offer.module';
-import { SalesOfferService } from '../shared/modules/sales/offer/services/offer.service';
-import { PurchaseOrderItemModule } from '../shared/modules/procurement/purchaseorderitem/purchaseorderitem.module';
-import { ProcurementPurchaseOrderItemService } from '../shared/modules/procurement/purchaseorderitem/services/purchaseorderitem.service';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatSelectModule } from '@angular/material/select';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   imports: [
@@ -69,24 +45,14 @@ import { ProcurementPurchaseOrderItemService } from '../shared/modules/procureme
     MatCardModule,
     MatInputModule,
     MatButtonModule,
-    FlexLayoutModule,
-    NgxDatatableModule,
     FormsModule,
     ReactiveFormsModule,
-    FileUploadModule,
 
     SharedModule,
-    PartyModule,
-    PSCategoryModule,
-    ProcurementRequestModule,
-    PurchaseOrderItemModule,
-    SalesOfferModule
+    PSCategoryModule
   ],
   declarations: [
-    PublicProcurementRFQBidUpdateComponent,
-    PublicProcurementRequestMediaListComponent,
-    PublicProcurementPurchaseOrderViewComponent,
-    PublicSalesOfferViewDocumentsComponent
+ 
   ],
   // services, pipes and providers
   providers: [
@@ -95,14 +61,9 @@ import { ProcurementPurchaseOrderItemService } from '../shared/modules/procureme
     { provide: LOCALE_ID, useValue: "tr-TR" },
     PricePipeTr,
 
-    UnitService,
-    PartyService,
+ 
     PSCategoryService,
-    ProcurementRequestService,
-    ProcurementRFQService,
-    ProcurementPurchaseOrderItemService,
-    ProcurementPurchaseOrderService,
-    SalesOfferService
+  
   ]
 })
 
