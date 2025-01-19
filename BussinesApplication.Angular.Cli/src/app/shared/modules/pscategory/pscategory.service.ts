@@ -10,8 +10,6 @@ import { WebApiJsonResult, HttpServiceResult, HttpService } from '../common/http
 import { PS } from '../ps/models/ps.model';
 import { PSService } from '../ps/services/ps.service';
 
-//import { AuthService } from '../auth/auth.service';
-import { QueryOptions } from '../common/QueryOptions';
 
 export interface PSCategoryConstantsEnum {
   code: string;
@@ -30,7 +28,7 @@ export class PSCategory extends BaseEntity {
 @Injectable()
 export class PSCategoryService {
  /* constructor(private http: HttpClient, private httpService: HttpService, private authService: AuthService) {*/
-    constructor(private http: HttpClient, private httpService: HttpService, private authService: AuthService) {
+    constructor(private http: HttpClient, private httpService: HttpService) {
   }
 
 

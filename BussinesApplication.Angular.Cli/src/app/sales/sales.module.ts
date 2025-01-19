@@ -1,11 +1,8 @@
-import { NgModule } from '@angular/core';
-import { LOCALE_ID } from '@angular/core';
+
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
-import { PricePipeTr } from '../shared/formatters/price-tr.pipe';
 
 import { SalesRoutes } from './sales.routing';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -24,19 +21,15 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatListModule } from '@angular/material/list';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatNativeDateModule } from '@angular/material/core';
-import { PSCategoryModule } from '../shared/modules/pscategory/pscategory.module';
-import { PSModule } from '../shared/modules/ps/ps.module';
-import { SalesOrderModule } from '../shared/modules/sales/order/order.module';
-import { PSCategoryService } from '../shared/modules/pscategory/pscategory.service';
-import { PSService } from '../shared/modules/ps/services/ps.service';
-import { SalesOrderService } from '../shared/modules/sales/order/services/order.service';
+import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
 
 @NgModule({
   imports: [
     CommonModule,
-    RouterModule.forChild(SalesRoutes),
+    RouterModule,
     MatAutocompleteModule,
     MatIconModule,
     MatCardModule,
@@ -56,10 +49,6 @@ import { SalesOrderService } from '../shared/modules/sales/order/services/order.
     MatNativeDateModule,
     MatSnackBarModule,
 
-    PSCategoryModule,
-    PSModule,
-
-    SalesOrderModule
   ],
   declarations: [
 
@@ -67,13 +56,7 @@ import { SalesOrderService } from '../shared/modules/sales/order/services/order.
   ],
   // services, pipes and providers
   providers: [
-    PricePipeTr,
 
-    PSCategoryService,
-    PSService,
-
-    
-    SalesOrderService,
 
 
 /*    UserService*/

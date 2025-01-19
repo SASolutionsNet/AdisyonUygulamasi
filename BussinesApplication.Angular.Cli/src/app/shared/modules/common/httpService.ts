@@ -1,47 +1,46 @@
 import { Component, Injectable } from '@angular/core';
-import { Observable } from "rxjs";
+import { Observable, throwError } from "rxjs";
 import { HttpClient, HttpParams, HttpHeaders, HttpResponse } from "@angular/common/http";
 
-/*import { environment } from '../../../../environments/environment';*/
+//import { environment } from '../../../../environments/environment';
 
 import { BaseEntity } from './baseEntity';
 
-import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class WebApiJsonResult {
-  copyright: string = null;
-  author: string = null;
-  description: string = null;
+  copyright: string = "";
+  author: string = "";
+  description: string = "";
   returnCode: number = 0;
   data: any = null;
-  messages: string[] = null;
-  errors: string[] = null;
+  messages: string[] = [];
+  errors: string[] = [];
 }
 
 @Injectable()
 export class HttpServiceResult {
   success: boolean = false;
-  response: Response = null;
-  result: WebApiJsonResult = null;
-  message: string = null;
-  status: string = null;
+  response: Response | null = null;
+  result: WebApiJsonResult | null = null;
+  message: string = "";
+  status: string = "";
 }
 
 @Injectable()
 export class HttpService {
 
-  constructor(private http: HttpClient, private authService: AuthService) {
+  constructor(private http: HttpClient) {
   }
 
-  handleResponse(response): HttpServiceResult {
+  handleResponse(response:any): HttpServiceResult {
 
     let httpServiceResult: HttpServiceResult = new HttpServiceResult();
     httpServiceResult.success = false;
 
-    if (!environment.production) {
-      console.log('HttpService.handleResponse() - response: ', response);
-    }
+    //if (!environment.production) {
+    //  console.log('HttpService.handleResponse() - response: ', response);
+    //}
 
     if (!response) {
       httpServiceResult.status = 'No Response From Http Service';
@@ -64,7 +63,7 @@ export class HttpService {
         case 205: // Reset Content
         case 206: // Partial Content
           {
-            let responseBody: WebApiJsonResult = null;
+            let responseBody: WebApiJsonResult | null = null;
 
             let isWebApiJsonResultJson: boolean = false;
 
@@ -215,7 +214,7 @@ export class HttpService {
       httpServiceResult.message = 'HttpService.handleError(): There was an error, but error object is null';
     }
 
-    return Observable.throw(httpServiceResult);
+    return throwError(() => new Error('Something went wrong: ' + Error));;
   }
 
   private handleErrorMessage(error: Response | any) {
@@ -235,8 +234,7 @@ export class HttpService {
         let isJson: boolean = true;
         try {
           body = error.json();
-
-          err = body.error || JSON.stringify(body);
+        /*  err = body.error || JSON.stringify(body);*///1515151515
         }
         catch (exception) {
           console.log('HttpServiceResponseHandlerService.getErrorMessage(): error is not JSON');

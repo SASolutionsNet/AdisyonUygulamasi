@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { PS } from '../models/ps.model';
 import { HttpService } from '../../common/httpService';
-import { ValueFormatterService } from '../../common/value.formatter.service';
 
 
 @Injectable({
@@ -13,9 +12,7 @@ export class PSService {
 
   constructor(
     private http: HttpClient,
-    private httpService: HttpService,
-  /*  private authService: AuthService,*/
-    private valueFormatterService: ValueFormatterService) {
+    private httpService: HttpService,) {
   }
 
 

@@ -1,98 +1,89 @@
-import { Component, Injectable, ChangeDetectorRef, OnInit, AfterViewInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-
 import { ErrorDialogComponent } from '../../errordialog/errordialog.component';
-
-
 import { PSCategory, PSCategoryService } from '../pscategory.service';
-
-import { TurkishStringService } from '../../../string/turkish.string.service';
-import { QueryOptions } from '../../common/QueryOptions';
 import { MatDialog } from '@angular/material/dialog';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+
+export interface UserData {
+  KOD: string;
+  AD: string;
+  TARIH: string;
+}
+
 
 @Component({
   selector: 'sasolution-pscategory-list',
   templateUrl: './pscategory.list.component.html',
-  styleUrls: ['./pscategory.list.component.scss']
+  styleUrls: ['./pscategory.list.component.scss'],
+  imports: [MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule, MatIconModule,MatCardModule],
 })
-export class PSCategoryListComponent implements OnInit {
+export class PSCategoryListComponent implements AfterViewInit, OnInit {
+  displayedColumns: string[] = ['KOD', 'AD', 'TARIH','DUZENLE','SIL']; // Görüntülenecek sütunlar
+  dataSource = new MatTableDataSource<UserData>([
+    { KOD: 'blueberry', AD: 'Maia', TARIH: '01-10-2025'},
+    { KOD: 'lychee', AD: 'Asher', TARIH: '08-03-2024' },
+    { KOD: 'kiwi', AD: 'Olivia', TARIH: '12-12-2024'},
+    { KOD: 'mango', AD: 'Atticus', TARIH: '01-12-2023'},
+  ]);
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator; // MatPaginator'ı erişebilmek için ViewChild ile alıyoruz
+  @ViewChild(MatSort) sort!: MatSort; // MatSort'ı erişebilmek için ViewChild ile alıyoruz
 
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private cdRef: ChangeDetectorRef,
     private dialog: MatDialog,
-    private turkishStringService: TurkishStringService,
-    private dataService: PSCategoryService) {
-
-  }
+  ) { }
 
   ngOnInit() {
-  
+    // Verilerinizi burada almak isterseniz, API çağrısı yapabilirsiniz
+  }
+
+  ngAfterViewInit() {
+    // Paginator ve Sort işlemleri ngAfterViewInit içinde yapılır, çünkü bu işlem görünümdeki öğeler tamamlandıktan sonra yapılır
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+  }
+
+  applyFilter(event: Event) {
+    // Filtreleme işlemi
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    // Eğer paginator varsa, ilk sayfaya git
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
   }
 
   ngAfterViewChecked() {
-    //explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
+    // Eğer herhangi bir değişiklik algılanırsa, explicit olarak change detection yapıyoruz
     this.cdRef.detectChanges();
   }
 
   setData(data: PSCategory[]) {
-    //if (this._rows.length == 0) {
-    //  // initially sort by name
-    //  data = data.sort((t1: PSCategory, t2: PSCategory) => {
-    //    let t1name = t1.name.toString();
-    //    let t2name = t2.name.toString();
-
-    //    if (this.turkishStringService.isGreaterThan(t1name.toLowerCase(), t2name.toLowerCase())) {
-    //      return 1;
-    //    }
-
-    //    if (this.turkishStringService.isLessThan(t1name.toLowerCase(), t2name.toLowerCase())) {
-    //      return -1;
-    //    }
-
-    //    return 0;
-    //  });
-    //}
-
-    //this.list = data;
-    //this._rows = data;
-    //this.filteredRows = data;
-
-    //this.checkIsCreateButtonDisabled();
-
-    //this.dataLoadedEvent.emit(this._rows);
+    // Veriyi ayarlamak için bu metodu kullanabilirsiniz
   }
 
   getList() {
-    //this.busy = true;
-    //this.list = [];
-
-    //let qo: QueryOptions = new QueryOptions();
-    //qo.i = [];
-    //qo.i.push("Features");
-
-    //this.dataService.getList(qo)
-    //  .subscribe(httpServiceResult => {
-    //    if (httpServiceResult.success) {
-    //      let data: PSCategory[] = httpServiceResult.result.data;
-
-    //      this.setData(data);
-    //    }
-    //    else {
-    //      let dialogRef: MatDialogRef<ErrorDialogComponent> = this.dialog.open(ErrorDialogComponent, { width: '400px', height: '500px', disableClose: true, panelClass: 'custom-overlay-pane-class' });
-    //      dialogRef.componentInstance.setContent('Hata / Sorun', httpServiceResult.status, httpServiceResult.result ? httpServiceResult.result.returnCode.toString() : '', httpServiceResult.message);
-    //    }
-
-    //    this.busy = false;
-    //  },
-    //  (err) => {
-    //    let dialogRef: MatDialogRef<ErrorDialogComponent> = this.dialog.open(ErrorDialogComponent, { width: '400px', height: '500px', disableClose: true, panelClass: 'custom-overlay-pane-class' });
-    //    dialogRef.componentInstance.setContent('Hata / Sorun', err.status, 'Lütfen hata bilgilerini, ekran görünütüsü ile bildirin. Sonra sayfayı tekrar açıp deneyin.', err.message);
-
-    //    this.busy = false;
-    //  });
+    // Veriyi almak için bu metodu kullanabilirsiniz
   }
-
- 
+  edit(row: any) {
+    // Veriyi almak için bu metodu kullanabilirsiniz
+  }
+  delete(row:any) {
+    // Veriyi almak için bu metodu kullanabilirsiniz
+  }
+  add() {
+    // 'pscategory/create' yoluna yönlendir
+    this.router.navigate(['/coredata/pscategory/create']);
+  }
 }

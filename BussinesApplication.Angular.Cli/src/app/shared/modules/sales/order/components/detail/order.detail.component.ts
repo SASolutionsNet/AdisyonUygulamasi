@@ -9,12 +9,6 @@ import 'moment/locale/tr';
 import { ErrorDialogComponent } from '../../../../errordialog/errordialog.component';
 
 /*import { environment } from '../../../../../../../environments/environment';*/
-import { ValueFormatterService } from '../../../../common/value.formatter.service';
-import { ValidationError } from '../../../../common/validationError';
-
-import { TurkishStringService } from '../../../../../string/turkish.string.service';
-
-import { AuthService } from '../../../../auth/auth.service';
 
 import { PS } from '../../../../ps/models/ps.model';
 import { PSService } from '../../../../ps/services/ps.service';
@@ -41,9 +35,6 @@ export class SalesOrderDetailComponent implements OnInit, OnDestroy, AfterViewIn
     private dateAdapter: DateAdapter<Date>,
     private fb: FormBuilder,
     private dialog: MatDialog,
-    private valueFormatterService: ValueFormatterService,
-    private turkishStringService: TurkishStringService,
-    private authService: AuthService,
     private psService: PSService,
     private psCategoryService: PSCategoryService,
     private salesOrderService: SalesOrderService) {

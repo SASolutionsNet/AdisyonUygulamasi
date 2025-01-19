@@ -1,14 +1,19 @@
-import { Component, Injectable, OnInit, AfterViewInit, ChangeDetectorRef } from '@angular/core';
+
 import { Router, ActivatedRoute } from '@angular/router';
 
-import { AuthService } from '../../../shared/modules/auth/auth.service';
 
-import { PSCategory, PSCategoryService } from '../../../shared/modules/pscategory/pscategory.service';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { HeaderComponent } from '../../../header/header.component';
+import { PSCategoryListComponent } from '../../../shared/modules/pscategory/list/pscategory.list.component';
+import { SidebarComponent } from '../../../sidebar/sidebar.component';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'pscategory-list',
   templateUrl: './pscategory.list.component.html',
-  styleUrls: ['./pscategory.list.component.scss']
+  styleUrls: ['./pscategory.list.component.scss'],
+   standalone: true,  // Standalone olarak işaretleyin
+  imports: [PSCategoryListComponent, HeaderComponent,SidebarComponent]  // Burada standalone bileşeni import edin
 })
 export class CoreDataPSCategoryListComponent implements OnInit {
 
@@ -18,9 +23,7 @@ export class CoreDataPSCategoryListComponent implements OnInit {
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private cdRef: ChangeDetectorRef,
-    public authService: AuthService,
-    private psCategoryService: PSCategoryService) {
+    private cdRef: ChangeDetectorRef) {
   }
 
   ngOnInit() {

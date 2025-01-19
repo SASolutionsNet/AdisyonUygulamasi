@@ -1,7 +1,5 @@
 import { Routes } from '@angular/router';
 
-import { AuthGuardService } from '../shared/modules/auth/auth-guard.service';
-
 
 import { CoreDataPSCategoryListComponent } from './pscategory/list/pscategory.list.component';
 import { CoreDataPSCategoryCreateComponent } from './pscategory/create/pscategory.create.component';

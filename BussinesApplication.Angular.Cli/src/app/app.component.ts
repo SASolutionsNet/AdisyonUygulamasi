@@ -1,38 +1,19 @@
-import { Component, OnInit } from '@angular/core';
-//import { TranslateService } from '@ngx-translate/core';
-
-//import { environment } from '../environments/environment';
-
-//import { AuthService } from './shared/modules/auth/auth.service';
+import { CUSTOM_ELEMENTS_SCHEMA, Component } from "@angular/core";
+import { RouterModule } from "@angular/router";
 
 
-@Component({
-  selector: 'app-root',
-  template: '<router-outlet><ngx-spinner></ngx-spinner></router-outlet>'
-})
-export class AppComponent implements OnInit {
-  constructor() {
-  //constructor(private authService: AuthService, translate: TranslateService) {
-
-    //if (!environment.production) {
-    //  console.log("AppComponent.constructor environment: ", environment);
-    //}
-
-    //translate.addLangs(['en', 'fr']);
-    //translate.setDefaultLang('en');
-
-    //const browserLang: string = translate.getBrowserLang();
-    //translate.use(browserLang.match(/en|fr/) ? browserLang : 'en');
-
-    //if (!environment.production) {
-    //  console.log("AppComponent.constructor authService.signInSilent() called");
-    //}
-    //this.authService.signInSilent();
-  }
-
-  ngOnInit() {
-    //if (!environment.production) {
-    //  console.log("AppComponent.ngOnInit()");
-    //}
-  }
+//@Component({
+//  selector: 'app-root',
+//  templateUrl: './app.component.html',
+//  styleUrls: ['./app.component.scss'],
+//  schemas: [CUSTOM_ELEMENTS_SCHEMA]  // Burada CUSTOM_ELEMENTS_SCHEMA ekleniyor
+//})
+  @Component({
+    selector: 'app-root',
+    standalone: true,
+    template: `<router-outlet></router-outlet>`,  // Burada router-outlet kullanılır
+    imports: [RouterModule],  // RouterModule'i imports dizisine ekleyin
+  })
+export class AppComponent {
+  title = 'SASOLUTOINNET ';
 }

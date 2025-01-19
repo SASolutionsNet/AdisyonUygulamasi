@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { PricePipeTr } from '../../../formatters/price-tr.pipe';
 
 
 import { SalesOrderListComponent } from './components/list/order.list.component';
@@ -27,6 +26,7 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatListModule } from '@angular/material/list';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { SharedModule } from '../../../shared.module';
 
 @NgModule({
   imports: [
@@ -48,19 +48,19 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     ReactiveFormsModule,
     MatNativeDateModule,
     MatSnackBarModule,
+    //SharedModule
 
   ],
   declarations: [
-    SalesOrderListComponent,
-    SalesOrderDetailComponent
+    //SalesOrderListComponent,
+    //SalesOrderDetailComponent
   ],
   exports: [
-    SalesOrderListComponent,
-    SalesOrderDetailComponent
+    //SalesOrderListComponent,
+    //SalesOrderDetailComponent
   ],
   // services, pipes and providers
   providers: [
-    PricePipeTr,
 
     SalesOrderService
 

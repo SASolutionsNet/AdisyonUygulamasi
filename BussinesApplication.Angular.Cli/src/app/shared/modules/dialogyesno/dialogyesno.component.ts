@@ -1,8 +1,9 @@
-import { Component, Inject, ViewChild, TemplateRef, Injectable, ChangeDetectorRef, OnInit, AfterViewInit, Input, Output, EventEmitter } from '@angular/core';
+
+import { ChangeDetectorRef, Component, Inject, Input, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Router, ActivatedRoute } from '@angular/router';
 @Component({
-  selector: 'netakil-dialogyesno',
+  selector: 'sasolution-dialogyesno',
   templateUrl: './dialogyesno.component.html',
   styleUrls: ['./dialogyesno.component.scss']
 })

@@ -1,11 +1,12 @@
-import { Injectable } from '@angular/core';
+import { Injectable } from "@angular/core";
+
 
 @Injectable()
 export class BaseEntity {
-    stateId: string = null;
+    stateId: string = "";
     isDeleted: boolean = false;
-    createdDate: string = null;
-    createdUserId: string = null;
-    updatedDate: string = null;
-    updatedUserId: string = null;
+    createdDate: string = "";
+    createdUserId: string = "";
+    updatedDate: string = "";
+    updatedUserId: string = "";
 }

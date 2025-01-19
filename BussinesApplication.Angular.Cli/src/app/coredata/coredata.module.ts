@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { CoreDataPSCategoryListComponent } from './pscategory/list/pscategory.list.component';
 import { CoreDataPSCategoryCreateComponent } from './pscategory/create/pscategory.create.component';
 import { CoreDataPSCategoryUpdateComponent } from './pscategory/update/pscategory.update.component';
@@ -15,15 +14,6 @@ import { CoreDataPSUpdateComponent } from './ps/update/ps.update.component';
 
 
 
-import { PSCategoryModule } from '../shared/modules/pscategory/pscategory.module';
-import { PSCategoryService } from '../shared/modules/pscategory/pscategory.service';
-
-import { PSModule } from '../shared/modules/ps/ps.module';
-import { PSService } from '../shared/modules/ps/services/ps.service';
-
-/*import { UserService } from '../shared/modules/user/services/user.service';*/
-
-import { PricePipeTr } from '../shared/formatters/price-tr.pipe';
 import { MatCardModule } from '@angular/material/card';
 import { CoreDataRoutes } from './coredata.routing';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -35,11 +25,13 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { SharedModule } from '../shared/shared.module';
+import { HeaderModule } from '../header/header.module';
 
 @NgModule({
   imports: [
     CommonModule,
-    RouterModule.forChild(CoreDataRoutes),
     MatAutocompleteModule,
     MatCardModule,
     MatInputModule,
@@ -52,28 +44,24 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
     MatProgressBarModule,
     FormsModule,
     ReactiveFormsModule,
+    RouterModule.forChild([
+      {
+        path: 'pscategory/create',
+        component: CoreDataPSCategoryCreateComponent
+      },
+      {
+        path: 'pscategory/list',
+        component: CoreDataPSCategoryListComponent
+      }
+    ]),
+    HeaderModule
 
-    PSCategoryModule,
-    PSModule
   ],
   declarations: [
-
-    CoreDataPSCategoryListComponent,
-    CoreDataPSCategoryCreateComponent,
-    CoreDataPSCategoryUpdateComponent,
-
-    CoreDataPSListComponent,
-    CoreDataPSCreateComponent,
-    CoreDataPSUpdateComponent,
-    
+  /*  CoreDataPSCategoryCreateComponent*/
   ],
   // services, pipes and providers
   providers: [
-    PricePipeTr,
-
-    PSCategoryService,
-    PSService,
-   /* UserService*/
   ]
 })
 

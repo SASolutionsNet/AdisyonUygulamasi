@@ -1,9 +1,9 @@
-import { Component, Inject, ViewChild, TemplateRef, Injectable, ChangeDetectorRef, OnInit, AfterViewInit, Input, Output, EventEmitter } from '@angular/core';
+
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-/*import { MatDialog, MatDialogContent, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';*/
 
 @Component({
-    selector: 'netakil-errordialog',
+    selector: 'sasolution-errordialog',
     templateUrl: './errordialog.component.html',
     styleUrls: ['./errordialog.component.scss']
 })

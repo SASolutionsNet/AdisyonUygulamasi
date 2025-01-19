@@ -1,0 +1,111 @@
+/* Genel Header Tasarımı */
+.header {
+  background-color: #2c3e50; /* Mavi tonlarında arka plan */
+  color: white;
+  padding: 10px 30px; /* Üst ve alt boşluğu küçülttük, daha kompakt */
+  display: flex;
+  justify-content: space-between; /* Logo ve diğer içerikleri sağa sola yay */
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Hafif gölge efekti */
+  min-height: 50px; /* Minimum yükseklik ayarı */
+  position: relative; /* Çıkış butonunun doğru konumlandırılabilmesi için */
+}
+
+
+/* Header içerikleri */
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px; /* İçeriği sınırlamak için */
+  padding-left: 40px; /* İçerikleri biraz daha sağa kaydırmak için */
+}
+
+
+/* Logo kısmı */
+.logo img {
+  height: 30px; /* Logo boyutunu küçülttük */
+  width: auto; /* Orantılı olarak genişlik */
+}
+
+/* Başlıklar kısmı */
+.titles {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Ana başlık (h1) */
+.main-title {
+  font-size: 28px; /* Ana başlık font boyutu */
+  font-weight: 700;
+  margin: 0;
+  margin-left: 180px; /* Sol taraftan biraz boşluk */
+  text-transform: uppercase; /* Büyük harf yapma */
+  letter-spacing: 1px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #ecf0f1; /* Açık renk tonu */
+}
+
+/* Alt başlık (h2) */
+.sub-title {
+  font-size: 20px; /* Alt başlık font boyutu */
+  font-weight: 500;
+  margin: 5px 0 0 0;
+  margin-left: 180px; /* Sol taraftan biraz boşluk */
+  color: #bdc3c7; /* Açık gri renk tonu */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Kullanıcı bilgisi ve çıkış butonu */
+.user-info {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* Sol hizalama */
+  margin-left: 200px; /* Sol taraftan biraz boşluk */
+  flex-grow: 1; /* Sağdaki çıkış butonundan uzaklaştırmak için */
+}
+
+/* Kullanıcı adı metni */
+.user-info span {
+  margin-right: 15px; /* Sağdaki boşluğu küçülttük */
+  font-size: 14px; /* Kullanıcı adı font boyutunu küçülttük */
+  font-weight: 500;
+}
+
+/* Çıkış yap butonu */
+.logout-btn {
+  padding: 6px 18px; /* Buton boyutunu küçültüyoruz */
+  font-size: 12px; /* Buton yazı boyutunu küçültüyoruz */
+  background-color: #e74c3c; /* Kırmızı renk */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  position: absolute; /* Butonu header'ın en sağ köşesine sabitle */
+  right: 10px; /* Sağda konumlandır */
+  top: 50%; /* Yatay ortalamak için */
+  transform: translateY(-50%); /* Yatay ortalamayı sağlamak için */
+}
+
+/* Çıkış butonuna hover efekti */
+.logout-btn:hover {
+  background-color: #c0392b; /* Hover durumunda daha koyu kırmızı */
+}
+
+
+/* Logo container */
+.logo {
+  text-align: left; /* Resmi sola hizalar */
+  margin: 0; /* Üst ve alt boşluğu sıfırladık */
+}
+
+/* Logo resminin boyutunu büyütme */
+.logo img {
+  width: 100px; /* Sabit bir genişlik veriyoruz, %35 yerine sabit ölçüyle daha düzenli */
+  height: auto; /* Orantılı olarak yüksekliği ayarlar */
+  object-fit: contain; /* Resmin orantılı bir şekilde kutuya sığmasını sağlar */
+}

@@ -1,20 +1,20 @@
-import { Component, ChangeDetectorRef, OnInit, AfterViewInit } from '@angular/core';
+
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 
 /*import { environment } from '../../../../environments/environment';*/
-
-import { ErrorDialogComponent } from '../../../shared/modules/errordialog/errordialog.component';
-
-import { AuthService } from '../../../shared/modules/auth/auth.service';
-
-import { PSCategory, PSCategoryService } from '../../../shared/modules/pscategory/pscategory.service';
 import { MatDialog } from '@angular/material/dialog';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
+import { PSCategoryFormComponent } from '../../../shared/modules/pscategory/form/pscategory.form.component';
+import { HeaderComponent } from '../../../header/header.component';
+import { SidebarComponent } from '../../../sidebar/sidebar.component';
 
 @Component({
   selector: 'app-pscategory-create',
   templateUrl: './pscategory.create.component.html',
-  styleUrls: ['./pscategory.create.component.scss']
+  styleUrls: ['./pscategory.create.component.scss'],
+  standalone: true,  // Standalone olarak işaretleyin
+  imports: [PSCategoryFormComponent,HeaderComponent,SidebarComponent]  // Burada standalone bileşeni import edin
 })
 export class CoreDataPSCategoryCreateComponent implements OnInit {
 
@@ -24,9 +24,7 @@ export class CoreDataPSCategoryCreateComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private cdRef: ChangeDetectorRef,
     private fb: FormBuilder,
-    private dialog: MatDialog,
-    private authService: AuthService,
-    public dataService: PSCategoryService) {
+    private dialog: MatDialog) {
   }
 
   ngOnInit() {

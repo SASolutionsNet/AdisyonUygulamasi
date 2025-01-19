@@ -4,10 +4,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 
-import { TagInputModule } from 'ngx-chips';
-
-import { PricePipeTr } from '../../formatters/price-tr.pipe';
-
 import { PSFormComponent } from './components/form/ps.form.component';
 import { PSListComponent } from './components/list/ps.list.component';
 
@@ -36,20 +32,18 @@ import { MatIconModule } from '@angular/material/icon';
     MatListModule,
     MatIconModule,
     FormsModule,
-    ReactiveFormsModule,
-    TagInputModule
+    ReactiveFormsModule
   ],
   declarations: [
-    PSFormComponent,
-    PSListComponent
+    //PSFormComponent,
+    //PSListComponent
   ],
   exports: [
-    PSFormComponent,
-    PSListComponent
+    //PSFormComponent,
+    //PSListComponent
   ],
   // services, pipes and providers
   providers: [
-    PricePipeTr,
 
     PSService
   ]

@@ -1,24 +1,13 @@
-import { Component, ChangeDetectorRef, OnInit, AfterViewInit } from '@angular/core';
+
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-
-/*import { environment } from '../../../../environments/environment';*/
-
-import { ErrorDialogComponent } from '../../../shared/modules/errordialog/errordialog.component';
-
-/*import { AuthService } from '../../../shared/modules/auth/auth.service';*/
 
 
 
-import { PSCategory, PSCategoryService } from '../../../shared/modules/pscategory/pscategory.service';
 
-import { PS } from '../../../shared/modules/ps/models/ps.model';
-import { PSService } from '../../../shared/modules/ps/services/ps.service';
-
-
-import { ValueFormatterService } from '../../../shared/modules/common/value.formatter.service';
 import { UIEntityChangedEventData } from '../../../shared/modules/common/uiEntityChangedEventData';
 import { MatDialog } from '@angular/material/dialog';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-ps-create',
@@ -27,30 +16,19 @@ import { MatDialog } from '@angular/material/dialog';
 })
 export class CoreDataPSCreateComponent implements OnInit {
 
-  private ps: PS | null = null;
-
-
-  private currentState: number = 0;
-
+ 
 
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private cdRef: ChangeDetectorRef,
     private fb: FormBuilder,
-    private dialog: MatDialog,
-    private valueFormatterService: ValueFormatterService,
-   /* private authService: AuthService,*/
-    private psService: PSService) {
-    if (this.ps == null) {
-      this.ps = new PS();
-    }
+    private dialog: MatDialog) {
+   
   }
 
   ngOnInit() {
-    if (this.ps == null) {
-      this.ps = new PS();
-    }
+  
   }
 
   ngAfterViewChecked() {
@@ -58,31 +36,7 @@ export class CoreDataPSCreateComponent implements OnInit {
     this.cdRef.detectChanges();
   }
 
-  setState(state: number) {
-    switch (state) {
-      case 0: {
-
-        this.currentState = state;
-        break;
-      }
-      case 1: {
-        this.ps = new PS();
-        this.ps.id = "0";
-       
-
-        //if (!environment.production) {
-        //  console.log('CoreDataPSCreateComponent.setState(): ps: ', this.ps);
-        //}
-
-        this.currentState = state;
-        break;
-      }
-      default: {
-        this.setState(0);
-        break;
-      }
-    }
-  }
+  
 
   //onSelectPSCategories(selected) {
   //  if (selected && selected.length == 1) {

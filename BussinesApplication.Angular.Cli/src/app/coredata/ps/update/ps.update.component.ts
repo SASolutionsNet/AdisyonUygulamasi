@@ -1,23 +1,10 @@
-import { Component, ChangeDetectorRef, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+
 import { Router, ActivatedRoute } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, FormControl, AbstractControl } from '@angular/forms';
 
-/*import { environment } from '../../../../environments/environment';*/
-
-import { ErrorDialogComponent } from '../../../shared/modules/errordialog/errordialog.component';
-
-import { AuthService } from '../../../shared/modules/auth/auth.service';
-
-import { TurkishStringService } from '../../../shared/string/turkish.string.service';
-
-import { PS } from '../../../shared/modules/ps/models/ps.model';
-import { PSService } from '../../../shared/modules/ps/services/ps.service';
-
-
-import { PSCategory, PSCategoryService } from '../../../shared/modules/pscategory/pscategory.service';
 
 import { UIEntityChangedEventData } from '../../../shared/modules/common/uiEntityChangedEventData';
 import { MatDialog } from '@angular/material/dialog';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-ps-update',
@@ -30,10 +17,7 @@ export class CoreDataPSUpdateComponent implements OnInit, OnDestroy {
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private cdRef: ChangeDetectorRef,
-    private dialog: MatDialog,
-    private authService: AuthService,
-    private turkishStringService: TurkishStringService,
-    private psService: PSService) {
+    private dialog: MatDialog) {
 
   }
 

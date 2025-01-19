@@ -6,18 +6,12 @@ import 'moment/locale/tr';
 import { ErrorDialogComponent } from '../../../../errordialog/errordialog.component';
 
 
-import { ValueFormatterService } from '../../../../common/value.formatter.service';
-import { TurkishStringService } from '../../../../../string/turkish.string.service';
 
 
 import { SalesOrderService } from '../../services/order.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DateAdapter } from '@angular/material/core';
 import { SalesOrder } from '../../models/order.model';
-//import { QueryOptions } from '../../../../common/QueryOptions';
-//import { UserService } from '../../../../user/services/user.service';
-//import { ApplicationUser } from '../../../../user/models/user.model';
-
 
 @Component({
   selector: 'sasolution-sales-order-list',
@@ -35,8 +29,6 @@ export class SalesOrderListComponent implements OnInit {
     private cdRef: ChangeDetectorRef,
     private dialog: MatDialog,
     private dateAdapter: DateAdapter<Date>,
-    private turkishStringService: TurkishStringService,
-    private valueFormatterService: ValueFormatterService,
     //private userService: UserService,
     private salesOrderService: SalesOrderService) {
 

@@ -1,5 +1,4 @@
 import { AfterViewChecked, Component, OnInit } from '@angular/core';
-import { QueryOptions } from '../../../common/QueryOptions';
 
 @Component({
   selector: 'sasolution-ps-form',
