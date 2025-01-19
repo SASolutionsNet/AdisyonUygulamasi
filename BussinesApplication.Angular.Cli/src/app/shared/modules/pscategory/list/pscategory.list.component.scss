@@ -1,0 +1,100 @@
+table {
+  width: 100%;
+}
+
+.mat-mdc-form-field {
+  font-size: 14px;
+  width: 100%;
+}
+
+td, th {
+  width: 25%;
+}
+/* Edit button styles */
+.edit-button {
+  display: flex;
+  align-items: center;
+  padding: 6px 16px;
+  font-size: 14px;
+  background-color: #007bff; /* Blue color for "Düzenle" */
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.edit-button mat-icon {
+  margin-right: 8px;
+}
+
+/* Hover effect for Edit button */
+.edit-button:hover {
+  background-color: #0056b3; /* Darker blue when hovered */
+}
+
+/* Delete button styles */
+.delete-button {
+  display: flex;
+  align-items: center;
+  padding: 6px 16px;
+  font-size: 14px;
+  background-color: #dc3545; /* Red color for "Sil" */
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.delete-button mat-icon {
+  margin-right: 8px;
+}
+
+/* Hover effect for Delete button */
+.delete-button:hover {
+  background-color: #c82333; /* Darker red when hovered */
+}
+/* Filter and Add Button Wrapper */
+.filter-add-container {
+  display: flex;
+  justify-content: center; /* Ortalar */
+  margin-bottom: 20px;
+}
+
+/* Card container styles */
+.card-container {
+  display: flex;
+  align-items: flex-start; /* Yatayda hizalar */
+  width: 100%;
+  gap: 10px; /* Aralarındaki boşluk */
+}
+
+/* Wrapper for filter and add button */
+.filter-button-wrapper {
+  display: flex;
+  justify-content: space-between; /* Alanı eşit şekilde böler */
+  width: 100%;
+  align-items: center;
+}
+
+/* Filter field styling */
+.filter-field {
+  flex-grow: 3; /* Bu alanı daha fazla genişletmek için flex-grow kullanılır */
+  min-width: 1000px; /* Minumum genişlik belirler */
+}
+/* Add button styling */
+.add-button {
+  display: flex;
+  align-items: center;
+  padding: 6px 16px;
+  font-size: 14px;
+  background-color: #28a745; /* Yeşil renk */
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+
+.add-button mat-icon {
+  margin-right: 8px;
+}
+
+/* Hover effect for Add button */
+.add-button:hover {
+  background-color: #218838; /* Koyu yeşil hover efekti */
+}
+
+

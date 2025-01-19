@@ -1,0 +1,101 @@
+/* Ana container */
+.main-container {
+  background-color: #f4f7fc; // Açık gri-mavi tonlarında temiz bir arka plan
+  padding: 40px 20px;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Helvetica Neue', sans-serif; // Kurumsal bir yazı tipi
+}
+
+/* İçerik container'ı */
+.content-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column; // Dikey hizalama
+  max-width: 400px; // Genişlik sınırı
+  width: 100%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); // Gölgelendirme efekti
+  border-radius: 8px;
+  background-color: #ffffff; // Beyaz kart arka planı
+  padding: 40px;
+}
+
+/* Başlık */
+.content-container h1 {
+  text-align: center;
+  font-size: 28px;
+  color: #2c3e50; // Koyu mavi renk
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+/* Kart içerik metni */
+.card-wrapper mat-card-content {
+  color: #34495e; // Daha koyu metin rengi, profesyonel bir görünüm için
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* Ortalanmış metinler */
+.centered-text {
+  text-align: center;
+}
+
+/* Metin rengi */
+.muted-text {
+  color: #95a5a6; // Soluk gri metin, açıklama için
+}
+
+/* Butonları düzenleme */
+.card-wrapper mat-card-content button {
+  width: 100%; // Butonun tüm genişliği kaplamasını sağla
+  padding: 12px;
+  font-size: 16px;
+  margin-top: 20px;
+  background-color: #007bff; // Kurumsal mavi
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+  cursor: pointer;
+}
+
+/* Buton hover efekti */
+.card-wrapper mat-card-content button:hover {
+  background-color: #0056b3; // Buton üzerine gelince koyu mavi
+}
+
+/* Buton disable durumu */
+.card-wrapper mat-card-content button:disabled {
+  background-color: #b0bec5; // Disable buton rengi
+  cursor: not-allowed;
+}
+
+/* Input alanları */
+.card-wrapper mat-card-content input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  transition: border 0.3s ease;
+}
+
+/* Input odaklanınca */
+.card-wrapper mat-card-content input:focus {
+  border: 1px solid #007bff;
+  outline: none;
+}
+
+/* Hata mesajları */
+.card-wrapper mat-card-content .error-message {
+  color: #e74c3c; // Kırmızı renk, hata mesajları için
+  font-size: 14px;
+  margin-top: 10px;
+  text-align: center;
+}

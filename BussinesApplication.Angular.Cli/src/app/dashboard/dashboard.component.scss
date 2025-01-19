@@ -1,7 +1,15 @@
-.demo-progress-bar-container {
-  width: 100%;
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
 
-  mat-progress-bar {
-    margin: 20px 0;
-  }
+.sidenav-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.content {
+  padding: 20px;
+  flex-grow: 1;
 }

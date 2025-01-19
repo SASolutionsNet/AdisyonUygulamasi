@@ -1,27 +1,29 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { PS } from '../models/ps.model';
+import { HttpService } from '../../common/httpService';
 
-interface Post {
-  id: number;
-  title: string;
-  imgurl: string;
-  text: string;
-}
 
 @Injectable({
   providedIn: 'root'
 })
-export class PostService {
-  private apiUrl = 'https://localhost:5001/api/post'; // API URL'si
+export class PSService {
 
-  constructor(private http: HttpClient) { }
-
-  getPosts(): Observable<Post[]> {
-    return this.http.get<Post[]>(this.apiUrl);
+  constructor(
+    private http: HttpClient,
+    private httpService: HttpService,) {
   }
 
-  getPostById(id: number): Observable<Post> {
-    return this.http.get<Post>(`${this.apiUrl}/${id}`);
+
+  private apiUrl = 'https://localhost:5001/api/ps'; // API URL'si
+
+
+  getPS(): Observable<PS[]> {
+    return this.http.get<PS[]>(this.apiUrl);
+  }
+
+  getPSById(id: number): Observable<PS> {
+    return this.http.get<PS>(`${this.apiUrl}/${id}`);
   }
 }

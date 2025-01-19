@@ -1,0 +1,36 @@
+
+<div class="category-form-container">
+  <mat-card class="category-card">
+
+    <!-- Başlık -->
+    <mat-card-header>
+      <mat-card-title class="category-card-title">Ürün Kategori Ekle</mat-card-title>
+    </mat-card-header>
+
+    <!-- Kart İçeriği -->
+    <mat-card-content>
+      <form class="category-form">
+
+        <!-- Kategori Adı Input Alanı -->
+        <mat-form-field appearance="fill" class="category-form-field">
+          <mat-label>Kategori Adı</mat-label>
+          <input matInput placeholder="Kategori adı girin" required>
+        </mat-form-field>
+
+        <!-- Kategori Kodu Input Alanı -->
+        <mat-form-field appearance="fill" class="category-form-field">
+          <mat-label>Kategori Kodu</mat-label>
+          <input matInput placeholder="Kategori kodu girin" required>
+        </mat-form-field>
+
+        <!-- Form İşlemleri için Butonlar -->
+        <div class="form-actions">
+          <!-- Ekle Butonu -->
+          <button mat-flat-button color="primary" class="submit-button">Ekle</button>
+          <!-- İptal Butonu -->
+          <button mat-flat-button color="warn" class="cancel-button">İptal</button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

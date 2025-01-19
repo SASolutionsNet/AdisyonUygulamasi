@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "BussinesApplication.Angular.Cli": {
+    "BussinesApplication.Web.ng": {
       "projectType": "application",
       "schematics": {
         "@schematics/angular:component": {
@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/bussines-application.angular.cli",
+            "outputPath": "dist/bussines-application.web.ng",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -32,14 +32,11 @@
               }
             ],
             "styles": [
-              "src/styles.scss"
+              //"@angular/material/prebuilt-themes/azure-blue.css",
+              "src/styles.scss",
+              "@angular/material/prebuilt-themes/indigo-pink.css" 
             ],
-            "scripts": [],
-            "server": "src/main.server.ts",
-            "outputMode": "server",
-            "ssr": {
-              "entry": "src/server.ts"
-            }
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -69,10 +66,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "BussinesApplication.Angular.Cli:build:production"
+              "buildTarget": "BussinesApplication.Web.ng:build:production"
             },
             "development": {
-              "buildTarget": "BussinesApplication.Angular.Cli:build:development"
+              "buildTarget": "BussinesApplication.Web.ng:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -93,11 +90,13 @@
               {
                 "glob": "**/*",
                 "input": "public"
+               
               }
             ],
             "styles": [
-              "@angular/material/prebuilt-themes/azure-blue.css",
-              "src/styles.scss"
+              //"@angular/material/prebuilt-themes/azure-blue.css",
+              "src/styles.scss",
+              "@angular/material/prebuilt-themes/indigo-pink.css"
             ],
             "scripts": []
           }
@@ -106,6 +105,6 @@
     }
   },
   "cli": {
-    "analytics": "e54e52f6-077e-4c12-9d28-b6cd8337343b"
+    "analytics": "a4231fb8-aecc-4563-89e6-a88f8c6e2799"
   }
 }
