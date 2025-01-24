@@ -3,12 +3,12 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 import { UIEntityChangedEventData } from '../../../shared/modules/common/uiEntityChangedEventData';
 import { MatDialog } from '@angular/material/dialog';
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { PSListComponent } from '../../../shared/modules/ps/components/list/ps.list.component';
 import { HeaderComponent } from '../../../header/header.component';
 import { SidebarComponent } from '../../../sidebar/sidebar.component';
 import { MatCardModule } from '@angular/material/card';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-ps-list',
@@ -28,8 +28,10 @@ export class CoreDataPSListComponent implements OnInit {
 
 
   }
-
-  ngOnInit() {
+  ngOnInit(): void {
+    // Yöntemin içinde bir işlem yapmalısınız
+    // Örneğin veri alımı ya da başka işlemler
+    console.log('CoreDataPSListComponent initialized');
   }
 
   ngAfterViewChecked() {

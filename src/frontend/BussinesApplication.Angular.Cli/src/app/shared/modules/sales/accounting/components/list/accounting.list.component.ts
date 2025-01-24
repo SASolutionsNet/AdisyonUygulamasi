@@ -1,6 +1,7 @@
 import { Component, Injectable, ChangeDetectorRef, OnInit, AfterViewInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import 'moment/locale/tr';
+import moment from 'moment';
+import 'moment/locale/tr'; // Türkçe locale
 
 
 import { ErrorDialogComponent } from '../../../../errordialog/errordialog.component';

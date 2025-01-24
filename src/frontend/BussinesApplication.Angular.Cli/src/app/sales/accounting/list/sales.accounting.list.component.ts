@@ -5,9 +5,9 @@ import { SidebarComponent } from "../../../sidebar/sidebar.component";
 import { AccountingListComponent } from "../../../shared/modules/sales/accounting/components/list/accounting.list.component";
 
 @Component({
-  selector: 'app-accounting',
-  templateUrl: './accounting.component.html',
-  styleUrls: ['./accounting.component.scss'],
+  selector: 'app-sales-accounting-list',
+  templateUrl: './sales.accounting.list.component.html',
+  styleUrls: ['./sales.accounting.list.component.scss'],
   standalone: true,  // Standalone olarak işaretleyin
   imports: [AccountingListComponent, HeaderComponent, SidebarComponent, MatCardModule]  // Burada standalone bileşeni import edin
 })

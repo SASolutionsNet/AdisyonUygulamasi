@@ -1,5 +1,6 @@
 /* Genel Header Tasarımı */
 .header {
+    width:98%;
   background-color: #2c3e50; /* Mavi tonlarında arka plan */
   color: white;
   padding: 10px 30px; /* Üst ve alt boşluğu küçülttük, daha kompakt */
@@ -8,7 +9,9 @@
   align-items: center;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Hafif gölge efekti */
   min-height: 50px; /* Minimum yükseklik ayarı */
-  position: relative; /* Çıkış butonunun doğru konumlandırılabilmesi için */
+  position: relative; /* Konumlandırmayı sağlamak için */
+  top: -20px; /* Header'ı yukarı kaydır */
+  left: -20px; /* Header'ı sola kaydır */
 }
 
 
@@ -42,7 +45,7 @@
   font-size: 28px; /* Ana başlık font boyutu */
   font-weight: 700;
   margin: 0;
-  margin-left: 180px; /* Sol taraftan biraz boşluk */
+  margin-left: 200px; /* Sol taraftan biraz boşluk */
   text-transform: uppercase; /* Büyük harf yapma */
   letter-spacing: 1px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
