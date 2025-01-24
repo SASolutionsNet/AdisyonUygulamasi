@@ -8,19 +8,25 @@ import { ErrorDialogComponent } from '../../../../errordialog/errordialog.compon
 
 
 
-import { SalesOrderService } from '../../services/order.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DateAdapter } from '@angular/material/core';
-import { SalesOrder } from '../../models/order.model';
+import { MatTabsModule } from '@angular/material/tabs';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'sasolution-sales-order-list',
   templateUrl: './order.list.component.html',
-  styleUrls: ['./order.list.component.scss']
+  styleUrls: ['./order.list.component.scss'],
+  imports: [MatTabsModule, CommonModule],
 })
-export class SalesOrderListComponent implements OnInit {
+export class OrderListComponent implements OnInit {
   private _rows: any;
-    dataLoadedEvent: any;
+  dataLoadedEvent: any;
+ 
+ 
+
+  salonBoxes: string[] = Array.from({ length: 24 }, (_, i) => `S${i + 1}`);
+  bahceBoxes: string[] = Array.from({ length: 24 }, (_, i) => `B${i + 1}`);
 
 
   constructor(
@@ -28,9 +34,7 @@ export class SalesOrderListComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private cdRef: ChangeDetectorRef,
     private dialog: MatDialog,
-    private dateAdapter: DateAdapter<Date>,
-    //private userService: UserService,
-    private salesOrderService: SalesOrderService) {
+    private dateAdapter: DateAdapter<Date>,) {
 
     // https://github.com/angular/material2/issues/4876
     this.dateAdapter.setLocale('tr');
@@ -41,14 +45,16 @@ export class SalesOrderListComponent implements OnInit {
   }
 
   ngOnInit() {
-    
+
   }
 
   ngAfterViewChecked() {
     //explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
     this.cdRef.detectChanges();
   }
+  onBoxClick(box: string) {
+    this.router.navigate([`/sales/order/detail/${box}`]);  // Yönlendirme
+  }
 
-  
 
 }

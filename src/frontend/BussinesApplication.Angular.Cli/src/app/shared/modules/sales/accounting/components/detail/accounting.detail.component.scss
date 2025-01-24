@@ -1,0 +1,109 @@
+/* Genel stil */
+.tabs {
+  margin: 20px;
+}
+
+/* Flex düzeniyle grid ve tabloyu yan yana yerleştir */
+.tab-content {
+  display: flex;
+  gap: 20px; /* Grid ve tablo arasındaki boşluk */
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+/* Grid düzeni */
+.grid-list {
+  background-color: #f1f1f1;
+  border-radius: 10px;
+  padding: 10px;
+  flex: 1 1 45%; /* Grid için yüzde 45'lik alan */
+}
+
+/* Her bir grid öğesi */
+.grid-tile {
+  background-color: #3498db;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+}
+
+/* Hover efekti */
+.grid-tile:hover {
+  background-color: #2980b9;
+  transform: scale(1.05);
+}
+
+/* Tablo detayları için stil */
+.tile-details {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  flex: 1 1 45%; /* Tablo için yüzde 45'lik alan */
+  max-width: 600px; /* Maksimum genişlik */
+  height: auto;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* Tablo düzeni */
+table.mat-table {
+  width: 100%;
+  border-spacing: 0;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+/* Tablo başlıkları */
+th.mat-header-cell {
+  background-color: #3498db;
+  color: white;
+  padding: 12px 15px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+/* Tablo hücreleri */
+td.mat-cell {
+  padding: 12px 15px;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 14px;
+}
+
+/* Tablo satır hover efekti */
+tr.mat-row:hover {
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
+
+/* Tablo alt çizgisi */
+tr.mat-header-row {
+  border-bottom: 2px solid #3498db;
+}
+
+/* Tabloyu yuvarlatmak için */
+table.mat-table, th.mat-header-cell, td.mat-cell {
+  border-radius: 5px;
+}
+
+/* Scrollbar */
+.tile-details::-webkit-scrollbar {
+  width: 8px;
+}
+
+.tile-details::-webkit-scrollbar-thumb {
+  background-color: #3498db;
+  border-radius: 10px;
+}
+
+.tile-details::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}

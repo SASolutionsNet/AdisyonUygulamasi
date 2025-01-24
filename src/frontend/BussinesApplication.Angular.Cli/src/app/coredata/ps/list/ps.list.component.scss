@@ -1,1 +1,94 @@
-﻿
+/* App Container */
+.app-container {
+  display: flex;
+  flex-direction: row; /* Sidebar ve içerik yan yana */
+  height: 100vh; /* Sayfanın tamamını kaplasın */
+  overflow: hidden; /* Sidebar'ın içerikle üst üste gelmemesi için */
+}
+
+/* Sidebar Container */
+.sidebar {
+  background-color: #2c3e50; /* Koyu gri mavi arka plan */
+  width: 250px; /* Normal genişlik */
+  height: 100vh; /* Tam yükseklik */
+  padding: 20px;
+  color: white;
+  font-family: 'Roboto', sans-serif;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  position: fixed; /* Sabit konum */
+  z-index: 1; /* Sidebar'ı ön planda tut */
+}
+
+/* Main content area */
+.main-content {
+  width: 95%;
+  margin-left: 0px; /* Sidebar genişliğinden kadar boşluk bırak */
+  flex-grow: 1,5; /* İçeriğin genişlemesi için */
+  overflow-y: auto; /* İçerik fazla olduğunda kaydırma ekler */
+  padding: 20px; /* İçeriğe padding ekler */
+  height: 90%; /* Yüksekliği %80 yaparak kısalt */
+}
+
+
+/* Header */
+header {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 60px; /* Sabit yükseklik */
+  background-color: #3498db; /* Başlık arka plan rengi */
+  color: white;
+  padding: 10px 20px;
+  z-index: 2; /* Header'ı sidebar ve içerikten üstte tutar */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Content Styling */
+.sasolution-pscategory-list {
+  margin-top: 60px; /* Header altındaki alana yerleşir */
+}
+
+/* Optional - To make everything responsive */
+@media (max-width: 768px) {
+  .sidebar {
+    width: 250px;
+  }
+
+  .main-content {
+    margin-left: 200px; /* Sidebar genişliği ile uyumlu */
+  }
+
+  header {
+    height: 50px;
+  }
+}
+/* Başlık kısmı için stil */
+.category-card-title {
+  font-size: 24px; /* Başlık font boyutu */
+  font-weight: 700; /* Başlık kalın yazı tipi */
+  color: #2c3e50; /* Koyu mavi gri renk */
+  text-transform: uppercase; /* Metni büyük harfe dönüştür */
+  letter-spacing: 1px; /* Harf aralığını aç */
+  margin: 0; /* Margin sıfırlama */
+  padding: 10px 20px; /* Padding ile başlık etrafında boşluk ekleyelim */
+  background-color: #ecf0f1; /* Arka plan rengi */
+  border-radius: 5px; /* Köşe yuvarlama */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Hafif gölge efekti */
+  transition: all 0.3s ease; /* Animasyon */
+}
+
+/* Başlık üzerine gelindiğinde animasyon */
+.category-card-title:hover {
+  background-color: #3498db; /* Hover rengini mavi yap */
+  color: #fff; /* Yazıyı beyaz yap */
+  transform: translateY(-3px); /* Hafif yukarı kaydırma efekti */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Hover efekti ile daha belirgin gölge */
+}
+
+/* Başlık kutusuna daha modern bir görünüm vermek için */
+mat-card-header {
+  border-bottom: 2px solid #3498db; /* Başlık altına ince mavi çizgi ekleyelim */
+}

@@ -1,0 +1,85 @@
+
+<div style="display: flex; width: 100%; justify-content: space-between;">
+  <!-- Sol Taraftaki Tablar ve Gridler -->
+  <div style="width: 48%;">
+    <mat-tab-group class="tabs">
+      <!-- Tab 1 -->
+      <mat-tab label="Sık Kullanılanlar">
+        <mat-grid-list cols="3" rowHeight="2:1" class="grid-list">
+          <mat-grid-tile *ngFor="let i of [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]" (click)="onTileClick(i)">
+            <div class="grid-tile">Tile {{i}}</div>
+          </mat-grid-tile>
+        </mat-grid-list>
+      </mat-tab>
+
+      <!-- Tab 2 -->
+      <mat-tab label="Sıcak Meşrubatlar">
+        <mat-grid-list cols="3" rowHeight="2:1" class="grid-list">
+          <mat-grid-tile *ngFor="let i of [11, 12, 13, 14, 15, 16, 17, 18, 19, 20]" (click)="onTileClick(i)">
+            <div class="grid-tile">Tile {{i}}</div>
+          </mat-grid-tile>
+        </mat-grid-list>
+      </mat-tab>
+
+      <!-- Tab 3 -->
+      <mat-tab label="Soğuk Meşrubatlar">
+        <mat-grid-list cols="3" rowHeight="2:1" class="grid-list">
+          <mat-grid-tile *ngFor="let i of [21, 22, 23, 24, 25, 26, 27, 28, 29, 30]" (click)="onTileClick(i)">
+            <div class="grid-tile">Tile {{i}}</div>
+          </mat-grid-tile>
+        </mat-grid-list>
+      </mat-tab>
+
+      <!-- Tab 4 -->
+      <mat-tab label="Aparatifler">
+        <mat-grid-list cols="3" rowHeight="2:1" class="grid-list">
+          <mat-grid-tile *ngFor="let i of [31, 32, 33, 34, 35, 36, 37, 38, 39, 40]" (click)="onTileClick(i)">
+            <div class="grid-tile">Tile {{i}}</div>
+          </mat-grid-tile>
+        </mat-grid-list>
+      </mat-tab>
+
+      <!-- Tab 5 -->
+      <mat-tab label="Atıştırmalıklar">
+        <mat-grid-list cols="3" rowHeight="2:1" class="grid-list">
+          <mat-grid-tile *ngFor="let i of [41, 42, 43, 44, 45, 46, 47, 48, 49, 50]" (click)="onTileClick(i)">
+            <div class="grid-tile">Tile {{i}}</div>
+          </mat-grid-tile>
+        </mat-grid-list>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+
+
+
+  <div style="width: 48%; padding-left: 20px;">
+    <div class="tile-details" *ngIf="transactions.length > 0">
+      <h3>Siparişler</h3>
+      <table mat-table [dataSource]="transactions" class="mat-elevation-z8">
+        <!-- Item Column -->
+        <ng-container matColumnDef="URUN">
+          <th mat-header-cell *matHeaderCellDef> URUN </th>
+          <td mat-cell *matCellDef="let transaction"> {{transaction.item}} </td>
+          <td mat-footer-cell *matFooterCellDef> TOPLAM TUTAR</td>
+        </ng-container>
+
+        <!-- Cost Column -->
+        <ng-container matColumnDef="TUTAR">
+          <th mat-header-cell *matHeaderCellDef> TUTAR </th>
+          <td mat-cell *matCellDef="let transaction"> {{transaction.cost | currency}} </td>
+          <td mat-footer-cell *matFooterCellDef> {{getTotalCost() | currency}} </td>
+        </ng-container>
+
+        <!-- Header, Body, and Footer -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        <tr mat-footer-row *matFooterRowDef="displayedColumns"></tr>
+      </table>
+    </div>
+  </div>
+
+
+
+
+
+

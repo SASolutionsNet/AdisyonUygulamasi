@@ -10,15 +10,21 @@ import { UIEntityChangedEventData } from '../../../shared/modules/common/uiEntit
 import { MatDialog } from '@angular/material/dialog';
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
+import { PSCategoryFormComponent } from '../../../shared/modules/pscategory/form/pscategory.form.component';
+import { HeaderComponent } from '../../../header/header.component';
+import { SidebarComponent } from '../../../sidebar/sidebar.component';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'pscategory-update',
   templateUrl: './pscategory.update.component.html',
-  styleUrls: ['./pscategory.update.component.scss']
+  styleUrls: ['./pscategory.update.component.scss'],
+  standalone: true,  // Standalone olarak işaretleyin
+  imports: [PSCategoryFormComponent, HeaderComponent, SidebarComponent, MatCardModule]  // Burada standalone bileşeni import edin
 })
 export class CoreDataPSCategoryUpdateComponent implements OnInit, OnDestroy {
 
- 
+
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -26,15 +32,15 @@ export class CoreDataPSCategoryUpdateComponent implements OnInit, OnDestroy {
     private cdRef: ChangeDetectorRef,
     private dialog: MatDialog) {
 
-   
+
   }
 
   ngOnInit() {
-  
+
   }
 
   ngOnDestroy() {
- 
+
   }
 
   ngAfterViewChecked() {
@@ -42,5 +48,5 @@ export class CoreDataPSCategoryUpdateComponent implements OnInit, OnDestroy {
     this.cdRef.detectChanges();
   }
 
- 
+
 }

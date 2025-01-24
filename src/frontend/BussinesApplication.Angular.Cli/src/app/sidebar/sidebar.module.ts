@@ -35,7 +35,7 @@ import { AppRoutes } from "../app.routing";
 
   ],
   declarations: [
-  /*  SidebarComponent*/
+    /*  SidebarComponent*/
   ],
   //exports: [SidebarComponent]
   //,

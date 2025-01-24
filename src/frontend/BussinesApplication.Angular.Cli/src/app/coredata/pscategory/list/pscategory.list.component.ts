@@ -12,8 +12,8 @@ import { MatCardModule } from '@angular/material/card';
   selector: 'pscategory-list',
   templateUrl: './pscategory.list.component.html',
   styleUrls: ['./pscategory.list.component.scss'],
-   standalone: true,  // Standalone olarak işaretleyin
-  imports: [PSCategoryListComponent, HeaderComponent,SidebarComponent]  // Burada standalone bileşeni import edin
+  standalone: true,  // Standalone olarak işaretleyin
+  imports: [PSCategoryListComponent, HeaderComponent, SidebarComponent, MatCardModule]  // Burada standalone bileşeni import edin
 })
 export class CoreDataPSCategoryListComponent implements OnInit {
 
@@ -37,5 +37,5 @@ export class CoreDataPSCategoryListComponent implements OnInit {
 
 
 
- 
+
 }

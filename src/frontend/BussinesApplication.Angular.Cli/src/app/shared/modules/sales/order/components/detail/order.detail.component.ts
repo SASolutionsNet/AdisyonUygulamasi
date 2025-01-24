@@ -25,7 +25,7 @@ import { MatDialog } from '@angular/material/dialog';
   templateUrl: './order.detail.component.html',
   styleUrls: ['./order.detail.component.scss']
 })
-export class SalesOrderDetailComponent implements OnInit, OnDestroy, AfterViewInit {
+export class OrderDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 
  
   constructor(
@@ -34,10 +34,7 @@ export class SalesOrderDetailComponent implements OnInit, OnDestroy, AfterViewIn
     private cdRef: ChangeDetectorRef,
     private dateAdapter: DateAdapter<Date>,
     private fb: FormBuilder,
-    private dialog: MatDialog,
-    private psService: PSService,
-    private psCategoryService: PSCategoryService,
-    private salesOrderService: SalesOrderService) {
+    private dialog: MatDialog) {
 
     // https://github.com/angular/material2/issues/4876
     this.dateAdapter.setLocale('tr');
