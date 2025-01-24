@@ -25,12 +25,21 @@
 .main-content {
   width: 95%;
   margin-left: 0px; /* Sidebar genişliğinden kadar boşluk bırak */
-  flex-grow: 1,5; /* İçeriğin genişlemesi için */
+  flex-grow: 1.5; /* İçeriğin genişlemesi için */
   overflow-y: auto; /* İçerik fazla olduğunda kaydırma ekler */
   padding: 20px; /* İçeriğe padding ekler */
-  height: 90%; /* Yüksekliği %80 yaparak kısalt */
+  height: 90%; /* Yüksekliği %90 yaparak kısalt */
 }
 
+.mat-content {
+  width: 95%;
+  margin-left: 0px; /* Sidebar genişliğinden kadar boşluk bırak */
+  flex-grow: 1.5; /* İçeriğin genişlemesi için */
+  overflow-y: auto; /* İçerik fazla olduğunda kaydırma ekler */
+  padding: 20px; /* İçeriğe padding ekler */
+  height: 80%; /* Yüksekliği %80 yaparak kısalt */
+  margin-top: 50px; /* Yukarıdan boşluk ekler */
+}
 
 /* Header */
 header {
@@ -79,7 +88,6 @@ header {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Hafif gölge efekti */
   transition: all 0.3s ease; /* Animasyon */
 }
-
 /* Başlık üzerine gelindiğinde animasyon */
 .category-card-title:hover {
   background-color: #3498db; /* Hover rengini mavi yap */

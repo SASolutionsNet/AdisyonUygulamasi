@@ -52,6 +52,22 @@ import { HeaderModule } from '../header/header.module';
       {
         path: 'pscategory/list',
         component: CoreDataPSCategoryListComponent
+      },
+      {
+        path: 'pscategory/update',
+        component: CoreDataPSCategoryUpdateComponent
+      },
+      {
+        path: 'ps/create',
+        component: CoreDataPSCreateComponent
+      },
+      {
+        path: 'ps/list',
+        component: CoreDataPSListComponent
+      },
+      {
+        path: 'ps/update',
+        component: CoreDataPSUpdateComponent
       }
     ]),
     HeaderModule

@@ -14,14 +14,14 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'sasolution-sales-order-list',
-  templateUrl: './order.list.component.html',
-  styleUrls: ['./order.list.component.scss'],
+  selector: 'sasolution-sales-accounting-list',
+  templateUrl: './accounting.list.component.html',
+  styleUrls: ['./accounting.list.component.scss'],
   imports: [MatTabsModule, CommonModule],
 })
-export class OrderListComponent implements OnInit {
+export class AccountingListComponent implements OnInit {
   private _rows: any;
-  dataLoadedEvent: any;
+    dataLoadedEvent: any;
 
   salonBoxes: string[] = Array.from({ length: 24 }, (_, i) => `S${i + 1}`);
   bahceBoxes: string[] = Array.from({ length: 24 }, (_, i) => `B${i + 1}`);
@@ -43,7 +43,7 @@ export class OrderListComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    
   }
 
   ngAfterViewChecked() {

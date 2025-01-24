@@ -21,11 +21,11 @@ import { MatDialog } from '@angular/material/dialog';
 
 
 @Component({
-  selector: 'sasolution-sales-order-detail',
-  templateUrl: './order.detail.component.html',
-  styleUrls: ['./order.detail.component.scss']
+  selector: 'sasolution-sales-accounting-detail',
+  templateUrl: './accounting.detail.component.html',
+  styleUrls: ['./accounting.detail.component.scss']
 })
-export class OrderDetailComponent implements OnInit, OnDestroy, AfterViewInit {
+export class AccountingDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 
  
   constructor(

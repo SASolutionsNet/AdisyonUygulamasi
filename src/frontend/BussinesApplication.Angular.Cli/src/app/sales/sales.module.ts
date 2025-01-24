@@ -23,7 +23,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatNativeDateModule } from '@angular/material/core';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
+import { SalesOrderListComponent } from './order/list/sales.order.list.component';
+import { SalesAccountingListComponent } from './accounting/list/sales.accounting.list.component';
 
 
 @NgModule({
@@ -48,6 +49,26 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     ReactiveFormsModule,
     MatNativeDateModule,
     MatSnackBarModule,
+    RouterModule.forChild([
+      {
+        path: 'order/list',
+        component: SalesOrderListComponent
+      },
+      //{
+      //  path: 'order/detail',
+      //  component: SalesOrderDetailComponent
+      //},
+      {
+        path: 'accounting/list',
+        component: SalesAccountingListComponent
+      },
+      //{
+      //  path: 'accounting/detail',
+      //  component: SalesAccountingDetailComponent
+      //}
+   
+    ]),
+
 
   ],
   declarations: [

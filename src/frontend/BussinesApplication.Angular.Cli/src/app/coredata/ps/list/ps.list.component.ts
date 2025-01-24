@@ -5,11 +5,17 @@ import { UIEntityChangedEventData } from '../../../shared/modules/common/uiEntit
 import { MatDialog } from '@angular/material/dialog';
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
+import { PSListComponent } from '../../../shared/modules/ps/components/list/ps.list.component';
+import { HeaderComponent } from '../../../header/header.component';
+import { SidebarComponent } from '../../../sidebar/sidebar.component';
+import { MatCardModule } from '@angular/material/card';
 
 @Component({
   selector: 'app-ps-list',
   templateUrl: './ps.list.component.html',
-  styleUrls: ['./ps.list.component.scss']
+  styleUrls: ['./ps.list.component.scss'],
+  standalone: true,  // Standalone olarak işaretleyin
+  imports: [PSListComponent, HeaderComponent, SidebarComponent, MatCardModule]  // Burada standalone bileşeni import edin
 })
 export class CoreDataPSListComponent implements OnInit {
 
@@ -20,7 +26,7 @@ export class CoreDataPSListComponent implements OnInit {
     private fb: FormBuilder,
     private dialog: MatDialog) {
 
- 
+
   }
 
   ngOnInit() {
@@ -31,5 +37,5 @@ export class CoreDataPSListComponent implements OnInit {
     this.cdRef.detectChanges();
   }
 
- 
+
 }

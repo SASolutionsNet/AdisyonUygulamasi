@@ -36,7 +36,7 @@ import { HeaderRoutes } from "./header.routing";
 
   ],
   declarations: [
-   /* HeaderComponent*/
+    /* HeaderComponent*/
     /*  SidebarComponent*/
   ],
   exports: [/*HeaderComponent*/]

@@ -4,6 +4,6 @@ export const SidebarRoutes: Routes = [
   {
     path: '',
     children: [
-        ]
-      }
-    ];
+    ]
+  }
+];
