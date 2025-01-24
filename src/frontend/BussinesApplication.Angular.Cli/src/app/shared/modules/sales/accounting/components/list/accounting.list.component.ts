@@ -52,7 +52,7 @@ export class AccountingListComponent implements OnInit {
     this.cdRef.detectChanges();
   }
   onBoxClick(box: string) {
-    console.log(`${box} clicked`);
+    this.router.navigate([`/sales/accounting/detail/${box}`]);  // Yönlendirme
   }
 
 }

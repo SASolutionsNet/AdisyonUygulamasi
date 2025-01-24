@@ -22,6 +22,8 @@ import { CommonModule } from '@angular/common';
 export class OrderListComponent implements OnInit {
   private _rows: any;
   dataLoadedEvent: any;
+ 
+ 
 
   salonBoxes: string[] = Array.from({ length: 24 }, (_, i) => `S${i + 1}`);
   bahceBoxes: string[] = Array.from({ length: 24 }, (_, i) => `B${i + 1}`);
@@ -51,7 +53,8 @@ export class OrderListComponent implements OnInit {
     this.cdRef.detectChanges();
   }
   onBoxClick(box: string) {
-    console.log(`${box} clicked`);
+    this.router.navigate([`/sales/order/detail/${box}`]);  // Yönlendirme
   }
+
 
 }

@@ -34,10 +34,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy, AfterViewInit {
     private cdRef: ChangeDetectorRef,
     private dateAdapter: DateAdapter<Date>,
     private fb: FormBuilder,
-    private dialog: MatDialog,
-    private psService: PSService,
-    private psCategoryService: PSCategoryService,
-    private salesOrderService: SalesOrderService) {
+    private dialog: MatDialog) {
 
     // https://github.com/angular/material2/issues/4876
     this.dateAdapter.setLocale('tr');

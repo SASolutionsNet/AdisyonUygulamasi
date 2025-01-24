@@ -9,35 +9,34 @@ import 'moment/locale/tr';
 import { ErrorDialogComponent } from '../../../../errordialog/errordialog.component';
 
 /*import { environment } from '../../../../../../../environments/environment';*/
-
-import { PS } from '../../../../ps/models/ps.model';
-import { PSService } from '../../../../ps/services/ps.service';
-
-import { PSCategory, PSCategoryService } from '../../../../pscategory/pscategory.service';
-
-import { SalesOrderService } from '../../../../sales/order/services/order.service';
 import { DateAdapter } from '@angular/material/core';
 import { MatDialog } from '@angular/material/dialog';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatTabsModule } from '@angular/material/tabs';
+import { CommonModule } from '@angular/common';
+import { MatCardModule } from '@angular/material/card';
+import { MatTableModule } from '@angular/material/table';
 
 
 @Component({
   selector: 'sasolution-sales-accounting-detail',
   templateUrl: './accounting.detail.component.html',
-  styleUrls: ['./accounting.detail.component.scss']
+  styleUrls: ['./accounting.detail.component.scss'],
+  imports: [MatGridListModule, MatTabsModule, CommonModule, MatTableModule],
 })
-export class AccountingDetailComponent implements OnInit, OnDestroy, AfterViewInit {
+export class AccountingDetailComponent implements OnInit, AfterViewInit {
+  selectedTiles: string[] = [];
+  transactions: { item: string, cost: number }[] = [];
+  displayedColumns: string[] = ['URUN', 'TUTAR']; // Burada footer'daki sütunları belirtiyoruz
 
- 
+
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private cdRef: ChangeDetectorRef,
     private dateAdapter: DateAdapter<Date>,
     private fb: FormBuilder,
-    private dialog: MatDialog,
-    private psService: PSService,
-    private psCategoryService: PSCategoryService,
-    private salesOrderService: SalesOrderService) {
+    private dialog: MatDialog) {
 
     // https://github.com/angular/material2/issues/4876
     this.dateAdapter.setLocale('tr');
@@ -45,17 +44,21 @@ export class AccountingDetailComponent implements OnInit, OnDestroy, AfterViewIn
     //this.datePickerMinDate = moment().utc().add(1, 'd').local().toDate();
     //this.datePickerStartDate = this.datePickerMinDate;
 
-   
+
   }
 
   ngOnChanges(): void {
+    // Yenileme için Change Detection tetikleme
+    this.cdRef.detectChanges();
   }
 
   ngOnInit() {
-  
+
   }
 
   ngAfterViewInit(): void {
+    // Yenileme için Change Detection tetikleme
+    this.cdRef.detectChanges();
   }
 
   ngAfterViewChecked() {
@@ -63,15 +66,24 @@ export class AccountingDetailComponent implements OnInit, OnDestroy, AfterViewIn
     this.cdRef.detectChanges();
   }
 
-  ngOnDestroy() {
+
+
+
+  onTileClick(tileNumber: number) {
+    console.log(`Tile ${tileNumber} clicked`);
+    const newItem = `Sipariş ${tileNumber}`;
+    this.selectedTiles.push(newItem);
+
+    const transaction = {
+      item: newItem,
+      cost: Math.floor(Math.random() * 100) + 1,
+    };
+    this.transactions.push(transaction);
+    
   }
 
-  adjustFormValues() {
-
+  // Toplam maliyet hesaplama fonksiyonu
+  getTotalCost(): number {
+    return this.transactions.reduce((acc, curr) => acc + curr.cost, 0);
   }
-
-  emitSalesOrderLoadedEvent() {
-  }
-
- 
 }

@@ -25,6 +25,8 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SalesOrderListComponent } from './order/list/sales.order.list.component';
 import { SalesAccountingListComponent } from './accounting/list/sales.accounting.list.component';
+import { SalesOrderDetailComponent } from './order/detail/sales.order.detail.component';
+import { SalesAccountingDetailComponent } from './accounting/detail/sales.accounting.detail.component';
 
 
 @NgModule({
@@ -54,18 +56,18 @@ import { SalesAccountingListComponent } from './accounting/list/sales.accounting
         path: 'order/list',
         component: SalesOrderListComponent
       },
-      //{
-      //  path: 'order/detail',
-      //  component: SalesOrderDetailComponent
-      //},
+      {
+        path: 'order/detail/:box',
+        component: SalesOrderDetailComponent
+      },
       {
         path: 'accounting/list',
         component: SalesAccountingListComponent
       },
-      //{
-      //  path: 'accounting/detail',
-      //  component: SalesAccountingDetailComponent
-      //}
+      {
+        path: 'accounting/detail/:box',
+        component: SalesAccountingDetailComponent
+      }
    
     ]),
 
