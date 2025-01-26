@@ -1,1 +1,61 @@
-<h1>sipariş detay</h1>
+
+<div style="display: flex; width: 100%; justify-content: space-between;">
+ <!--Sol Taraftaki Tablar ve Gridler--> 
+<div style="width: 48%;">
+  <mat-tab-group class="tabs">
+    <mat-tab *ngFor="let tab of tabs" [label]="tab.label">
+      <mat-grid-list cols="3" rowHeight="2:1" class="grid-list">
+        <mat-grid-tile *ngFor="let tile of tab.tiles" (click)="onTileClick(tile)">
+          <div class="grid-tile">{{tile}}</div>
+        </mat-grid-tile>
+      </mat-grid-list>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+ <!--Sağ Tarafta Tablo--> 
+<div style="width: 48%; padding-left: 20px;">
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+    <!--Position Column-->
+    <ng-container matColumnDef="position">
+      <tr>
+        <th mat-header-cell *matHeaderCellDef> No. </th>
+        <td mat-cell *matCellDef="let element"> {{element.position}} </td>
+      </tr>
+    </ng-container>
+    <!--Name Column-->
+    <ng-container matColumnDef="name">
+      <tr>
+        <th mat-header-cell *matHeaderCellDef> Ürün </th>
+        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+      </tr>
+    </ng-container>
+    <!--Category Column-->
+    <ng-container matColumnDef="category">
+      <tr>
+        <th mat-header-cell *matHeaderCellDef> Kategori </th>
+        <td mat-cell *matCellDef="let element"> {{element.category}} </td>
+      </tr>
+    </ng-container>
+    <!--Cost Column-->
+    <ng-container matColumnDef="cost">
+      <tr>
+        <th mat-header-cell *matHeaderCellDef> Tutar </th>
+        <td mat-cell *matCellDef="let element"> {{element.cost}} </td>
+      </tr>
+    </ng-container>
+    <ng-container matColumnDef="action">
+      <th mat-header-cell *matHeaderCellDef> Sil </th>
+      <td mat-cell *matCellDef="let element">
+        <button mat-icon-button (click)="onClick(element)">
+          <span class="icon-circle">
+            <mat-icon>delete</mat-icon>
+          </span>
+        </button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+  </div>
+</div>

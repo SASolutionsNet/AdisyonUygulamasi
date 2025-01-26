@@ -3,8 +3,8 @@
 <div class="app-container">
   <!-- Sidebar -->
   <app-sidebar></app-sidebar>
+
   <!-- Başlık -->
-  <!-- Main Content -->
   <div class="main-content">
     <app-header></app-header>
 
@@ -12,6 +12,13 @@
       <mat-card-title class="category-card-title">Siparişler</mat-card-title>
     </mat-card-header>
 
-    <sasolution-sales-order-detail></sasolution-sales-order-detail>
+    <!-- Accounting Detail Component -->
+    <sasolution-sales-order-detail [tabs]="tabsData"
+                                   [ELEMENT_DATA]="orders"
+                                   (tileClicked)="onTileClick($event)"
+                                   (buttonClicked)="handleButtonClick($event)"
+                                 >
+    </sasolution-sales-order-detail>
+
   </div>
-  </div>
+</div>
