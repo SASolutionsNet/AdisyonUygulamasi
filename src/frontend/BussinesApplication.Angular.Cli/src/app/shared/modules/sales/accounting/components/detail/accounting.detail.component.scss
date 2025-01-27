@@ -15,3 +15,7 @@
 .demo-row-is-clicked {
   font-weight: bold;
 }
+.selected-row {
+  background-color: #e0f7fa !important; // Seçili satırın arka plan rengini değiştirme
+  color: #00796b; // Seçili satırdaki yazı rengini değiştirme
+}

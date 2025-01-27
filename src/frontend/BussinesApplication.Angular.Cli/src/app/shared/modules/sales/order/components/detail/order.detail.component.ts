@@ -29,6 +29,7 @@ import { MatIconModule } from '@angular/material/icon';
 
 // PeriodicElement arayüzünü burada tanımlıyoruz
 export interface Order {
+  table: string;
   position: number;
   name: string;
   category: string;

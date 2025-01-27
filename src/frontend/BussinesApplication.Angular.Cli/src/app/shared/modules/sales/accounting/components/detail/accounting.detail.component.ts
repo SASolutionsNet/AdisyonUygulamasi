@@ -9,27 +9,16 @@ import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
+import { ActivatedRoute } from '@angular/router';
 
 export interface Order {
+  table: string;
   position: number;
   name: string;
   category: string;
   cost: number;
 
 }
-
-//const ELEMENT_DATA: Order[] = [
-//  { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
-//  { position: 2, name: 'Helium', weight: 4.0026, symbol: 'He' },
-//  { position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li' },
-//  { position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be' },
-//  { position: 5, name: 'Boron', weight: 10.811, symbol: 'B' },
-//  { position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C' },
-//  { position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N' },
-//  { position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O' },
-//  { position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F' },
-//  { position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne' },
-//];
 
 @Component({
   selector: 'sasolution-sales-accounting-detail',
@@ -41,12 +30,14 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
 
   @Input() ELEMENT_DATA: Order[] = []; // Dinamik veri için input
 
-
+ /* @Output() buttonClicked = new EventEmitter<Order>();  // EventEmitter ile buttonClicked olayını yayıyoruz.*/
 
 
   displayedColumns: string[] = ['position', 'name', 'category', 'cost'];  // 'action' sütununu ekledik.
   dataSource = new MatTableDataSource<Order>(this.ELEMENT_DATA);  // Veriyi doğru şekilde tanımlıyoruz
+
   clickedRows = new Set<Order>();
+  selectedRows: Order[] = [];  // Seçilen satırları ikinci tabloya aktaracağız
 
   constructor(
     private cdRef: ChangeDetectorRef,
@@ -54,34 +45,41 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
   ) { }
 
   ngOnInit() {
-    this.loadOrdersFromLocalStorage();  // LocalStorage'dan veriyi yükleyelim
+
   }
 
   ngAfterViewInit() {
     this.cdRef.detectChanges();  // Manuel olarak değişiklikleri tespit et
   }
 
-  loadOrdersFromLocalStorage() {
-    // LocalStorage'dan "Orders" verisini alıyoruz
-    const orders: Order[] = JSON.parse(localStorage.getItem('Orders') || '[]');
-
-    if (orders.length > 0) {
-      this.dataSource = new MatTableDataSource(orders);  // Veriyi dataSource'a aktarıyoruz
-    } else {
-      // Eğer Orders listesi boşsa, default olarak boş bir liste veriyoruz
-    /*  this.dataSource = new MatTableDataSource([]);*/
+  // ELEMENT_DATA değiştikçe dataSource'u güncelle
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['ELEMENT_DATA']) {
+      this.dataSource.data = [...this.ELEMENT_DATA]; // Yeni veri geldiğinde güncelle
     }
   }
 
-  // Row tıklandığında bu fonksiyon çağrılacak
+ 
+
+
+  // Satır tıklama işlemi
   onRowClick(row: Order): void {
-    // Satır tıklandığında, clickedRows setine ekleyin veya çıkarın
     if (this.clickedRows.has(row)) {
-      this.clickedRows.delete(row);  // Eğer zaten varsa, çıkar
+      this.clickedRows.delete(row);  // Eğer zaten seçiliyse, çıkar
     } else {
-      this.clickedRows.add(row);  // Eğer yoksa, ekle
+      this.clickedRows.add(row);  // Eğer seçili değilse, ekle
     }
+    // Seçilen satırları ikinci tabloya aktar
+    this.selectedRows = Array.from(this.clickedRows);
   }
 
+  // Satırın seçili olup olmadığını kontrol et
+  isRowSelected(row: Order): boolean {
+    return this.clickedRows.has(row);
+  }
+  //onClick(element: Order): void {
+  //  console.log('Tıklanan satır:', element);  // Burada veriyi kontrol edebilirsiniz
+  //  this.buttonClicked.emit(element);  // 'Order' objesini dışarıya gönderiyoruz
+  //}
 }
 

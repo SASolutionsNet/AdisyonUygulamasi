@@ -77,7 +77,9 @@ export class PSCategoryListComponent implements AfterViewInit, OnInit {
     // Veriyi almak için bu metodu kullanabilirsiniz
   }
   edit(row: any) {
-    // Veriyi almak için bu metodu kullanabilirsiniz
+    // 'pscategory/create' yoluna yönlendir
+    this.router.navigate(['/coredata/pscategory/update']);
+  
   }
   delete(row:any) {
     // Veriyi almak için bu metodu kullanabilirsiniz
@@ -86,4 +88,5 @@ export class PSCategoryListComponent implements AfterViewInit, OnInit {
     // 'pscategory/create' yoluna yönlendir
     this.router.navigate(['/coredata/pscategory/create']);
   }
+ 
 }
