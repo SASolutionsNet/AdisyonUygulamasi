@@ -1,84 +1,18 @@
-
-//import { ChangeDetectorRef, Component, OnInit, SimpleChanges, ɵɵqueryRefresh } from '@angular/core';
-//import { MatCardModule } from '@angular/material/card';
-//import { HeaderComponent } from '../../../header/header.component';
-//import { SidebarComponent } from '../../../sidebar/sidebar.component';
-//import { AccountingDetailComponent, PeriodicElement } from '../../../shared/modules/sales/accounting/components/detail/accounting.detail.component'; // PeriodicElement türünü import ettiğimize emin olun.
-
-//@Component({
-//  selector: 'app-sales-accounting-detail',
-//  templateUrl: './sales.accounting.detail.component.html',
-//  styleUrls: ['./sales.accounting.detail.component.scss'],
-//  standalone: true,
-//  imports: [AccountingDetailComponent,MatCardModule, HeaderComponent, SidebarComponent]  // Standalone bileşenler
-//})
-//export class SalesAccountingDetailComponent implements OnInit {
-
-//  tabsData = [
-//    { label: 'Sık Kullanılanlar', tiles: [1, 2, 3, 4, 5] },
-//    { label: 'Sıcak Meşrubatlar', tiles: [6, 7, 8, 9, 10] },
-//    { label: 'Soğuk Meşrubatlar', tiles: [11, 12, 13, 14, 15] }
-//  ];
- 
-//  ELEMENT_DATA: PeriodicElement[] = [];
-//  dataSource: PeriodicElement[] = this.ELEMENT_DATA; // dataSource başlangıçta ELEMENT_DATA ile başlar
-//  displayedColumns: string[] = ['position', 'name', 'category', 'cost'];
-
-//   itemNo: number = 0 ;
-
-//  constructor(private cdRef: ChangeDetectorRef) { }
-
-//  ngOnInit() {
-//    // İlk veri yüklemesi burada yapılabilir
-   
-//    if (this.itemNo != 0) {
-//      this.setData(this.itemNo);
-//      this.dataSource = [...this.ELEMENT_DATA];  // dataSource'u güncelle
-//}
-    
-//  }
-
-//  ngOnChanges() {
-//    //explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
-//    this.cdRef.detectChanges();
-//  }
-
-//  ngAfterViewChecked() {
-//    //explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
-//    this.cdRef.detectChanges();
-//  }
-
-//  // Toplam maliyeti hesaplama fonksiyonu
-//  getTotalCost(): number {
-//    return this.ELEMENT_DATA.reduce((acc, curr) => acc + curr.cost, 0);
-//  }
-
-//  // Tile tıklama fonksiyonu, yeni öğe ekliyor
-//  onTileClick(tileNumber: number): void {
-//    this.itemNo = tileNumber;
-//    this.setData(this.itemNo);
-   
-//  }
-//  setData(tileNumber: number): void {
-//    let newItem: PeriodicElement = {
-//      position: this.ELEMENT_DATA.length + 1,  // Son pozisyon + 1
-//      name: `Item ${tileNumber}`,
-//      category: "New Category",  // Sabit kategori
-//      cost: Math.random() * 100,  // Rastgele maliyet
-//    };
-
-//    this.ELEMENT_DATA.push(newItem);  // Yeni öğeyi ekle
-//    this.dataSource = [...this.ELEMENT_DATA];  // dataSource'u güncelle
-//    this.cdRef.detectChanges();  // Değişiklikleri tetiklemek için detectChanges kullanabiliriz
-//  }
-//}
-
 import { ChangeDetectorRef, Component, OnInit, SimpleChanges } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { AccountingDetailComponent } from '../../../shared/modules/sales/accounting/components/detail/accounting.detail.component';
 import { MatCardModule } from '@angular/material/card';
 import { SidebarComponent } from '../../../sidebar/sidebar.component';
 import { HeaderComponent } from '../../../header/header.component';
+import { ActivatedRoute } from '@angular/router';
+
+interface Order {
+  table: string;
+  position: number;
+  name: string;
+  category: string;
+  cost: number;
+}
 
 @Component({
   selector: 'app-sales-accounting-detail',
@@ -89,26 +23,19 @@ import { HeaderComponent } from '../../../header/header.component';
 })
 export class SalesAccountingDetailComponent implements OnInit {
 
-  //tabsData = [
-  //  { label: 'Sık Kullanılanlar', tiles: [1, 2, 3, 4, 5] },
-  //  { label: 'Sıcak Meşrubatlar', tiles: [6, 7, 8, 9, 10] },
-  //  { label: 'Soğuk Meşrubatlar', tiles: [11, 12, 13, 14, 15] }
-  //];
+  orders: Order[] = [];
+  dataSource: MatTableDataSource<Order> = new MatTableDataSource(this.orders);
+  box: string = '';
 
-  //ELEMENT_DATA: PeriodicElement[] = [];
-  //displayedColumns: string[] = ['position', 'name', 'category', 'cost'];
 
-  //dataSource: MatTableDataSource<PeriodicElement> = new MatTableDataSource(this.ELEMENT_DATA);
-
-  //itemNo: number = 0;
-
-  constructor(private cdRef: ChangeDetectorRef) { }
+  constructor(private cdRef: ChangeDetectorRef, private route: ActivatedRoute) { }
 
   ngOnInit() {
-    // İlk veri yüklemesi yapılabilir
-    //if (this.itemNo !== 0) {
-    //  this.setData(this.itemNo);
-    //}
+    this.route.paramMap.subscribe(params => {
+      const boxParam = params.get('box');
+      this.box = boxParam !== null ? boxParam : '';  // Eğer null ise boş bir string atıyoruz
+      this.loadOrdersFromLocalStorage();  // Sayfaya her döndüğünde veriyi yükle
+    });
   }
 
   ngOnChanges() {
@@ -118,26 +45,35 @@ export class SalesAccountingDetailComponent implements OnInit {
   ngAfterViewChecked() {
     this.cdRef.detectChanges();
   }
+  // Yeni veriyi set etmek için kullanılan metod
+  setData(tileNumber: number): void {
+    const newItem: Order = {
+      table: this.box,  // box parametresini doğru şekilde ekliyoruz
+      position: this.getNextPosition(), // Yeni pozisyon
+      name: `${tileNumber}`, // Item adı
+      category: 'New Category', // Sabit kategori
+      cost: Math.random() * 100, // Rastgele maliyet
+    };
 
-  //getTotalCost(): number {
-  //  return this.ELEMENT_DATA.reduce((acc, curr) => acc + curr.cost, 0);
-  //}
+    // Yeni öğeyi orders array'ine ekliyoruz
+    this.orders.push(newItem);
+  }
+  // Yeni bir pozisyon numarası almak için kullanılan metod
+  getNextPosition(): number {
+    const orders: Order[] = JSON.parse(localStorage.getItem('orders') || '[]');
+    return orders.length > 0 ? orders[orders.length - 1].position + 1 : 1;
+  }
+  // LocalStorage'dan "orders" verisini alıyoruz ve box'a göre filtreliyoruz
+  loadOrdersFromLocalStorage() {
+    const orders: Order[] = JSON.parse(localStorage.getItem('orders') || '[]');
+    // 'box' parametresine göre filtreleme yapıyoruz
+    const filteredOrders = orders.filter(order => order.table === this.box);
+    this.orders = filteredOrders;  // Filtrelenmiş veriyi 'orders' array'ine atıyoruz
+    this.dataSource.data = this.orders;  // DataSource'u güncelliyoruz
+  }
 
-  //onTileClick(tileNumber: number): void {
-  //  this.itemNo = tileNumber;
-  //  this.setData(this.itemNo);
-  //  console.log(this.ELEMENT_DATA);
-  //}
-
-  //setData(tileNumber: number): void {
-  //  const newItem: PeriodicElement = {
-  //    position: this.ELEMENT_DATA.length + 1,  // Son pozisyon + 1
-  //    name: `Item ${tileNumber}`,
-  //    category: "New Category",  // Sabit kategori
-  //    cost: Math.random() * 100,  // Rastgele maliyet
-  //  };
-
-  //  this.ELEMENT_DATA.push(newItem);  // Yeni öğeyi ekle
-  //  this.cdRef.detectChanges();  // Değişiklikleri tespit etmek için detectChanges kullanabiliriz
-  //}
+  // LocalStorage'a "orders" verisini kaydediyoruz
+  saveOrdersToLocalStorage() {
+    localStorage.setItem('orders', JSON.stringify(this.orders));
+  }
 }

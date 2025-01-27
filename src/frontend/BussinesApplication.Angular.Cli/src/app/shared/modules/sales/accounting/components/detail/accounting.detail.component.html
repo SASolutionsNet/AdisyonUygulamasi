@@ -1,55 +1,153 @@
-<div style="display: flex; justify-content: space-between; width: 70%;">
-  <!-- Table Section -->
+<!--<div style="display: flex; justify-content: space-between; width: 70%;">-->
+<!-- Table Section -->
+<!--<div style="flex: 1; margin-right: 20px;">
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 demo-table">-->
+<!-- Position Column -->
+<!--<ng-container matColumnDef="position">
+  <th mat-header-cell *matHeaderCellDef>No.</th>
+  <td mat-cell *matCellDef="let element">{{element.position}}</td>
+</ng-container>-->
+<!-- Name Column -->
+<!--<ng-container matColumnDef="name">
+  <th mat-header-cell *matHeaderCellDef>Ürün</th>
+  <td mat-cell *matCellDef="let element">{{element.name}}</td>
+</ng-container>-->
+<!-- Weight Column -->
+<!--<ng-container matColumnDef="category">
+  <th mat-header-cell *matHeaderCellDef>Kategori</th>
+  <td mat-cell *matCellDef="let element">{{element.category}}</td>
+</ng-container>-->
+<!-- Symbol Column -->
+<!--<ng-container matColumnDef="cost">
+  <th mat-header-cell *matHeaderCellDef>Tutar</th>
+  <td mat-cell *matCellDef="let element">{{element.cost}}</td>
+</ng-container>-->
+<!-- Table rows -->
+<!--<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row
+        (click)="onRowClick(row)"
+        [class.demo-row-is-clicked]="clickedRows.has(row)"
+        *matRowDef="let row; columns: displayedColumns;">
+    </tr>
+  </table>
+</div>-->
+<!-- AccountingDetailComponent HTML -->
+<!--<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">-->
+<!-- Position Column -->
+<!--<ng-container matColumnDef="position">
+  <th mat-header-cell *matHeaderCellDef> Position </th>
+  <td mat-cell *matCellDef="let element" [ngClass]="{'selected-row': isRowSelected(element)}">
+    {{ element.position }}
+  </td>
+</ng-container>-->
+<!-- Name Column -->
+<!--<ng-container matColumnDef="name">
+  <th mat-header-cell *matHeaderCellDef> Name </th>
+  <td mat-cell *matCellDef="let element" [ngClass]="{'selected-row': isRowSelected(element)}">
+    {{ element.name }}
+  </td>
+</ng-container>-->
+<!-- Category Column -->
+<!--<ng-container matColumnDef="category">
+  <th mat-header-cell *matHeaderCellDef> Category </th>
+  <td mat-cell *matCellDef="let element" [ngClass]="{'selected-row': isRowSelected(element)}">
+    {{ element.category }}
+  </td>
+</ng-container>-->
+<!-- Cost Column -->
+<!--<ng-container matColumnDef="cost">
+  <th mat-header-cell *matHeaderCellDef> Cost </th>
+  <td mat-cell *matCellDef="let element" [ngClass]="{'selected-row': isRowSelected(element)}">
+    {{ element.cost | currency }}
+  </td>
+</ng-container>-->
+<!-- Header and Row Definitions -->
+<!--<tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="onRowClick(row)"></tr>
+  </table>
+
+</div>-->
+<div style="display: flex; justify-content: space-between; width: 100%;">
+  <!-- First Table Section -->
   <div style="flex: 1; margin-right: 20px;">
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 demo-table">
       <!-- Position Column -->
       <ng-container matColumnDef="position">
         <th mat-header-cell *matHeaderCellDef>No.</th>
-        <td mat-cell *matCellDef="let element">{{element.position}}</td>
+        <td mat-cell *matCellDef="let element">{{ element.position }}</td>
       </ng-container>
 
       <!-- Name Column -->
       <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>Name</th>
-        <td mat-cell *matCellDef="let element">{{element.name}}</td>
+        <th mat-header-cell *matHeaderCellDef>Ürün</th>
+        <td mat-cell *matCellDef="let element">{{ element.name }}</td>
       </ng-container>
 
-      <!-- Weight Column -->
+      <!-- Category Column -->
       <ng-container matColumnDef="category">
-        <th mat-header-cell *matHeaderCellDef>Weight</th>
-        <td mat-cell *matCellDef="let element">{{element.category}}</td>
+        <th mat-header-cell *matHeaderCellDef>Kategori</th>
+        <td mat-cell *matCellDef="let element">{{ element.category }}</td>
       </ng-container>
 
-      <!-- Symbol Column -->
+      <!-- Cost Column -->
       <ng-container matColumnDef="cost">
-        <th mat-header-cell *matHeaderCellDef>Symbol</th>
-        <td mat-cell *matCellDef="let element">{{element.cost}}</td>
+        <th mat-header-cell *matHeaderCellDef>Tutar</th>
+        <td mat-cell *matCellDef="let element">{{ element.cost }}</td>
       </ng-container>
 
-      <!-- Table rows -->
+      <!-- Header and Row Definitions -->
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row
-          (click)="onRowClick(row)"
-          [class.demo-row-is-clicked]="clickedRows.has(row)"
-          *matRowDef="let row; columns: displayedColumns;">
+          (click)="onRowClick(element)"
+          [class.selected-row]="clickedRows.has(element)"
+          *matRowDef="let element; columns: displayedColumns">
       </tr>
     </table>
   </div>
 
-  <!-- Click Log Section -->
-  <div style="width: 250px; padding-left: 20px;">
-    <div>
-      <h3>Click Log</h3>
-    </div>
+  <!-- Second Table Section (Only Selected Rows from First Table) -->
+  <div  *ngIf="this.selectedRows.length > 0" style="flex: 1;">
+    <table mat-table [dataSource]="selectedRows" class="mat-elevation-z8">
+      <!-- Position Column -->
+      <ng-container matColumnDef="position">
+        <th mat-header-cell *matHeaderCellDef>No.</th>
+        <td mat-cell *matCellDef="let element">{{ element.position }}</td>
+      </ng-container>
 
-    <!-- Show log only if there are clicked rows -->
-    <div *ngIf="clickedRows.size === 0">Clicked rows will be logged here</div>
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Ürün</th>
+        <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+      </ng-container>
 
-    <ul>
-      <!-- Loop through clickedRows and display each clicked row's name -->
-      <li *ngFor="let clickedRow of clickedRows">
-        Clicked on {{clickedRow.name}}
-      </li>
-    </ul>
+      <!-- Category Column -->
+      <ng-container matColumnDef="category">
+        <th mat-header-cell *matHeaderCellDef>Kategori</th>
+        <td mat-cell *matCellDef="let element">{{ element.category }}</td>
+      </ng-container>
+
+      <!-- Cost Column -->
+      <ng-container matColumnDef="cost">
+        <th mat-header-cell *matHeaderCellDef>Tutar</th>
+        <td mat-cell *matCellDef="let element">{{ element.cost }}</td>
+      </ng-container>
+
+      <!-- Header and Row Definitions -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let element; columns: displayedColumns"></tr>
+    </table>
   </div>
 </div>
+<br />
+<br />
+<div style="display: flex; width: 49%; gap: 10px;">
+  <!-- gap ile butonlar arasına boşluk ekledik -->
+  <button mat-button style="flex: 1 1 120px; height: 50px;">Yazdır</button>  <!-- height artırıldı -->
+  <button mat-button style="flex: 1 1 120px; height: 50px;">Masayı Kapat</button>
+  <button mat-button  *ngIf="this.selectedRows.length > 0" style="flex: 1 1 120px; height: 50px;">Seçilenleri Öde</button>
+  <button mat-button style="flex: 1 1 120px; height: 50px;">Tümünü Öde</button>
+</div>
+
+
+
+
