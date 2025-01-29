@@ -9,6 +9,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="13.0.1" />
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.12" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.12">
 			<PrivateAssets>all</PrivateAssets>
@@ -20,6 +21,10 @@
 	<ItemGroup>
 		<ProjectReference Include="..\BillApp.Application\BillApp.Application.csproj" />
 		<ProjectReference Include="..\BillApp.Infrastructure\BillApp.Infrastructure.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="Models\User\Response\" />
 	</ItemGroup>
 
 </Project>
