@@ -5,12 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BillApp.Domain.User
+namespace BillApp.Domain.Category
 {
-    public class UserForgotPasswordDto
+    public class Category : BaseModel
     {
         [Required]
-        public string Email { get; set; }
+        public string CategoryCode { get; set; }
 
+        [Required]
+        public string Name { get; set; }
     }
 }
