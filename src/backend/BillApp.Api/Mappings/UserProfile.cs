@@ -1,8 +1,8 @@
 ﻿using AutoMapper;
 using BillApp.Api.Models.User.Request;
+using BillApp.Api.Models.User.Response;
 using BillApp.Application.Contracts.User;
 using BillApp.Application.Models.User;
-using Microsoft.AspNetCore.Identity.Data;
 
 namespace BillApp.Api.Mappings
 {
@@ -15,6 +15,7 @@ namespace BillApp.Api.Mappings
             this.CreateMap<UserRegisterRequest, UserRegisterDto>().ReverseMap();
             this.CreateMap<UserLoginRequest, UserLoginDto>().ReverseMap();
             this.CreateMap<UserLogoutDto, UserLogoutDto>().ReverseMap();
+            this.CreateMap<UserDto, UserResponse>().ReverseMap();
         }
     }
 }

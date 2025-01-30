@@ -1,20 +1,13 @@
 ﻿using AutoMapper;
 using BillApp.Application.Contracts.User;
-using BillApp.Application.Interfaces.Repositories;
-using BillApp.Application.Interfaces.Services;
+using BillApp.Application.Interfaces.IServices;
+using BillApp.Application.Interfaces.IRepositories;
 using BillApp.Application.Models.User;
 using BillApp.Application.Utilities;
 using BillApp.Domain.User;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using System.ComponentModel.DataAnnotations;
-using System.Dynamic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BillApp.Application.Services
 {
@@ -159,7 +152,7 @@ namespace BillApp.Application.Services
         }
 
         public async Task<ServiceResponse<UserDto>> GetUserById(string id)
-        {
+        {   
             var user = await _repository.GetUserByIdAsync(id);
 
             if (user == null)
@@ -168,7 +161,7 @@ namespace BillApp.Application.Services
             }
 
             var mappedUser = _mapper.Map<UserDto>(user);
-            return new ServiceResponse<UserDto> { Data = mappedUser, Message = "User found", Success = false };
+            return new ServiceResponse<UserDto> { Data = mappedUser, Message = "User found", Success = true };
         }
 
     }

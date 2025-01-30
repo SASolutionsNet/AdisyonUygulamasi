@@ -1,15 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity.Data;
-using Microsoft.AspNetCore.Identity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Identity;
 using BillApp.Application.Models.User;
 using BillApp.Application.Contracts.User;
 using BillApp.Application.Utilities;
 
-namespace BillApp.Application.Interfaces.Services
+namespace BillApp.Application.Interfaces.IServices
 {
     public interface IUserService
     {

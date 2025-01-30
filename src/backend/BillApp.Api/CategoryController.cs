@@ -1,7 +1,10 @@
-﻿using BillApp.Application.Interfaces;
+﻿using AutoMapper;
+using BillApp.Api.Models.Category.Request;
+using BillApp.Api.Models.Category.Response;
+using BillApp.Application.Interfaces.IServices;
+using BillApp.Application.Models.Category;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace BillApp.Api
 {
@@ -10,77 +13,115 @@ namespace BillApp.Api
     [Authorize]
     public class CategoryController : ControllerBase
     {
-        private readonly IApplicationDbContext _context;
+        private readonly ICategoryService _categoryService;
+        private readonly IMapper _mapper;
 
-        public CategoryController(IApplicationDbContext context)
+        public CategoryController(ICategoryService categoryService, IMapper mapper)
         {
-            _context = context;
+            _categoryService = categoryService;
+            _mapper = mapper;
         }
 
-
-        // GET: api/Category
-        [HttpGet]
+        [Authorize]
+        [HttpGet("get-all")]
         public async Task<IActionResult> GetAll()
         {
-            var categories = await _context.Categories.ToListAsync();
-            return Ok(categories);
+            var result = await _categoryService.GetAll();
+
+            if (result.Success)
+            {
+                if (result.Data == null)
+                    return NotFound("Categories not found.");
+
+                return Ok(result.Data);
+            }
+            else
+                return StatusCode(500, "Request Failed");
         }
 
-        // GET: api/Category/{id}
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(int id)
+        [Authorize]
+        [HttpGet("get-by-id")]
+        public async Task<IActionResult> GetById([FromBody] CategoryGetByIdAndDeleteRequest model)
         {
-            var category = await _context.Categories.FindAsync(id);
-            if (category == null)
-                return NotFound("Category not found.");
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            return Ok(category);
+            var result = await _categoryService.GetById(model.Id);
+
+
+            if (result.Success)
+            {
+                if (result.Data == null)
+                    return NotFound("Category not found.");
+
+                var mappedResult = _mapper.Map<CategoryDto, CategoryResponse>(result.Data);
+                return Ok(mappedResult);
+            }
+
+            return StatusCode(500, "Request Failed");
+
         }
 
-        //// POST: api/Category
-        //[HttpPost]
-        //[Authorize(Roles = "Admin")] // Restrict to Admins
-        //public async Task<IActionResult> Create(Category category)
-        //{
-        //    if (!ModelState.IsValid)
-        //        return BadRequest(ModelState);
+        [HttpPost("create")]
+        //[Authorize(Roles = "Admin")] 
+        [Authorize()]
+        public async Task<IActionResult> Create([FromBody] CategoryCreateRequest model)
+        {
+            if (!ModelState.IsValid || model == null)
+                return BadRequest(ModelState);
 
-        //    _context.Categories.Add(category);
-        //    await _context.SaveChangesAsync();
-        //    return CreatedAtAction(nameof(GetById), new { id = category.Id }, category);
-        //}
+            var mappedModel = _mapper.Map<CategoryCreateRequest, CategoryDto>(model);
 
-        //// PUT: api/Category/{id}
-        //[HttpPut("{id}")]
-        //[Authorize(Roles = "Admin")]
-        //public async Task<IActionResult> Update(int id, Category category)
-        //{
-        //    if (id != category.Id)
-        //        return BadRequest("Category ID mismatch.");
+            var result = await _categoryService.Create(mappedModel);
 
-        //    var existingCategory = await _context.Categories.FindAsync(id);
-        //    if (existingCategory == null)
-        //        return NotFound("Category not found.");
+            if (result.Success)
+            {
+                var mappedResult = _mapper.Map<CategoryDto, CategoryResponse>(result.Data);
+                return Ok(mappedResult);
+            }
+            return StatusCode(500, "Request Failed");
+        }
 
-        //    existingCategory.Name = category.Name;
-        //    existingCategory.Description = category.Description;
+        [HttpPut("update")]
+        [Authorize()]
+        public async Task<IActionResult> Update([FromBody] CategoryUpdateRequest model)
+        {
+            if (!ModelState.IsValid || model == null)
+                return BadRequest(ModelState);
 
-        //    await _context.SaveChangesAsync();
-        //    return NoContent();
-        //}
+            var mappedModel = _mapper.Map<CategoryUpdateRequest, CategoryDto>(model);
 
-        //// DELETE: api/Category/{id}
-        //[HttpDelete("{id}")]
-        //[Authorize(Roles = "Admin")]
-        //public async Task<IActionResult> Delete(int id)
-        //{
-        //    var category = await _context.Categories.FindAsync(id);
-        //    if (category == null)
-        //        return NotFound("Category not found.");
+            var result = await _categoryService.Update(mappedModel);
 
-        //    _context.Categories.Remove(category);
-        //    await _context.SaveChangesAsync();
-        //    return NoContent();
-        //}
+            if (result.Success)
+            {
+                var mappedResult = _mapper.Map<CategoryDto, CategoryResponse>(result.Data);
+                return Ok(mappedResult);
+            }
+
+            return StatusCode(500, "Request Failed");
+        }
+
+        [HttpDelete("delete")]
+        [Authorize()]
+        public async Task<IActionResult> Delete([FromBody] CategoryGetByIdAndDeleteRequest model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _categoryService.Delete(model.Id);
+
+            if (result.Success)
+            {
+                if (result.Data == null)
+                    return NotFound("Category not found.");
+
+                var mappedResult = _mapper.Map<CategoryDto, CategoryResponse>(result.Data);
+                return Ok(mappedResult);
+            }
+
+            return StatusCode(500, "Request Failed");
+
+        }
     }
 }

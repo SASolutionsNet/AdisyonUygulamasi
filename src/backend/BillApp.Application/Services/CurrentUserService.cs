@@ -1,4 +1,4 @@
-﻿using BillApp.Application.Interfaces.Services;
+﻿using BillApp.Application.Interfaces.IServices;
 using Microsoft.AspNetCore.Http;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;

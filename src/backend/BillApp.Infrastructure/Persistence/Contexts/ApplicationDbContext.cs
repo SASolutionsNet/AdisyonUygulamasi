@@ -31,7 +31,7 @@ namespace BillApp.Infrastructure.Contexts
             builder.Entity<User>().Property(u => u.Role).HasMaxLength(10);
             builder.Entity<User>().Property(u => u.AppCode).HasMaxLength(10);
 
-            builder.Entity<Category>().ToTable("Category", "BillApp");
+            builder.Entity<Category>().ToTable("Category", "BillApp").HasQueryFilter(x => x.IsDel == false);
 
             builder.Entity<RevokedToken>().ToTable("RevokedTokens", "User");
 
