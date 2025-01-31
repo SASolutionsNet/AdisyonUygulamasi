@@ -20,35 +20,18 @@ namespace BillApp.Infrastructure
     {
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddScoped(provider => (IApplicationDbContext)provider.GetRequiredService<ApplicationDbContext>());
-
+            // Configure DbContext and Factory
+            services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddAuthentication();
-            services.AddAuthorization();
-
+            // Configure Identity
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddApiEndpoints();
 
-            services.AddHttpContextAccessor();
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-
-            // Adding repositories
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<ITokenRepository, TokenRepository>();
-            services.AddScoped<ICategoryRepository, CategoryRepository>();
-
-            // Adding services
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<ITokenService, TokenService>();
-            services.AddScoped<ICurrentUserService, CurrentUserService>();
-            services.AddScoped<ICategoryService, CategoryService>();
-
-
-            // Add JWT Authentication
+            // Configure Authentication & JWT
             var jwtSettings = configuration.GetSection("JwtSettings");
             var key = Encoding.ASCII.GetBytes(jwtSettings["Secret"]);
 
@@ -84,6 +67,24 @@ namespace BillApp.Infrastructure
                     }
                 };
             });
+
+            // Configure Authorization
+            services.AddAuthorization();
+
+            // Add HttpContext Accessor & AutoMapper
+            services.AddHttpContextAccessor();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            // Register Repositories
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ITokenRepository, TokenRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+
+            // Register Services
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
+            services.AddScoped<ICategoryService, CategoryService>();
 
             return services;
         }

@@ -10,7 +10,8 @@ namespace BillApp.Domain.Category
     public class Category : BaseModel
     {
         public required string CategoryCode { get; set; }
-
         public required string Name { get; set; }
+        public List<Product.Product> Products { get; set; } = new();
+
     }
 }

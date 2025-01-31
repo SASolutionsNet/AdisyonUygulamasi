@@ -3,6 +3,7 @@ using BillApp.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add Swagger for API documentation
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -11,13 +12,15 @@ builder.Services.AddSwaggerGen(c =>
     c.IncludeXmlComments(xmlPath);
 });
 
-
+// Add Controllers 
 builder.Services.AddControllers();
 
+// Register application dependencies
 builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
+// Configure middleware
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -31,9 +34,7 @@ else
 }
 
 app.UseHttpsRedirection();
-
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
