@@ -1,4 +1,144 @@
 /* Sidebar Container */
+/*.sidebar {
+  background-color: #2c3e50;*/ /* Koyu gri mavi arka plan */
+  /*width: 250px;*/ /* Normal genişlik */
+  /*height: 100vh;
+  padding: 20px;
+  color: white;
+  font-family: 'Roboto', sans-serif;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  transition: width 0.3s ease;*/ /* Genişleme ve daralma geçiş animasyonu */
+/*}*/
+
+/* Sidebar küçüldüğünde */
+/*.sidebar.collapsed {
+  width: 80px;*/ /* Küçültülmüş genişlik */
+/*}*/
+
+/* Sidebar Header */
+/*.sidebar-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.sidebar-header h2 {
+  font-size: 24px;
+  color: #ecf0f1;
+  transition: opacity 0.3s ease;*/ /* Başlık metninin görünürlük geçişi */
+/*}*/
+
+/* Başlık, sidebar küçüldüğünde gizlenecek */
+/*.sidebar.collapsed .sidebar-header h2 {
+  opacity: 0;
+}*/
+
+/* Sidebar Menu */
+/*.sidebar-menu {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}*/
+
+/* Menu Item */
+/*.menu-item {
+  margin-bottom: 20px;
+}
+
+.menu-link {
+  display: block;
+  padding: 10px;
+  color: #ecf0f1;
+  font-size: 18px;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}*/
+
+/* Hover and Active States */
+/*.menu-link:hover {
+  background-color: #3498db;*/ /* Mavi buton rengi */
+  /*color: #fff;
+}
+
+.arrow {
+  margin-left: 10px;
+  font-size: 14px;
+  transition: transform 0.3s ease;*/ /* Ok simgesinin dönüşü */
+/*}*/
+
+/* Sidebar küçüldüğünde ok simgesini döndür */
+/*.sidebar.collapsed .arrow {
+  transform: rotate(90deg);*/ /* Ok simgesini döndürme */
+/*}*/
+
+/* Submenu */
+/*.submenu {
+  list-style: none;
+  padding-left: 20px;
+  display: none;
+  margin-top: 10px;
+}*/
+
+/* Show submenu when parent is clicked */
+/*.menu-item.open .submenu {
+  display: block;
+}*/
+
+/* Submenu links */
+/*.submenu li a {
+  color: #bdc3c7;
+  font-size: 16px;
+  text-decoration: none;
+  padding: 8px 0;
+  display: block;
+}
+
+.submenu li a:hover {
+  background-color: #2980b9;*/ /* Koyu mavi */
+/*}*/
+
+/* Sidebar Toggle Button */
+/*.toggle-btn {
+  display: none;
+}
+
+@media screen and (max-width: 768px) {
+  .sidebar {
+    width: 200px;
+  }
+
+  .sidebar-header h2 {
+    font-size: 20px;
+  }
+
+  .menu-link {
+    font-size: 16px;
+  }
+
+  .submenu li a {
+    font-size: 14px;
+  }
+
+  .toggle-btn {
+    display: none;
+    background-color: #3498db;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 4px;
+    width: 100%;
+    font-size: 24px;*/ /* Daha büyük görünmesi için */
+  /*}
+
+  .sidebar-header .toggle-btn {
+    display: block;
+    font-size: 30px;*/ /* Menü simgesi için daha büyük boyut */
+  /*}
+}*/
+/* Sidebar Container */
 .sidebar {
   background-color: #2c3e50; /* Koyu gri mavi arka plan */
   width: 250px; /* Normal genişlik */
@@ -105,36 +245,64 @@
 }
 
 @media screen and (max-width: 768px) {
+  /* Tablet ve telefon boyutlarında sidebar'ı incele */
   .sidebar {
-    width: 200px;
+    width: 70px; /* Sidebar'ı küçült */
   }
 
+  /* Header text ve menu link boyutlarını küçült */
   .sidebar-header h2 {
-    font-size: 20px;
+    font-size: 18px; /* Başlık font boyutunu küçült */
   }
 
   .menu-link {
-    font-size: 16px;
+    font-size: 14px; /* Menü font boyutunu küçült */
+    padding: 8px; /* Padding'i azalt */
   }
 
   .submenu li a {
-    font-size: 14px;
+    font-size: 12px; /* Submenu link font boyutunu küçült */
   }
 
+  .arrow {
+    font-size: 12px; /* Ok simgesi font boyutunu küçült */
+  }
+
+  /* Sidebar Toggle Button */
   .toggle-btn {
-    display: none;
+    display: block;
     background-color: #3498db;
     color: white;
-    padding: 10px;
-    text-align: center;
+    padding: 8px;
     cursor: pointer;
     border-radius: 4px;
-    width: 100%;
-    font-size: 24px; /* Daha büyük görünmesi için */
+    font-size: 20px;
   }
 
-  .sidebar-header .toggle-btn {
-    display: block;
-    font-size: 30px; /* Menü simgesi için daha büyük boyut */
+  /* Sidebar Collapse Effect */
+  .sidebar.collapsed {
+    width: 50px; /* Daha küçük bir sidebar genişliği */
+  }
+
+  /* Menü öğeleri sidebar küçüldüğünde görünmez olacak */
+  .sidebar.collapsed .menu-link {
+    display: none;
+  }
+
+  /* Menü simgeleri ve ok simgeleri daha küçük olacak */
+  .sidebar.collapsed .arrow {
+    display: block; /* Ok simgeleri gösterilecek */
+    margin-left: 5px;
+  }
+
+  /* Submenu'yu gizle, sidebar küçüldüğünde daha basitleştir */
+  .submenu {
+    display: none; /* Submenu'yu gizle */
+  }
+
+  /* Menüdeki ok simgelerinin rotasını kontrol et */
+  .sidebar.collapsed .arrow {
+    transform: rotate(90deg); /* Ok simgesi döner */
   }
 }
+

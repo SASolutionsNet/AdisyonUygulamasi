@@ -112,3 +112,23 @@
   height: auto; /* Orantılı olarak yüksekliği ayarlar */
   object-fit: contain; /* Resmin orantılı bir şekilde kutuya sığmasını sağlar */
 }
+/* Hamburger menüsünü gizle */
+.hamburger-menu {
+  display: none; /* Başlangıçta gizli */
+  background-color: transparent;
+  border: none;
+  font-size: 30px;
+  color: white;
+  cursor: pointer;
+}
+
+/* Mobil ekranlarda hamburger menüyü göster */
+@media (max-width: 768px) {
+  .header {
+    display: none; /* Header'ı gizle */
+  }
+
+  .hamburger-menu {
+    display: block; /* Hamburger menüyü göster */
+  }
+}

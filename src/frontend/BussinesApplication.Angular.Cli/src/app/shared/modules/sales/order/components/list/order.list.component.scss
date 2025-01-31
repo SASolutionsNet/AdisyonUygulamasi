@@ -1,9 +1,89 @@
+
+/* Container for boxes inside each tab */
+/*.box-container {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);*/ /* Varsayılan olarak 4 kutu genişliğinde */
+  /*grid-gap: 10px;*/ /* Kutular arasındaki boşluk */
+  /*padding: 20px;
+  width: 100%;*/ /* %100 genişlikte olmasını sağla */
+  /*box-sizing: border-box;*/ /* Padding ve border'ın genişliğe dahil edilmesini sağla */
+/*}*/
+
+/* Salon kutuları için özel stil */
+/*.salon .example-small-box {
+  background-color: #f1c40f;*/ /* Sarı renk */
+  /*color: white;
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.salon .example-small-box:hover {
+  background-color: #f39c12;*/ /* Hover rengini koyulaştır */
+  /*transform: scale(1.05);
+}
+
+.salon .example-small-box:active {
+  transform: scale(0.98);
+}*/
+
+/* Bahçe kutuları için özel stil */
+/*.bahce .example-small-box {
+  background-color: #2ecc71;*/ /* Yeşil renk */
+  /*color: white;
+  padding: 10px 20px;
+  font-size: 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.bahce .example-small-box:hover {
+  background-color: #27ae60;*/ /* Hover rengini koyulaştır */
+  /*transform: scale(1.05);
+}
+
+.bahce .example-small-box:active {
+  transform: scale(0.98);
+}*/
+
+/* Tablet ve telefon için responsive düzenlemeler */
+/*@media (max-width: 768px) {
+  .box-container {
+    grid-template-columns: repeat(2, 1fr);*/ /* 2 sütun yap */
+    /*padding: 10px;*/ /* Daha küçük padding */
+  /*}*/
+
+  /* Küçük ekranlarda kutuların daha iyi görünmesi için */
+  /*.example-small-box {
+    font-size: 12px;*/ /* Yazı boyutunu küçült */
+    /*padding: 8px 15px;*/ /* Padding'i küçült */
+  /*}
+}
+
+@media (max-width: 480px) {
+  .box-container {
+    grid-template-columns: 1fr;*/ /* Tek sütun yap */
+    /*padding: 5px;*/ /* Daha da küçültülmüş padding */
+  /*}
+
+  .example-small-box {
+    font-size: 10px;*/ /* Daha küçük yazı boyutu */
+    /*padding: 5px 10px;*/ /* Küçük padding */
+  /*}
+}*/
 /* Container for boxes inside each tab */
 .box-container {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4 kutu genişliğinde */
+  grid-template-columns: repeat(6, 1fr); /* Varsayılan olarak 6 kutu genişliğinde */
   grid-gap: 10px; /* Kutular arasındaki boşluk */
   padding: 20px;
+  width: 100%; /* %100 genişlikte olmasını sağla */
+  box-sizing: border-box; /* Padding ve border'ın genişliğe dahil edilmesini sağla */
 }
 
 /* Salon kutuları için özel stil */
@@ -46,4 +126,30 @@
 
 .bahce .example-small-box:active {
   transform: scale(0.98);
+}
+
+/* Tablet ve telefon için responsive düzenlemeler */
+@media (max-width: 768px) {
+  .box-container {
+    grid-template-columns: repeat(4, 1fr); /* 4 sütun yap */
+    padding: 10px; /* Daha küçük padding */
+  }
+
+  /* Küçük ekranlarda kutuların daha iyi görünmesi için */
+  .example-small-box {
+    font-size: 12px; /* Yazı boyutunu küçült */
+    padding: 8px 15px; /* Padding'i küçült */
+  }
+}
+
+@media (max-width: 480px) {
+  .box-container {
+    grid-template-columns: repeat(2, 1fr); /* 2 sütun yap */
+    padding: 5px; /* Daha da küçültülmüş padding */
+  }
+
+  .example-small-box {
+    font-size: 10px; /* Daha küçük yazı boyutu */
+    padding: 5px 10px; /* Küçük padding */
+  }
 }
