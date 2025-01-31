@@ -53,7 +53,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
 
-  displayedColumns: string[] = ['position', 'name', 'category', 'cost','action'];  // 'action' sütununu ekledik.
+  displayedColumns: string[] = ['name', 'cost','action'];  // 'action' sütununu ekledik.
   dataSource = new MatTableDataSource<Order>(this.ELEMENT_DATA);  // Veriyi doğru şekilde tanımlıyoruz
 
   constructor(
@@ -90,6 +90,8 @@ export class OrderDetailComponent implements OnInit, OnDestroy, AfterViewInit {
     console.log('Tıklanan satır:', element);  // Burada veriyi kontrol edebilirsiniz
     this.buttonClicked.emit(element);  // 'Order' objesini dışarıya gönderiyoruz
   }
-
-
+  // Yuvarlama işlemi
+  formatCost(cost: number): string {
+    return cost.toFixed(2);  // 2 ondalıklı basamağa yuvarlar
+  }
 }

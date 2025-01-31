@@ -1,4 +1,5 @@
-/* App Container */
+
+/* App Container Düzeni */
 .app-container {
   display: flex;
   flex-direction: row; /* Sidebar ve içerik yan yana */
@@ -9,7 +10,7 @@
 /* Sidebar Container */
 .sidebar {
   background-color: #2c3e50; /* Koyu gri mavi arka plan */
-  width: 250px; /* Normal genişlik */
+  width: 250px; /* Sidebar genişliği */
   height: 100vh; /* Tam yükseklik */
   padding: 20px;
   color: white;
@@ -17,28 +18,17 @@
   display: flex;
   flex-direction: column;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-  position: fixed; /* Sabit konum */
+  position: relative; /* Sidebar'ı sabit pozisyon yerine, içerik ile uyumlu yapalım */
   z-index: 1; /* Sidebar'ı ön planda tut */
 }
 
 /* Main content area */
 .main-content {
-  width: 95%;
-  margin-left: 0px; /* Sidebar genişliğinden kadar boşluk bırak */
-  flex-grow: 1.5; /* İçeriğin genişlemesi için */
-  overflow-y: auto; /* İçerik fazla olduğunda kaydırma ekler */
+  margin-left: 0px; /* Sidebar genişliği kadar boşluk bırak */
   padding: 20px; /* İçeriğe padding ekler */
-  height: 90%; /* Yüksekliği %90 yaparak kısalt */
-}
-
-.mat-content {
-  width: 95%;
-  margin-left: 0px; /* Sidebar genişliğinden kadar boşluk bırak */
-  flex-grow: 1.5; /* İçeriğin genişlemesi için */
+  flex-grow: 1; /* İçeriğin genişlemesi için */
+  height: 100vh; /* Yüksekliği tam yapalım */
   overflow-y: auto; /* İçerik fazla olduğunda kaydırma ekler */
-  padding: 20px; /* İçeriğe padding ekler */
-  height: 80%; /* Yüksekliği %80 yaparak kısalt */
-  margin-top: 50px; /* Yukarıdan boşluk ekler */
 }
 
 /* Header */
@@ -55,25 +45,6 @@ header {
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Content Styling */
-.sasolution-pscategory-list {
-  margin-top: 60px; /* Header altındaki alana yerleşir */
-}
-
-/* Optional - To make everything responsive */
-@media (max-width: 768px) {
-  .sidebar {
-    width: 250px;
-  }
-
-  .main-content {
-    margin-left: 200px; /* Sidebar genişliği ile uyumlu */
-  }
-
-  header {
-    height: 50px;
-  }
-}
 /* Başlık kısmı için stil */
 .category-card-title {
   font-size: 24px; /* Başlık font boyutu */
@@ -88,6 +59,7 @@ header {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Hafif gölge efekti */
   transition: all 0.3s ease; /* Animasyon */
 }
+
 /* Başlık üzerine gelindiğinde animasyon */
 .category-card-title:hover {
   background-color: #3498db; /* Hover rengini mavi yap */
@@ -99,4 +71,51 @@ header {
 /* Başlık kutusuna daha modern bir görünüm vermek için */
 mat-card-header {
   border-bottom: 2px solid #3498db; /* Başlık altına ince mavi çizgi ekleyelim */
+}
+
+/* Tablet ve Telefon İçin Responsive Düzenlemeler */
+@media (max-width: 768px) {
+  /* Sidebar'ı ekranın solunda, daha küçük bir genişlikle yapalım */
+  .sidebar {
+    width: 200px; /* Sidebar genişliğini küçült */
+    position: relative; /* Sabit pozisyonu kaldır */
+  }
+
+  /* Main Content'i sidebar'ın altına yerleştiriyoruz ve ona göre ayar yapıyoruz */
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+    padding: 15px; /* Daha küçük padding */
+  }
+
+  /* Header'ın yüksekliğini küçük ekranlarda daha uygun hale getir */
+  header {
+    height: 50px;
+    padding: 5px 10px;
+  }
+
+  .category-card-title {
+    font-size: 20px; /* Başlık font boyutunu küçült */
+  }
+}
+
+@media (max-width: 480px) {
+  .sidebar {
+    width: 100%; /* Sidebar'ı ekranın tamamına yayalım */
+    height: auto; /* Sidebar'ın yüksekliğini içeriğe göre ayarlayalım */
+  }
+
+  .main-content {
+    margin-left: 0; /* Sidebar'ı tam genişlik yapınca sol boşluğu kaldır */
+    padding: 10px; /* İçeriğe daha küçük padding ekleyelim */
+  }
+
+  header {
+    height: 45px; /* Başlık yüksekliğini daha da küçült */
+    padding: 10px; /* Başlık içindeki padding'i daha küçük yap */
+  }
+
+  .category-card-title {
+    font-size: 18px; /* Başlık boyutunu daha da küçült */
+  }
 }

@@ -1,115 +1,137 @@
-/* Genel stil */
-.tabs {
-  margin: 20px;
-}
-
-/* Flex düzeniyle grid ve tabloyu yan yana yerleştir */
-.tab-content {
+/* Genel container düzeni */
+div {
   display: flex;
-  gap: 20px; /* Grid ve tablo arasındaki boşluk */
-  align-items: flex-start;
+  width: 100%;
   justify-content: space-between;
+  gap: 20px; /* Öğeler arasındaki boşluk */
 }
 
-/* Grid düzeni */
-.grid-list {
-  background-color: #f1f1f1;
-  border-radius: 10px;
-  padding: 10px;
-  flex: 1 1 45%; /* Grid için yüzde 45'lik alan */
+/* Sol taraftaki Tab ve Grid Yapısı */
+div > div:first-child {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 20px;
 }
 
-/* Her bir grid öğesi */
-.grid-tile {
-  background-color: #3498db;
+/* Tab Yapısının Genel Stili */
+.mat-tab-group.tabs {
+  width: 100%; /* Tüm alanı kaplasın */
+  background-color: #3498db; /* Sekme arka planı */
   color: white;
+  border-radius: 5px; /* Yuvarlatılmış köşeler */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Hafif gölge efekti */
+  margin-bottom: 30px; /* Tablar ile altındaki grid arasında boşluk */
+  display: flex;
+  flex-wrap: wrap; /* Tablar alt satırlara geçebilsin */
+  justify-content: space-between; /* Sekmelerin yatayda düzgün dağılması */
+}
+
+.mat-grid-tile {
+  background-color: #3498db; /* Grid hücrelerinin arka planı */
+  color: white; /* Yazı rengi */
+  font-weight: bold;
+  border-radius: 5px;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-radius: 8px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  padding: 20px;
 }
 
-/* Hover efekti */
-.grid-tile:hover {
-  background-color: #2980b9;
-  transform: scale(1.05);
-}
-
-/* Tablo detayları için stil */
-.tile-details {
-  background-color: #fff;
-  border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  flex: 1 1 45%; /* Tablo için yüzde 45'lik alan */
-  max-width: 600px; /* Maksimum genişlik */
-  height: auto;
-  overflow-y: auto;
-  position: relative;
-}
-
-/* Tablo düzeni */
-table.mat-table {
-  width: 100%;
-  border-spacing: 0;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-/* Tablo başlıkları */
-th.mat-header-cell {
-  background-color: #3498db;
-  color: white;
-  padding: 12px 15px;
-  text-align: left;
-  font-weight: 600;
-  font-size: 16px;
-}
-
-/* Tablo hücreleri */
-td.mat-cell {
-  padding: 12px 15px;
-  border-bottom: 1px solid #e0e0e0;
-  font-size: 14px;
-}
-
-/* Tablo satır hover efekti */
-tr.mat-row:hover {
-  background-color: #f5f5f5;
-  cursor: pointer;
-}
-
-/* Tablo alt çizgisi */
-tr.mat-header-row {
-  border-bottom: 2px solid #3498db;
-}
-
-/* Tabloyu yuvarlatmak için */
-table.mat-table, th.mat-header-cell, td.mat-cell {
+/* Tablar için Genel Stiller */
+.mat-tab-group .mat-tab-label {
+  font-size: 12px; /* Sekme başlıkları için font boyutunu küçültüyoruz */
+  text-align: center;
+  padding: 5px; /* Padding'i küçültüyoruz */
+  margin: 2px;
   border-radius: 5px;
+  cursor: pointer;
+  background-color: #2980b9;
+  transition: background-color 0.3s ease;
+  width: 20%; /* 5 sekme yan yana sığacak şekilde genişlik ayarı */
+  height: 30px; /* Sekmelerin yüksekliğini küçültüyoruz */
+  box-sizing: border-box; /* Padding ve margin hesaplamalarına dahil olmasın */
+  margin-bottom: 10px; /* Sekmelerin arasında dikey boşluk */
 }
 
-/* Scrollbar */
-.tile-details::-webkit-scrollbar {
-  width: 8px;
+/* Sekme üzerine gelindiğinde renk değişikliği */
+.mat-tab-group .mat-tab-label:hover {
+  background-color: #1abc9c; /* Hover rengi */
 }
 
-.tile-details::-webkit-scrollbar-thumb {
-  background-color: #3498db;
-  border-radius: 10px;
+/* Aktif sekme için farklı renk */
+.mat-tab-group .mat-tab-label.mat-tab-label-active {
+  background-color: #1abc9c; /* Aktif sekme için renk */
 }
 
-.tile-details::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
+/* Tablet ve telefon için responsive düzenlemeler */
 @media (max-width: 768px) {
   div {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Sekmeleri 2 satırda ve her satırda 4 sekme olacak şekilde düzenle */
+  .mat-tab-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
     width: 100%;
+    margin-bottom: 30px; /* Tablar ile tablonun arasındaki boşluğu artır */
+  }
+
+  .mat-tab-group .mat-tab-label {
+    font-size: 12px; /* Daha küçük font boyutu */
+    padding: 5px;
+    margin: 0; /* Sekmeler arasındaki boşluğu azalt */
+    width: 45%; /* Her satırda 2 sekme olacak şekilde düzenle */
+    box-sizing: border-box;
+  }
+
+  /* Grid Yapısı (tab kısmında) */
+  .mat-grid-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 tile olacak şekilde düzenlendi */
+    gap: 10px;
+    margin-bottom: 40px; /* Grid ve tablo arasındaki boşluğu artır */
+  }
+
+  /* Grid Tile'ları daha küçük yapalım */
+  .grid-tile {
+    font-size: 12px; /* Font boyutunu küçült */
+    height: 7px; /* Grid hücrelerini daha küçük yap */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #3498db; /* Varsayılan renk */
+    color: white;
+    font-weight: bold;
+    border-radius: 1px; /* Yuvarlatılmış köşeler */
+  }
+
+  /* Tablo ve Diğer Alanlar */
+  .table-container {
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px; /* Tabloyu biraz aşağıya kaydırmak için */
+  }
+
+  /* Tablo içeriği */
+  .mat-header-cell,
+  .mat-cell {
+    font-size: 12px; /* Font boyutunu küçült */
+    padding: 6px;
+  }
+
+  /* Silme butonu */
+  button.mat-icon-button {
+    padding: 4px;
+    background-color: #e74c3c;
+  }
+
+  /* Mobile-friendly table */
+  table.mat-table {
+    font-size: 12px; /* Tabloyu küçük ekranlara uygun hale getirelim */
   }
 }
-

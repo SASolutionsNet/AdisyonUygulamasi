@@ -27,7 +27,14 @@ interface Order {
 export class SalesOrderDetailComponent implements OnInit {
 
   tabsData = [
-    { label: 'Sık Kullanılanlar', tiles: ["Çay", "Kahve", "Oralet", "3/4 Tost", "Gofret"] },
+    {
+      label: 'Sık Kullanılanlar', tiles: [
+        "Çay", "Kahve", "Oralet", "Salep",
+        "Soda", "M.Soda", "Gazoz", "Kola",
+        "Gofret", "Biskuvi", "Kek", "Snackers",
+        "Simit", "1/2 Tost", "3/4 Tost", "Tam Tost",
+      ]
+    },
     { label: 'Sıcak Meşrubatlar', tiles: ["Çay", "Kahve", "Oralet", "S. Çikolata", "Salep"] },
     { label: 'Soğuk Meşrubatlar', tiles: ["Ayran", "Soda", "Gazoz", "M. Soda", "Fanta"] }
   ];
