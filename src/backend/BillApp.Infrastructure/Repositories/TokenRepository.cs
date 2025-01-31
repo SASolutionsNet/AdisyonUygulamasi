@@ -1,14 +1,7 @@
-﻿using BillApp.Application.Interfaces.Repositories;
-using BillApp.Application.Utilities;
+﻿using BillApp.Application.Interfaces.IRepositories;
 using BillApp.Domain.RevokedToken;
-using BillApp.Domain.User;
 using BillApp.Infrastructure.Contexts;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BillApp.Infrastructure.Repositories
 {

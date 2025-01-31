@@ -12,14 +12,11 @@ namespace BillApp.Application.Models.Base
         [Required]
         public Guid Id { get; set; }
         [Required]
-        public string CreatedUser { get; set; }
+        public required string CreatedUser { get; set; }
         [Required]
-        public DateTime CreatedDate { get; set; }
-        [Required]
-        public string UpdatedUser { get; set; }
-        [Required]
-        public DateTime UpdatedDate { get; set; }
-        [Required]
-        public bool IsDel { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.UtcNow;
+        public string? UpdatedUser { get; set; }
+        public DateTime? UpdatedDate { get; set; }
+        public bool IsDel { get; set; } = false;
     }
 }

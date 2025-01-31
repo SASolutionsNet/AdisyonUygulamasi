@@ -1,5 +1,5 @@
-﻿using BillApp.Application.Interfaces.Repositories;
-using BillApp.Application.Interfaces.Services;
+﻿using BillApp.Application.Interfaces.IRepositories;
+using BillApp.Application.Interfaces.IServices;
 using BillApp.Application.Utilities;
 using BillApp.Domain.User;
 using Microsoft.Extensions.Configuration;

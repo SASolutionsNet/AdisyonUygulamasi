@@ -1,9 +1,7 @@
-﻿using BillApp.Application.Interfaces.Repositories;
-using BillApp.Domain.RevokedToken;
+﻿using BillApp.Application.Interfaces.IRepositories;
 using BillApp.Domain.User;
 using BillApp.Infrastructure.Contexts;
 using Microsoft.AspNetCore.Identity;
-using System.Reflection.Metadata.Ecma335;
 
 namespace BillApp.Infrastructure.Repositories
 {

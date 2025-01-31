@@ -1,6 +1,6 @@
 ﻿using BillApp.Application.Interfaces;
-using BillApp.Application.Interfaces.Repositories;
-using BillApp.Application.Interfaces.Services;
+using BillApp.Application.Interfaces.IRepositories;
+using BillApp.Application.Interfaces.IServices;
 using BillApp.Application.Services;
 using BillApp.Domain.User;
 using BillApp.Infrastructure.Contexts;
@@ -31,15 +31,21 @@ namespace BillApp.Infrastructure
             services.AddIdentity<User, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddApiEndpoints();
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<ITokenRepository, TokenRepository>();
-            services.AddScoped<ITokenService, TokenService>();
 
             services.AddHttpContextAccessor();
-            services.AddScoped<ICurrentUserService, CurrentUserService>();
-
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+
+            // Adding repositories
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<ITokenRepository, TokenRepository>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+
+            // Adding services
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<ICurrentUserService, CurrentUserService>();
+            services.AddScoped<ICategoryService, CategoryService>();
 
 
             // Add JWT Authentication

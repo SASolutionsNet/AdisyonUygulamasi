@@ -23,8 +23,4 @@
 		<ProjectReference Include="..\BillApp.Infrastructure\BillApp.Infrastructure.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <Folder Include="Models\User\Response\" />
-	</ItemGroup>
-
 </Project>

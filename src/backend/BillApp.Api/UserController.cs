@@ -1,16 +1,12 @@
 ﻿using AutoMapper;
 using BillApp.Api.Models.User.Request;
+using BillApp.Api.Models.User.Response;
 using BillApp.Application.Contracts.User;
-using BillApp.Application.Interfaces.Services;
+using BillApp.Application.Interfaces.IServices;
 using BillApp.Application.Models.User;
-using BillApp.Application.Services;
-using BillApp.Application.Utilities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
 
@@ -49,18 +45,20 @@ namespace BillApp.Api
                 return Unauthorized("User is not authenticated.");
             }
 
-            var user = await _userService.GetUserById(userId);
-            if (user == null)
+            var result = await _userService.GetUserById(userId);
+
+            if (result.Success)
             {
-                return NotFound("User not found.");
+                if (result.Data == null)
+                    return NotFound("User not found.");
+
+                var mappedResult = _mapper.Map<UserDto, UserResponse>(result.Data);
+
+                return Ok(mappedResult);
             }
 
-            return Ok(new
-            {
-                Username = user.Data.UserName,
-                Email = user.Data.Email,
-                Role = user.Data.Role
-            });
+            return StatusCode(500, "Request failed.");
+
         }
 
 
@@ -87,12 +85,16 @@ namespace BillApp.Api
             var mappedRequest = _mapper.Map<UserLoginRequest, UserLoginDto>(request);
 
             var result = await _userService.LoginAsync(mappedRequest);
-            if (string.IsNullOrEmpty(result.Data))
+
+            if (result.Success)
             {
-                return Unauthorized(result.Message);
+                if (string.IsNullOrEmpty(result.Data))
+                    return Unauthorized(result.Message);
+                return Ok(result);
             }
 
-            return Ok(result);
+            return StatusCode(500, "Request failed.");
+
         }
 
         [Authorize]

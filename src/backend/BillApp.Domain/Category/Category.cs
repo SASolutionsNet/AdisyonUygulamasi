@@ -9,10 +9,8 @@ namespace BillApp.Domain.Category
 {
     public class Category : BaseModel
     {
-        [Required]
-        public string CategoryCode { get; set; }
+        public required string CategoryCode { get; set; }
 
-        [Required]
-        public string Name { get; set; }
+        public required string Name { get; set; }
     }
 }

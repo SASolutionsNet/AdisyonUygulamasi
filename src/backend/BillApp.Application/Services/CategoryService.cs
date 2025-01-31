@@ -1,39 +1,148 @@
-﻿using BillApp.Application.Interfaces.Services;
+﻿using AutoMapper;
+using BillApp.Application.Interfaces.IServices;
+using BillApp.Application.Interfaces.IRepositories;
+using BillApp.Application.Models.Category;
 using BillApp.Application.Utilities;
 using BillApp.Domain.Category;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace BillApp.Application.Services
 {
     public class CategoryService : ICategoryService
     {
-        public Task<ServiceResponse<Category>> Create(Category dto)
+        private readonly ICategoryRepository _categoryRepository;
+        private readonly ICurrentUserService _currentUserService;
+        private readonly IMapper _mapper;
+
+
+        public CategoryService(ICategoryRepository categoryRepository, ICurrentUserService currentUserService, IMapper mapper)
         {
-            throw new NotImplementedException();
+            _categoryRepository = categoryRepository;
+            _currentUserService = currentUserService;
+            _mapper = mapper;
         }
 
-        public Task<ServiceResponse<Category>> Delete(Category dto)
+        public async Task<ServiceResponse<CategoryDto>> Create(CategoryDto dto)
         {
-            throw new NotImplementedException();
+            if (dto == null)
+                return new ServiceResponse<CategoryDto> { Data = null, Message = "Invalid Model", Success = false };
+
+            var mappedModel = _mapper.Map<CategoryDto, Category>(dto);
+
+
+            mappedModel.CreatedUser = _currentUserService.Username ?? "";
+
+            var createdCategory = await _categoryRepository.CreateAsync(mappedModel);
+
+            var mappedReturnModel = _mapper.Map<Category, CategoryDto>(mappedModel);
+
+            return new ServiceResponse<CategoryDto>
+            {
+                Data = mappedReturnModel,
+                Success = true,
+                Message = "Category created successfully."
+            };
         }
 
-        public Task<ServiceResponse<Category>> GetAll(Category dto)
+        public async Task<ServiceResponse<CategoryDto>> Delete(Guid id)
         {
-            throw new NotImplementedException();
+            if (id == Guid.Empty)
+                return new ServiceResponse<CategoryDto> { Message = "Invalid Model", Success = false };
+
+            var category = await _categoryRepository.GetByIdAsync(id);
+
+            if (category == null)
+            {
+                return new ServiceResponse<CategoryDto>
+                {
+                    Success = false,
+                    Message = "Category not found."
+                };
+            }
+
+            var deletedCategory = await _categoryRepository.DeleteAsync(category);
+
+            var mappedReturnModel = _mapper.Map<Category, CategoryDto>(deletedCategory);
+
+            return new ServiceResponse<CategoryDto>
+            {
+                Data = mappedReturnModel,
+                Success = true,
+                Message = "Category deleted (soft delete applied)."
+            };
         }
 
-        public Task<ServiceResponse<Category>> GetById(Category dto)
+        public async Task<ServiceResponse<IEnumerable<CategoryDto>>> GetAll()
         {
-            throw new NotImplementedException();
+            var categories = await _categoryRepository.GetAllAsync();
+
+            var mappedReturnModel = _mapper.Map<IEnumerable<Category>, IEnumerable<CategoryDto>>(categories);
+            return new ServiceResponse<IEnumerable<CategoryDto>>
+            {
+                Data = mappedReturnModel,
+                Success = true,
+                Message = "Categories retrieved successfully."
+            };
         }
 
-        public Task<ServiceResponse<Category>> Update(Category dto)
+        public async Task<ServiceResponse<CategoryDto>> GetById(Guid id)
         {
-            throw new NotImplementedException();
+
+            if (id == Guid.Empty)
+                return new ServiceResponse<CategoryDto> { Message = "Invalid Model", Success = false };
+
+            var category = await _categoryRepository.GetByIdAsync(id);
+
+            if (category == null)
+            {
+                return new ServiceResponse<CategoryDto>
+                {
+                    Success = true,
+                    Message = "Category not found."
+                };
+            }
+
+            var mappedReturnModel = _mapper.Map<Category, CategoryDto>(category);
+
+            return new ServiceResponse<CategoryDto>
+            {
+                Data = mappedReturnModel,
+                Success = true,
+                Message = "Category retrieved successfully."
+            };
+        }
+
+        public async Task<ServiceResponse<CategoryDto>> Update(CategoryDto dto)
+        {
+
+            if (dto == null)
+                return new ServiceResponse<CategoryDto> { Message = "Invalid Model", Success = false };
+
+            var category = await _categoryRepository.GetByIdAsync(dto.Id);
+
+            if (category == null)
+            {
+                return new ServiceResponse<CategoryDto>
+                {
+                    Success = false,
+                    Message = "Category not found."
+                };
+            }
+
+            category.Name = dto.Name;
+            category.CategoryCode = dto.CategoryCode;
+
+            var updatedCategory = await _categoryRepository.UpdateAsync(category);
+
+            var mappedReturnModel = _mapper.Map<Category, CategoryDto>(updatedCategory);
+
+            return new ServiceResponse<CategoryDto>
+            {
+                Data = mappedReturnModel,
+                Success = true,
+                Message = "Category updated successfully."
+            };
         }
     }
+
 }
