@@ -6,6 +6,7 @@ using BillApp.Application.Models.Category;
 using BillApp.Application.Utilities;
 using BillApp.Domain.Category;
 using BillApp.Domain.Product;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 
@@ -113,6 +114,19 @@ namespace BillApp.Application.Services
                 Data = mappedReturnModel,
                 Success = true,
                 Message = "Product retrieved successfully."
+            };
+        }
+
+        public async Task<ServiceResponse<IEnumerable<ProductDto>>> GetFavoriteProducts()
+        {
+            var products = _productRepository.GetQueryable().Where(x => x.IsFavorite == true).ToListAsync();
+
+            var mappedReturnModel = _mapper.Map<IEnumerable<Product>, IEnumerable<ProductDto>>(products.Result);
+            return new ServiceResponse<IEnumerable<ProductDto>>
+            {
+                Data = mappedReturnModel,
+                Success = true,
+                Message = "Favorite products found"
             };
         }
 

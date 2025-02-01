@@ -42,23 +42,14 @@ namespace BillApp.Infrastructure.Repositories
             return existingProduct;
         }
 
-        public async Task<Product> RestoreAsync(Guid id)
-        {
-            var product = await _context.Products.FindAsync(id);
-            if (product == null)
-            {
-                throw new KeyNotFoundException("Product not found.");
-            }
-
-            product.IsDel = false;
-            await _context.SaveChangesAsync();
-
-            return product;
-        }
-
         public async Task<IEnumerable<Product>> GetAllAsync()
         {
             return await _context.Products.Include(p => p.Category).ToListAsync();
+        }
+
+        public IQueryable<Product> GetQueryable()
+        {
+            return _context.Products.AsQueryable();
         }
 
         public async Task<Product?> GetByIdAsync(Guid id)

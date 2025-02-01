@@ -1,4 +1,5 @@
 ﻿using BillApp.Application.Interfaces;
+using BillApp.Domain.Bill;
 using BillApp.Domain.Category;
 using BillApp.Domain.Product;
 using BillApp.Domain.RevokedToken;
@@ -18,6 +19,7 @@ namespace BillApp.Infrastructure.Contexts
         public DbSet<Category> Categories { get; set; }
         public DbSet<RevokedToken> RevokedTokens { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<Bill> Bills { get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
@@ -42,6 +44,8 @@ namespace BillApp.Infrastructure.Contexts
                 .WithMany(c => c.Products) // Category has many Products
                 .HasForeignKey(p => p.CategoryId) // Foreign key setup
                 .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete if needed
+
+            builder.Entity<Bill>().ToTable("Bill", "BillApp").HasQueryFilter(x => x.IsDel == false);
 
             builder.Entity<RevokedToken>().ToTable("RevokedTokens", "User");
 
