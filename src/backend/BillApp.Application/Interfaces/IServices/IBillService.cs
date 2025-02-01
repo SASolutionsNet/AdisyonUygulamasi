@@ -1,4 +1,5 @@
 ﻿using BillApp.Application.Contracts.Bill;
+using BillApp.Application.Utilities;
 using BillApp.Domain.Bill;
 using System;
 using System.Collections.Generic;
@@ -10,5 +11,6 @@ namespace BillApp.Application.Interfaces.IServices
 {
     public interface IBillService : IApplicationService<BillDto>
     {
+        Task<ServiceResponse<IEnumerable<BillDto>>> GetAllOpenTables();
     }
 }

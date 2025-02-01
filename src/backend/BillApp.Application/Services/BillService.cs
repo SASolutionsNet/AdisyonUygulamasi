@@ -93,6 +93,19 @@ namespace BillApp.Application.Services
             };
         }
 
+        public async Task<ServiceResponse<IEnumerable<BillDto>>> GetAllOpenTables()
+        {
+            var bills = _billRepository.GetQueryable().Where(x => x.IsClosed == false);
+
+            var mappedReturnModel = _mapper.Map<IEnumerable<Bill>, IEnumerable<BillDto>>(bills);
+            return new ServiceResponse<IEnumerable<BillDto>>
+            {
+                Data = mappedReturnModel,
+                Success = true,
+                Message = "Open tables retrieved successfully."
+            };
+        }
+
         public async Task<ServiceResponse<BillDto>> GetById(Guid id)
         {
 
