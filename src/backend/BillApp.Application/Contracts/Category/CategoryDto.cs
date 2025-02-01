@@ -10,10 +10,7 @@ namespace BillApp.Application.Models.Category
 {
     public class CategoryDto : BaseDto
     {
-        [Required]
         public string CategoryCode { get; set; }
-
-        [Required]
         public string Name { get; set; }
     }
 }

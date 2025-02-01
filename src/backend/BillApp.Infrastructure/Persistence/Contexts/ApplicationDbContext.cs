@@ -35,7 +35,13 @@ namespace BillApp.Infrastructure.Contexts
             builder.Entity<User>().Property(u => u.AppCode).HasMaxLength(10);
 
             builder.Entity<Category>().ToTable("Category", "BillApp").HasQueryFilter(x => x.IsDel == false);
+
             builder.Entity<Product>().ToTable("Product", "BillApp").HasQueryFilter(x => x.IsDel == false);
+            builder.Entity<Product>()
+                .HasOne(p => p.Category) // Product has one Category
+                .WithMany(c => c.Products) // Category has many Products
+                .HasForeignKey(p => p.CategoryId) // Foreign key setup
+                .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete if needed
 
             builder.Entity<RevokedToken>().ToTable("RevokedTokens", "User");
 

@@ -2,8 +2,8 @@
 {
     public class CategoryUpdateRequest
     {
-        public required Guid Id { get; set; }
-        public required string Name { get; set; }
-        public required string CategoryCode { get; set; }
+        public  Guid Id { get; set; }
+        public string? Name { get; set; }
+        public string? CategoryCode { get; set; }
     }
 }
