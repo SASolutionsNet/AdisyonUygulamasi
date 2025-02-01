@@ -10,5 +10,7 @@ namespace BillApp.Domain.Bill
     {
         public string Table { get; set; }
         public bool IsClosed { get; set; }
+
+        public List<Order.Order> Orders { get; set; } = new();
     }
 }

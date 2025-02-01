@@ -38,9 +38,9 @@ namespace BillApp.Application.Services
 
             mappedModel.CreatedUser = _currentUserService.Username ?? "";
 
-            var createdCategory = await _billRepository.CreateAsync(mappedModel);
+            var createdBill = await _billRepository.CreateAsync(mappedModel);
 
-            var mappedReturnModel = _mapper.Map<Bill, BillDto>(mappedModel);
+            var mappedReturnModel = _mapper.Map<Bill, BillDto>(createdBill);
 
             return new ServiceResponse<BillDto>
             {
@@ -69,9 +69,9 @@ namespace BillApp.Application.Services
             bill.UpdatedDate = DateTime.UtcNow;
 
 
-            var deletedCategory = await _billRepository.DeleteAsync(bill);
+            var deletedBill = await _billRepository.DeleteAsync(bill);
 
-            var mappedReturnModel = _mapper.Map<Bill, BillDto>(deletedCategory);
+            var mappedReturnModel = _mapper.Map<Bill, BillDto>(deletedBill);
 
             return new ServiceResponse<BillDto>
             {

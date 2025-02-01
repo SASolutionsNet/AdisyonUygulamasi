@@ -1,5 +1,6 @@
 ﻿using BillApp.Domain.Bill;
 using BillApp.Domain.Category;
+using BillApp.Domain.Order;
 using BillApp.Domain.Product;
 using BillApp.Domain.RevokedToken;
 using BillApp.Domain.User;
@@ -14,6 +15,8 @@ namespace BillApp.Application.Interfaces
         DbSet<RevokedToken> RevokedTokens { get; set; }
         DbSet<Product> Products { get; set; }
         DbSet<Bill> Bills { get; set; }
+        DbSet<Order> Orders { get; set; }
+
 
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }

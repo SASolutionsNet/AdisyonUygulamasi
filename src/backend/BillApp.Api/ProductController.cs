@@ -126,5 +126,26 @@ namespace BillApp.Api
             return StatusCode(500, "Request Failed");
 
         }
+
+        [HttpGet("get-favorites")]
+        [Authorize()]
+        public async Task<IActionResult> GetFavorites()
+        {
+
+            var result = await _productService.GetFavoriteProducts();
+
+            if (result.Success)
+            {
+                if (result.Data == null)
+                    return NotFound("Products not found.");
+
+                var mappedResult = _mapper.Map<IEnumerable<ProductDto>, IEnumerable<ProductResponse>>(result.Data);
+
+                return Ok(mappedResult);
+            }
+
+            return StatusCode(500, "Request Failed");
+
+        }
     }
 }

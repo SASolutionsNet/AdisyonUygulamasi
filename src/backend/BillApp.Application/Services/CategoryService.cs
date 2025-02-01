@@ -36,7 +36,7 @@ namespace BillApp.Application.Services
 
             var createdCategory = await _categoryRepository.CreateAsync(mappedModel);
 
-            var mappedReturnModel = _mapper.Map<Category, CategoryDto>(mappedModel);
+            var mappedReturnModel = _mapper.Map<Category, CategoryDto>(createdCategory);
 
             return new ServiceResponse<CategoryDto>
             {
