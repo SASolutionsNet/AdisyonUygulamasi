@@ -27,6 +27,14 @@ namespace BillApp.Application.Services
 
             var mappedModel = _mapper.Map<OrderDto, Order>(dto);
 
+            var existingProduct = _orderRepository.GetQueryable().Where(p => p.BillId == dto.BillId && p.ProductId == dto.ProductId).ToList();
+
+            if (existingProduct != null && existingProduct.Count != 0)
+            {
+                dto.Id = existingProduct[0].Id;
+                dto.Quantity = existingProduct[0].Quantity + 1;
+                return await Update(dto);
+            }
 
             mappedModel.CreatedUser = _currentUserService.Username ?? "";
 
