@@ -2,10 +2,9 @@
 using BillApp.Application.Contracts.Product;
 using BillApp.Application.Interfaces.IRepositories;
 using BillApp.Application.Interfaces.IServices;
-using BillApp.Application.Models.Category;
 using BillApp.Application.Utilities;
-using BillApp.Domain.Category;
 using BillApp.Domain.Product;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 
@@ -34,9 +33,9 @@ namespace BillApp.Application.Services
 
             mappedModel.CreatedUser = _currentUserService.Username ?? "";
 
-            var createdCategory = await _productRepository.CreateAsync(mappedModel);
+            var createdProduct = await _productRepository.CreateAsync(mappedModel);
 
-            var mappedReturnModel = _mapper.Map<Product, ProductDto>(mappedModel);
+            var mappedReturnModel = _mapper.Map<Product, ProductDto>(createdProduct);
 
             return new ServiceResponse<ProductDto>
             {
@@ -116,6 +115,19 @@ namespace BillApp.Application.Services
             };
         }
 
+        public async Task<ServiceResponse<IEnumerable<ProductDto>>> GetFavoriteProducts()
+        {
+            var products = _productRepository.GetQueryable().Where(x => x.IsFavorite == true).ToListAsync();
+
+            var mappedReturnModel = _mapper.Map<IEnumerable<Product>, IEnumerable<ProductDto>>(products.Result);
+            return new ServiceResponse<IEnumerable<ProductDto>>
+            {
+                Data = mappedReturnModel,
+                Success = true,
+                Message = "Favorite products found"
+            };
+        }
+
         public async Task<ServiceResponse<ProductDto>> Update(ProductDto dto)
         {
             if (dto == null)
@@ -128,7 +140,7 @@ namespace BillApp.Application.Services
                 return new ServiceResponse<ProductDto>
                 {
                     Success = false,
-                    Message = "Category not found."
+                    Message = "Product not found."
                 };
             }
 
@@ -138,6 +150,8 @@ namespace BillApp.Application.Services
                 product.Price = dto.Price;
             if (!dto.CategoryId.Equals(Guid.Empty))
                 product.CategoryId = dto.CategoryId;
+            if (!dto.IsFavorite.Equals(product.IsFavorite))
+                product.IsFavorite = dto.IsFavorite;
             product.UpdatedDate = DateTime.UtcNow;
             product.UpdatedUser = _currentUserService.Username ?? "";
 

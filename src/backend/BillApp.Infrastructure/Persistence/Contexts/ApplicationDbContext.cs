@@ -1,10 +1,13 @@
 ﻿using BillApp.Application.Interfaces;
+using BillApp.Domain.Bill;
 using BillApp.Domain.Category;
+using BillApp.Domain.Order;
 using BillApp.Domain.Product;
 using BillApp.Domain.RevokedToken;
 using BillApp.Domain.User;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
 
 namespace BillApp.Infrastructure.Contexts
 {
@@ -18,6 +21,8 @@ namespace BillApp.Infrastructure.Contexts
         public DbSet<Category> Categories { get; set; }
         public DbSet<RevokedToken> RevokedTokens { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<Bill> Bills { get; set; }
+        public DbSet<Order> Orders{ get; set; }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
@@ -42,6 +47,23 @@ namespace BillApp.Infrastructure.Contexts
                 .WithMany(c => c.Products) // Category has many Products
                 .HasForeignKey(p => p.CategoryId) // Foreign key setup
                 .OnDelete(DeleteBehavior.Restrict); // Prevent cascade delete if needed
+
+            builder.Entity<Bill>().ToTable("Bill", "BillApp").HasQueryFilter(x => x.IsDel == false);
+
+            builder.Entity<Order>().ToTable("Order", "BillApp").HasQueryFilter(x => x.IsDel == false);
+
+
+            builder.Entity<Order>()
+                .HasOne(o => o.Bill)
+                .WithMany(b => b.Orders) // A Bill can have multiple Orders
+                .HasForeignKey(o => o.BillId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Order>()
+                .HasOne(o => o.Product)
+                .WithMany() // A Product can be part of multiple Orders
+                .HasForeignKey(o => o.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<RevokedToken>().ToTable("RevokedTokens", "User");
 

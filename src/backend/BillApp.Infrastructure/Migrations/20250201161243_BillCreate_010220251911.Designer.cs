@@ -3,6 +3,7 @@ using System;
 using BillApp.Infrastructure.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BillApp.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250201161243_BillCreate_010220251911")]
+    partial class BillCreate_010220251911
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -90,46 +93,6 @@ namespace BillApp.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Category", "BillApp");
-                });
-
-            modelBuilder.Entity("BillApp.Domain.Order.Order", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("BillId")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("CreatedUser")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsDel")
-                        .HasColumnType("boolean");
-
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uuid");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("integer");
-
-                    b.Property<DateTime?>("UpdatedDate")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("UpdatedUser")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BillId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("Order", "BillApp");
                 });
 
             modelBuilder.Entity("BillApp.Domain.Product.Product", b =>
@@ -402,25 +365,6 @@ namespace BillApp.Infrastructure.Migrations
                     b.ToTable("AspNetUserTokens", "User");
                 });
 
-            modelBuilder.Entity("BillApp.Domain.Order.Order", b =>
-                {
-                    b.HasOne("BillApp.Domain.Bill.Bill", "Bill")
-                        .WithMany("Orders")
-                        .HasForeignKey("BillId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BillApp.Domain.Product.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Bill");
-
-                    b.Navigation("Product");
-                });
-
             modelBuilder.Entity("BillApp.Domain.Product.Product", b =>
                 {
                     b.HasOne("BillApp.Domain.Category.Category", "Category")
@@ -481,11 +425,6 @@ namespace BillApp.Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("BillApp.Domain.Bill.Bill", b =>
-                {
-                    b.Navigation("Orders");
                 });
 
             modelBuilder.Entity("BillApp.Domain.Category.Category", b =>

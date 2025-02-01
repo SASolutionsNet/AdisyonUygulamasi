@@ -80,6 +80,8 @@ namespace BillApp.Infrastructure
             services.AddScoped<ITokenRepository, TokenRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IProductRepository, ProductRepository>();
+            services.AddScoped<IBillRepository, BillRepository>();
+            services.AddScoped<IOrderRepository, OrderRepository>();
 
             // Register Services
             services.AddScoped<IUserService, UserService>();
@@ -87,6 +89,8 @@ namespace BillApp.Infrastructure
             services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IBillService, BillService>();
+            services.AddScoped<IOrderService, OrderService>();
 
             return services;
         }
