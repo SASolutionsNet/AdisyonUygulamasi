@@ -4,6 +4,8 @@ using BillApp.Application.Interfaces.IRepositories;
 using BillApp.Application.Models.Category;
 using BillApp.Application.Utilities;
 using BillApp.Domain.Category;
+using BillApp.Domain.Product;
+using Microsoft.IdentityModel.Tokens;
 
 
 namespace BillApp.Application.Services
@@ -34,7 +36,7 @@ namespace BillApp.Application.Services
 
             var createdCategory = await _categoryRepository.CreateAsync(mappedModel);
 
-            var mappedReturnModel = _mapper.Map<Category, CategoryDto>(mappedModel);
+            var mappedReturnModel = _mapper.Map<Category, CategoryDto>(createdCategory);
 
             return new ServiceResponse<CategoryDto>
             {
@@ -59,6 +61,10 @@ namespace BillApp.Application.Services
                     Message = "Category not found."
                 };
             }
+
+            category.UpdatedUser = _currentUserService.Username ?? "";
+            category.UpdatedDate = DateTime.UtcNow;
+
 
             var deletedCategory = await _categoryRepository.DeleteAsync(category);
 
@@ -129,8 +135,13 @@ namespace BillApp.Application.Services
                 };
             }
 
-            category.Name = dto.Name;
-            category.CategoryCode = dto.CategoryCode;
+            if (!dto.Name.IsNullOrEmpty())
+                category.Name = dto.Name;
+            if (!dto.CategoryCode.IsNullOrEmpty())
+                category.CategoryCode = dto.CategoryCode;
+
+            category.UpdatedUser = _currentUserService.Username ?? "";
+            category.UpdatedDate = DateTime.UtcNow;
 
             var updatedCategory = await _categoryRepository.UpdateAsync(category);
 

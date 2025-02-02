@@ -1,4 +1,5 @@
 ﻿using BillApp.Domain.Category;
+using BillApp.Domain.Product;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace BillApp.Application.Interfaces.IRepositories
 {
-    public interface IApplicationRepository
+    public interface IApplicationRepository<T>
     {
-        Task<Category> CreateAsync(Category category);
-        Task<Category> UpdateAsync(Category category);
-        Task<Category> DeleteAsync(Category category);
-        Task<Category> RestoreAsync(Guid id);
-        Task<IEnumerable<Category>> GetAllAsync();
-        Task<Category> GetByIdAsync(Guid id);
+        Task<T> CreateAsync(T category);
+        Task<T> UpdateAsync(T category);
+        Task<T> DeleteAsync(T category);
+        Task<IEnumerable<T>> GetAllAsync();
+        Task<T> GetByIdAsync(Guid id);
+        IQueryable<T> GetQueryable();
 
 
     }

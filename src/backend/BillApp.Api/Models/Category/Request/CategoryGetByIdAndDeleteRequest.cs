@@ -2,6 +2,6 @@
 {
     public class CategoryGetByIdAndDeleteRequest
     {
-        public Guid Id { get; set; }
+        public  Guid Id { get; set; }
     }
 }

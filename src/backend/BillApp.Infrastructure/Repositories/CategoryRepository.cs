@@ -1,5 +1,6 @@
 ﻿using BillApp.Application.Interfaces.IRepositories;
 using BillApp.Domain.Category;
+using BillApp.Domain.Product;
 using BillApp.Infrastructure.Contexts;
 using Microsoft.EntityFrameworkCore;
 
@@ -37,20 +38,6 @@ namespace BillApp.Infrastructure.Repositories
             return existingCategory;
         }
 
-        public async Task<Category> RestoreAsync(Guid id)
-        {
-            var category = await _context.Categories.FindAsync(id);
-            if (category == null)
-            {
-                throw new KeyNotFoundException("Category not found.");
-            }
-
-            category.IsDel = false;
-            await _context.SaveChangesAsync();
-
-            return category;
-        }
-
         public async Task<IEnumerable<Category>> GetAllAsync()
         {
             return await _context.Categories.ToListAsync();
@@ -61,6 +48,10 @@ namespace BillApp.Infrastructure.Repositories
             return await _context.Categories.FindAsync(id);
         }
 
+        public IQueryable<Category> GetQueryable()
+        {
+            return _context.Categories.AsQueryable();
+        }
 
         public async Task<Category> UpdateAsync(Category category)
         {
