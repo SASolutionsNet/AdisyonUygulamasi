@@ -1,6 +1,7 @@
 import { Component, Injectable } from '@angular/core';
 
 import { BaseEntity } from '../../common/baseEntity';
+import { PSCategory } from '../../pscategory/pscategory.service';
 
 
 /*import { PSCategory, PSCategoryService } from '../../pscategory/pscategory.service';*/
@@ -11,8 +12,10 @@ export interface PSCategoryConstantsEnum {
 }
 @Injectable()
 export class PS extends BaseEntity {
-  id: string = "";
-  name: string = ""; 
 
-  
+name: string = "";
+price: number = 0;
+isFavorite: boolean = false;
+categoryId: string = "";
+category!: PSCategory;
 }

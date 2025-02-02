@@ -15,5 +15,5 @@ import { RouterModule } from "@angular/router";
     imports: [RouterModule],  // RouterModule'i imports dizisine ekleyin
   })
 export class AppComponent {
-  title = 'SASOLUTOINNET ';
+  title = 'SASOLUTIONNET ';
 }

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { PS } from '../models/ps.model';
-import { HttpService } from '../../common/httpService';
+import { HttpService, HttpServiceResult } from '../../common/httpService';
 
 
 @Injectable({
@@ -16,12 +16,12 @@ export class PSService {
   }
 
 
-  private apiUrl = 'https://localhost:5001/api/ps'; // API URL'si
+  private apiUrl = 'http://localhost:5025/api/Product'; // API URL'si
 
 
-  getPS(): Observable<PS[]> {
-    return this.http.get<PS[]>(this.apiUrl);
-  }
+  //getPS(): Observable<PS[]> {
+    
+  //}
 
   getPSById(id: number): Observable<PS> {
     return this.http.get<PS>(`${this.apiUrl}/${id}`);

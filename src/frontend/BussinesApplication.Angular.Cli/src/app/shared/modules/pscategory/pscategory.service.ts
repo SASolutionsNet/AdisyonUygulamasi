@@ -2,7 +2,6 @@ import { Component, Injectable } from '@angular/core';
 import { Observable } from "rxjs";
 import { HttpClient, HttpParams, HttpHeaders, HttpResponse } from "@angular/common/http";
 
-/*import { environment } from '../../../../environments/environment';*/
 
 import { BaseEntity } from '../common/baseEntity';
 import { WebApiJsonResult, HttpServiceResult, HttpService } from '../common/httpService';
@@ -19,8 +18,9 @@ export interface PSCategoryConstantsEnum {
 
 @Injectable()
 export class PSCategory extends BaseEntity {
-  id: string = "";
 
+  products: PS[] = [];
+  categoryCode: string = "";
   name: string = "";
  
 }
