@@ -1,13 +1,6 @@
 import { Component, Injectable, ChangeDetectorRef, OnInit, AfterViewInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import 'moment/locale/tr';
-
-
-import { ErrorDialogComponent } from '../../../../errordialog/errordialog.component';
-
-
-
-
 import { MatDialog } from '@angular/material/dialog';
 import { DateAdapter } from '@angular/material/core';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -22,8 +15,7 @@ import { CommonModule } from '@angular/common';
 export class OrderListComponent implements OnInit {
   private _rows: any;
   dataLoadedEvent: any;
- 
- 
+
 
   salonBoxes: string[] = Array.from({ length: 24 }, (_, i) => `S${i + 1}`);
   bahceBoxes: string[] = Array.from({ length: 24 }, (_, i) => `B${i + 1}`);
@@ -45,7 +37,7 @@ export class OrderListComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    
   }
 
   ngAfterViewChecked() {
@@ -55,6 +47,7 @@ export class OrderListComponent implements OnInit {
   onBoxClick(box: string) {
     this.router.navigate([`/sales/order/detail/${box}`]);  // Yönlendirme
   }
+ 
 
 
 }

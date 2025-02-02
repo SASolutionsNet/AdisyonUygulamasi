@@ -44,6 +44,17 @@
       <td mat-cell *matCellDef="let row"> {{row.TARIH}} </td>
     </ng-container>
 
+
+    <ng-container matColumnDef="FAVORI">
+      <th mat-header-cell *matHeaderCellDef> FAVORI </th>
+      <td mat-cell *matCellDef="let row">
+        <!-- Eğer row.FAV true ise EVET, false ise HAYIR gösterilecek -->
+        <span *ngIf="row.FAV">EVET</span>
+        <span *ngIf="!row.FAV">HAYIR</span>
+      </td>
+    </ng-container>
+
+
     <!-- DUZENLE Column with Button -->
     <ng-container matColumnDef="DUZENLE">
       <th mat-header-cell *matHeaderCellDef> DUZENLE </th>

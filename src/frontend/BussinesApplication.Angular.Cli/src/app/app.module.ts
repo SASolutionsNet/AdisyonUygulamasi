@@ -28,6 +28,7 @@ import { SidebarRoutes } from './sidebar/sidebar.routing';
 import { AppRoutes } from './app.routing';
 import { AppHomeComponent } from './home/app-home.component';
 import { CoreDataModule } from './coredata/coredata.module';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 
 
@@ -61,7 +62,8 @@ import { CoreDataModule } from './coredata/coredata.module';
     SidebarModule,
     ContentModule,
     RouterModule.forRoot(AppRoutes),
-    CoreDataModule
+    CoreDataModule,
+    MatFormFieldModule
   ],
   providers: [],
   bootstrap: [AppComponent],

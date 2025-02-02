@@ -7,16 +7,22 @@
     <mat-card-content>
       <form class="category-form">
 
+
+
         <!-- Kategori Adı Input Alanı -->
         <mat-form-field appearance="fill" class="category-form-field">
           <mat-label>Ürün Adı</mat-label>
           <input matInput placeholder="Ürün adı girin" required>
         </mat-form-field>
 
-        <!-- Kategori Kodu Input Alanı -->
+        <!-- Kategori Kodu Dropdown Menüsü -->
         <mat-form-field appearance="fill" class="category-form-field">
           <mat-label>Kategori Kodu</mat-label>
-          <input matInput placeholder="Kategori kodu girin" required>
+          <mat-select placeholder="Kategori kodu seçin" required>
+            <mat-option *ngFor="let kategori of kategoriler" [value]="kategori.id">
+              {{ kategori.kod }}
+            </mat-option>
+          </mat-select>
         </mat-form-field>
 
         <!-- Kategori Kodu Input Alanı -->
@@ -24,6 +30,17 @@
           <mat-label>Ürün Fiyatı</mat-label>
           <input matInput placeholder="Ürün Fiyatı girin" required>
         </mat-form-field>
+
+        <!--favori ürün mü-->
+        <section class="example-section">
+          <mat-checkbox class="example-margin"
+                        [(indeterminate)]="indeterminate"
+                        [labelPosition]="labelPosition()"
+                        [disabled]="disabled()">
+            <b>Favori Ürün </b>
+          </mat-checkbox>
+        </section>
+
         <!-- Form İşlemleri için Butonlar -->
         <div class="form-actions">
           <!-- Ekle Butonu -->

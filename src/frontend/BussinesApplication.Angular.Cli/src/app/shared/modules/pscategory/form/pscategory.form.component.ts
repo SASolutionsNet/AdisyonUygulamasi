@@ -8,7 +8,7 @@ import { ErrorDialogComponent } from '../../errordialog/errordialog.component';
 import { PSCategory, PSCategoryService } from '../pscategory.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from '@angular/core';
-import { FormBuilder, FormControl } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
@@ -25,7 +25,7 @@ import { MatIconModule } from '@angular/material/icon';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PSCategoryFormComponent {
-
+  categoryForm: FormGroup;
 
   constructor(
     private router: Router,
@@ -34,7 +34,16 @@ export class PSCategoryFormComponent {
     private fb: FormBuilder,
     private dialog: MatDialog) {
 
-  
+    // Formu oluşturuyoruz
+    this.categoryForm = this.fb.group({
+      categoryName: [''],  // Kategori adı
+      categoryCode: ['']   // Kategori kodu
+    });
+
+    // Kategori adı değiştikçe kategori kodunu güncellemek için dinleyici ekliyoruz
+    this.categoryForm.get('categoryName')?.valueChanges.subscribe(value => {
+      this.updateCategoryCode(value);
+    });
   }
 
   ngOnInit() {
@@ -66,5 +75,16 @@ export class PSCategoryFormComponent {
 
   isDeletedCheckboxDisabled() {
    /* return this.crudType != 'update';*/
+  }
+
+  // Kategori adı değiştiğinde kategori kodunu otomatik oluşturuyoruz
+  updateCategoryCode(categoryName: string) {
+    const categoryCode = this.generateCategoryCode(categoryName);
+    this.categoryForm.get('categoryCode')?.setValue(categoryCode);
+  }
+
+  // Basit bir kategori kodu üretme fonksiyonu (örnek)
+  generateCategoryCode(categoryName: string): string {
+    return categoryName ? categoryName.substring(0, 3).toUpperCase() + '001' : '';
   }
 }

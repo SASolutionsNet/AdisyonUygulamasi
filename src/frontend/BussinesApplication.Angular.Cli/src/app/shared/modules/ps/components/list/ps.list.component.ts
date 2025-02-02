@@ -9,6 +9,8 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PS } from '../../models/ps.model';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { CommonModule } from '@angular/common';
 
 
 export interface UserData {
@@ -16,23 +18,23 @@ export interface UserData {
   AD: string;
   FIYAT: string;
   TARIH: string;
-
+  FAVORI: boolean;
 }
 
 @Component({
   selector: 'sasolution-ps-list',
   templateUrl: './ps.list.component.html',
   styleUrls: ['./ps.list.component.scss'],
-  imports: [MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule, MatIconModule, MatCardModule],
+  imports: [CommonModule,MatCheckboxModule,MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule, MatIconModule, MatCardModule],
 })
 export class PSListComponent implements OnInit, AfterViewChecked {
 
-  displayedColumns: string[] = ['KOD', 'AD', 'FIYAT', 'TARIH', 'DUZENLE', 'SIL']; // Görüntülenecek sütunlar
+  displayedColumns: string[] = ['KOD', 'AD', 'FIYAT', 'TARIH','FAVORI', 'DUZENLE', 'SIL']; // Görüntülenecek sütunlar
   dataSource = new MatTableDataSource<UserData>([
-    { KOD: 'blueberry', AD: 'Maia', FIYAT: '10', TARIH: '01-10-2025' },
-    { KOD: 'lychee', AD: 'Asher', FIYAT: '10', TARIH: '08-03-2024' },
-    { KOD: 'kiwi', AD: 'Olivia', FIYAT: '10', TARIH: '12-12-2024' },
-    { KOD: 'mango', AD: 'Atticus', FIYAT: '10', TARIH: '01-12-2023' },
+    { KOD: 'blueberry', AD: 'Maia', FIYAT: '10', TARIH: '01-10-2025',FAVORI:true },
+    { KOD: 'lychee', AD: 'Asher', FIYAT: '10', TARIH: '08-03-2024', FAVORI: true },
+    { KOD: 'kiwi', AD: 'Olivia', FIYAT: '10', TARIH: '12-12-2024', FAVORI: false },
+    { KOD: 'mango', AD: 'Atticus', FIYAT: '10', TARIH: '01-12-2023', FAVORI: true },
   ]);
   @ViewChild(MatPaginator) paginator!: MatPaginator; // MatPaginator'ı erişebilmek için ViewChild ile alıyoruz
   @ViewChild(MatSort) sort!: MatSort; // MatSort'ı erişebilmek için ViewChild ile alıyoruz
