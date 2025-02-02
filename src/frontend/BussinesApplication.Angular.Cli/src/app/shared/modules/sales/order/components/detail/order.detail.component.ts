@@ -26,6 +26,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { DialogChangeTableComponent } from '../../../../dialogchangetable/dialogchangetable.component';
 
 // PeriodicElement arayüzünü burada tanımlıyoruz
 export interface Order {
@@ -58,7 +59,8 @@ export class OrderDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     private cdRef: ChangeDetectorRef,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private route: ActivatedRoute
   ) { }
     ngOnInit(): void {
        
@@ -86,6 +88,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy, AfterViewInit {
     //explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
     this.cdRef.detectChanges();
   }
+ 
   onClick(element: Order): void {
     console.log('Tıklanan satır:', element);  // Burada veriyi kontrol edebilirsiniz
     this.buttonClicked.emit(element);  // 'Order' objesini dışarıya gönderiyoruz
@@ -93,5 +96,23 @@ export class OrderDetailComponent implements OnInit, OnDestroy, AfterViewInit {
   // Yuvarlama işlemi
   formatCost(cost: number): string {
     return cost.toFixed(2);  // 2 ondalıklı basamağa yuvarlar
+  }
+
+  openPopup() {
+    this.route.paramMap.subscribe(params => {
+      const id = params.get('box');  // Dinamik olarak parametreyi alıyoruz
+      console.log('Dinamik URL parametresi:', id);
+
+      if (id === null) {
+        console.error('Dinamik URL parametresi alınamadı!');
+      }
+
+      // Popup bileşenine id parametresini gönderiyoruz
+      this.dialog.open(DialogChangeTableComponent, {
+        width: '1000px',
+        data: { id }  // Parametreyi popup'a gönderiyoruz
+      });
+    });
+
   }
 }

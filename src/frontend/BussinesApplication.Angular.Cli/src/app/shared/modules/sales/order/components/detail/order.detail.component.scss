@@ -64,6 +64,11 @@ div > div:first-child {
 .mat-tab-group .mat-tab-label.mat-tab-label-active {
   background-color: #1abc9c; /* Aktif sekme için renk */
 }
+.button-container {
+  display: flex;
+  justify-content: flex-end; /* Butonu sola hizalar */
+  margin-top: 20px; /* Butonun üst kısmına biraz boşluk eklemek için */
+}
 
 /* Tablet ve telefon için responsive düzenlemeler */
 @media (max-width: 768px) {

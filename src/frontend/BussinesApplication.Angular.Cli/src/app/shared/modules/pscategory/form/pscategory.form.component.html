@@ -11,17 +11,19 @@
     <mat-card-content>
       <form class="category-form">
 
-        <!-- Kategori Adı Input Alanı -->
-        <mat-form-field appearance="fill" class="category-form-field">
-          <mat-label>Kategori Adı</mat-label>
-          <input matInput placeholder="Kategori adı girin" required>
-        </mat-form-field>
+       
+          <!-- Kategori Adı Input Alanı -->
+          <mat-form-field appearance="fill" class="category-form-field">
+            <mat-label>Kategori Adı</mat-label>
+            <input matInput formControlName="categoryName" placeholder="Kategori adı girin" required>
+          </mat-form-field>
 
-        <!-- Kategori Kodu Input Alanı -->
-        <mat-form-field appearance="fill" class="category-form-field">
-          <mat-label>Kategori Kodu</mat-label>
-          <input matInput placeholder="Kategori kodu girin" required>
-        </mat-form-field>
+          <!-- Kategori Kodu Input Alanı -->
+          <!--<mat-form-field appearance="fill" class="category-form-field">
+            <mat-label>Kategori Kodu</mat-label>
+            <input matInput formControlName="categoryCode" placeholder="Kategori kodu otomatik olarak oluşacak" [readonly]="true">
+          </mat-form-field>-->
+        
 
         <!-- Form İşlemleri için Butonlar -->
         <div class="form-actions">
