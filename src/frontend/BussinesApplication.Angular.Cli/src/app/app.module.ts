@@ -2,7 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from './app.component';
 
-import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http'; // HttpClientModule'ı içe aktarın
+import { provideHttpClient } from '@angular/common/http'; // HttpClientModule'ı içe aktarın
 import { CommonModule } from '@angular/common';  // CommonModule'ü import et
 import { RouterModule} from '@angular/router';
 import { SharedModule } from './shared/shared.module';
@@ -47,7 +47,6 @@ import { UserService } from './shared/modules/user/services/user.service';
     BrowserModule,
     SharedModule,
     FormsModule,
-    HttpClientModule,
     MatSidenavModule,
     MatCardModule,
     MatMenuModule,
@@ -67,8 +66,7 @@ import { UserService } from './shared/modules/user/services/user.service';
     CoreDataModule,
     MatFormFieldModule
   ],
-  providers: [{provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }], // AuthInterceptor'ı sağlayıcı olarak ekle,
+  providers: [provideHttpClient()] ,
   bootstrap: [AppComponent],
-/*  schemas: [CUSTOM_ELEMENTS_SCHEMA]  // CUSTOM_ELEMENTS_SCHEMA ekle*/
 })
 export class AppModule { }

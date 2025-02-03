@@ -2,8 +2,8 @@
   <h2>Login</h2>
   <form (ngSubmit)="onLogin()">
     <div>
-      <label for="username">Username</label>
-      <input type="text" id="username" [(ngModel)]="username" name="username" required />
+      <label for="email">Email</label>
+      <input type="text" id="email" [(ngModel)]="email" name="email" required />
     </div>
     <div>
       <label for="password">Password</label>
@@ -11,5 +11,7 @@
     </div>
     <button type="submit">Login</button>
   </form>
+
+  <!-- Hata mesajını sadece errorMessage varsa göster -->
   <div *ngIf="errorMessage" class="error">{{ errorMessage }}</div>
 </div>

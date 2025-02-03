@@ -1,35 +1,34 @@
 import { Component } from '@angular/core';
 import { UserService } from '../../shared/modules/user/services/user.service';
+import { Router } from '@angular/router';  // Yönlendirme için Router'ı import et
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'sasolution-login',
   templateUrl: './user.login.component.html',
   styleUrls: ['./user.login.component.scss'],
-  imports: [CommonModule, FormsModule, HttpClientModule],
+  imports: [CommonModule, FormsModule]
 })
 export class LoginComponent {
-  username: string = '';
+  email: string = '';
   password: string = '';
   errorMessage: string = '';
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService, private router: Router) { }
 
   onLogin(): void {
-    this.userService.login(this.username, this.password).subscribe(
+    this.userService.login(this.email, this.password).subscribe(
       response => {
-        // Token'ı alıp saklayabiliriz
-        const token = response.token;
+        const token = response.data;
         if (token) {
           this.userService.storeToken(token);
           console.log('Login başarılı');
-          // Burada, başarılı bir giriş sonrası yönlendirme yapılabilir
+          // Başarılı giriş sonrası yönlendirme yapılabilir
+          this.router.navigate(['../../dashboard']);  // Yönlendirme örneği
         }
       },
       error => {
-        // Hata durumunda mesaj gösterilebilir
         this.errorMessage = 'Login başarısız! Lütfen tekrar deneyin.';
         console.error('Login hatası:', error);
       }

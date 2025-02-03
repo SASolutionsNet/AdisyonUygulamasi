@@ -1,5 +1,4 @@
 import { CommonModule } from '@angular/common';
-import { HttpClientModule } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatCardModule } from '@angular/material/card';
 import { Router, RouterModule } from '@angular/router';
@@ -10,7 +9,7 @@ import { Router, RouterModule } from '@angular/router';
   standalone: true,
   templateUrl: './app-home.component.html',  // Template dosyasını buraya belirtiyoruz,
   styleUrls: ['./app-home.component.scss'],
-  imports: [RouterModule, CommonModule, MatCardModule,HttpClientModule]  // İlgili modülleri buraya import edebilirsiniz
+  imports: [RouterModule, CommonModule, MatCardModule]  // İlgili modülleri buraya import edebilirsiniz
 })
 export class AppHomeComponent implements OnInit {
  
