@@ -16,6 +16,7 @@ namespace BillApp.Application.Services
         private readonly ICurrentUserService _currentUserService;
         private readonly IMapper _mapper;
 
+        public OrderService(IOrderRepository orderRepository, IBillService billService, ICurrentUserService currentUserService, IMapper mapper)
         {
             _orderRepository = orderRepository;
             _billService = billService;
