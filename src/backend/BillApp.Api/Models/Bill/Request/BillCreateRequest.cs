@@ -3,5 +3,7 @@
     public class BillCreateRequest
     {
         public string Table { get; set; }
+        public float TotalPrice { get; set; }
+
     }
 }

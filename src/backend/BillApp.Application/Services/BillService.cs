@@ -2,16 +2,10 @@
 using BillApp.Application.Contracts.Bill;
 using BillApp.Application.Interfaces.IRepositories;
 using BillApp.Application.Interfaces.IServices;
-using BillApp.Application.Models.Category;
 using BillApp.Application.Utilities;
 using BillApp.Domain.Bill;
-using BillApp.Domain.Category;
 using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace BillApp.Application.Services
 {
@@ -154,6 +148,8 @@ namespace BillApp.Application.Services
                 bill.Table = dto.Table;
             if (!dto.IsClosed.Equals(bill.IsClosed))
                 bill.IsClosed = dto.IsClosed;
+            if (!dto.TotalPrice.Equals(bill.TotalPrice))
+                bill.TotalPrice = dto.TotalPrice;
 
             bill.UpdatedUser = _currentUserService.Username ?? "";
             bill.UpdatedDate = DateTime.UtcNow;
