@@ -53,7 +53,9 @@ namespace BillApp.Infrastructure.Repositories
 
         public async Task<IEnumerable<Bill>> GetAllAsync()
         {
-            return await _context.Bills.ToListAsync();
+            return await _context.Bills.AsQueryable()
+                .Include(p => p.Orders)
+                .ToListAsync();
         }
 
         public async Task<Bill?> GetByIdAsync(Guid id)
