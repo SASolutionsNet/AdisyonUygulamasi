@@ -7,6 +7,7 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { AdminLayoutComponent } from './layouts/admin/admin-layout.component';
 import { CoreDataPSCategoryCreateComponent } from './coredata/pscategory/create/pscategory.create.component';
 import { LoginComponent } from './user/login/user.login.component';
+import { RegisterComponent } from './user/register/user.register.component';
 
 export const AppRoutes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -14,6 +15,11 @@ export const AppRoutes: Routes = [
   {
     path: 'user/login',
     component: LoginComponent
+
+  },
+  {
+    path: 'user/register',
+    component: RegisterComponent
 
   },
   {

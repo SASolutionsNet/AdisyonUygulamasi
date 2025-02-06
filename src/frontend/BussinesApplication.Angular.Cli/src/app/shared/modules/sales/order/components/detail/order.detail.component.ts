@@ -10,7 +10,7 @@ import { ErrorDialogComponent } from '../../../../errordialog/errordialog.compon
 
 /*import { environment } from '../../../../../../../environments/environment';*/
 
-import { PS } from '../../../../ps/models/ps.model';
+import { Product } from '../../../../ps/models/ps.model';
 import { PSService } from '../../../../ps/services/ps.service';
 
 import { PSCategory, PSCategoryService } from '../../../../pscategory/pscategory.service';

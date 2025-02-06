@@ -72,7 +72,7 @@ namespace BillApp.Api
 
             if (result.Succeeded)
             {
-                return Ok("User registered successfully.");
+                return Ok();
             }
 
             return BadRequest(result.Errors);
@@ -113,7 +113,7 @@ namespace BillApp.Api
             var result = await _userService.LogoutAsync(request);
 
             if (result.Data)
-                return Ok(result.Message);
+                return Ok();
             return BadRequest(result.Message);
         }
         /// <summary>

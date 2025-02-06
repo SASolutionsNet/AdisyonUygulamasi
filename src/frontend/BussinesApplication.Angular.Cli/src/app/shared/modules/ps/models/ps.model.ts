@@ -11,7 +11,7 @@ export interface PSCategoryConstantsEnum {
   name: string;
 }
 @Injectable()
-export class PS extends BaseEntity {
+export class Product extends BaseEntity {
 
 name: string = "";
 price: number = 0;

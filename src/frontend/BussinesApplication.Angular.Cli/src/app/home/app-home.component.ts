@@ -36,7 +36,7 @@ export class AppHomeComponent implements OnInit {
   }
 
   onSignUpClick() {
-    this.router.navigate(['/coredata']);
+    this.router.navigate(['/user/register']);
     //this.router.navigate(['/inventory/item/detail/eb969f13-e05c-4bf4-9c0b-0754cf8c49ab']);
   }
 

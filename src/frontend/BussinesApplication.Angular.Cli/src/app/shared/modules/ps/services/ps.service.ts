@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { PS } from '../models/ps.model';
 import { HttpService, HttpServiceResult } from '../../common/httpService';
 
 
@@ -9,21 +8,82 @@ import { HttpService, HttpServiceResult } from '../../common/httpService';
   providedIn: 'root'
 })
 export class PSService {
-
+  private apiUrl = 'http://localhost:5025/api/Product'; // API URL'sini buraya ekleyin
   constructor(
-    private http: HttpClient,
-    private httpService: HttpService,) {
+    private http: HttpClient) {
   }
 
 
-  private apiUrl = 'http://localhost:5025/api/Product'; // API URL'si
+ 
 
+  // Token'ı almak
+  getToken(): string | null {
+    return localStorage.getItem('authToken'); // Token'ı yerel depolamadan alır
+  }
 
-  //getPS(): Observable<PS[]> {
-    
-  //}
+  // Tüm ürünleri getirme
+  getAllProducts(): Observable<any> {
+    const token = this.getToken(); // LocalStorage'dan token'ı alıyoruz
+    if (!token) {
+      // Eğer token yoksa, hemen observable döndürelim
+      return new Observable(observer => observer.next(null));
+    }
 
-  getPSById(id: number): Observable<PS> {
-    return this.http.get<PS>(`${this.apiUrl}/${id}`);
+    // Authorization header'ını ekliyoruz
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    // API'ye GET isteği gönderiyoruz
+    return this.http.get(`${this.apiUrl}/get-all`, { headers });
+  }
+  // Yeni ürün oluşturma
+  createProduct(productData: any): Observable<any> {
+    const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
+
+    // Eğer token varsa, Authorization header'ına ekle
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    // POST isteği ile ürün oluştur
+    return this.http.post(`${this.apiUrl}/create`, productData, { headers });
+  }
+  // Ürünü güncelleme
+  updateProduct(productId: string, productData: any): Observable<any> {
+    const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
+
+    // Eğer token varsa, Authorization header'ına ekle
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    // PUT isteği ile ürünü güncelle
+    return this.http.put(`${this.apiUrl}/update/${productId}`, productData, { headers });
+  }
+  // Ürünü silme
+  deleteProduct(productId: string): Observable<any> {
+    const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
+
+    // Eğer token varsa, Authorization header'ına ekle
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    // DELETE isteği ile ürünü sil
+    return this.http.delete(`${this.apiUrl}/delete/${productId}`, { headers });
+  }
+  // Ürünü ID ile getirme
+  getProductById(productId: string): Observable<any> {
+    const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
+
+    // Eğer token varsa, Authorization header'ına ekle
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    // GET isteği ile ürünü getir
+    return this.http.get(`${this.apiUrl}/get-by-id/${productId}`, { headers });
+  }
+
+  // Favori ürünleri getirme
+  getFavorites(): Observable<any> {
+    const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
+
+    // Eğer token varsa, Authorization header'ına ekle
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    // GET isteği ile favori ürünleri al
+    return this.http.get(`${this.apiUrl}/get-favorites`, { headers });
   }
 }

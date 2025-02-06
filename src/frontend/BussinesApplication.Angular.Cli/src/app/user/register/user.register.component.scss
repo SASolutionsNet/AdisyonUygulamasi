@@ -1,2 +1,107 @@
-﻿body {
+.register-container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 30px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+
+  h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #333;
+    font-weight: 600;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    div {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    label {
+      font-size: 14px;
+      color: #555;
+      font-weight: 500;
+    }
+
+    input {
+      padding: 12px;
+      font-size: 16px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      outline: none;
+      transition: border-color 0.3s ease-in-out;
+
+      &:focus {
+        border-color: #007bff;
+      }
+
+      &:invalid {
+        border-color: #e74c3c;
+      }
+    }
+
+    button {
+      padding: 12px;
+      font-size: 16px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: #0056b3;
+      }
+
+      &:disabled {
+        background-color: #bbb;
+        cursor: not-allowed;
+      }
+    }
+
+    .error-message, .success-message {
+      margin-top: 10px;
+      font-size: 14px;
+      padding: 10px;
+      border-radius: 5px;
+      text-align: left;
+      width: 100%;
+    }
+
+    .error-message {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+
+    .success-message {
+      background-color: #d4edda;
+      color: #155724;
+    }
+  }
+  // Responsive design for small screens
+  @media (max-width: 600px) {
+    padding: 20px;
+
+    h2 {
+      font-size: 24px;
+    }
+
+    form {
+      gap: 12px;
+    }
+
+    button {
+      padding: 10px;
+      font-size: 14px;
+    }
+  }
 }
