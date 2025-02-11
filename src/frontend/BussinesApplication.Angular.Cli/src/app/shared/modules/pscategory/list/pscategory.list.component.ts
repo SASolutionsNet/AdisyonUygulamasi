@@ -1,6 +1,5 @@
 import { Router, ActivatedRoute } from '@angular/router';
 import { ErrorDialogComponent } from '../../errordialog/errordialog.component';
-import { PSCategory, PSCategoryService } from '../pscategory.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -10,12 +9,10 @@ import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
+import { Category, CategoryService } from '../pscategory.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { DataSource } from '@angular/cdk/collections';
 
-export interface UserData {
-  KOD: string;
-  AD: string;
-  TARIH: string;
-}
 
 
 @Component({
@@ -25,14 +22,11 @@ export interface UserData {
   imports: [MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule, MatIconModule,MatCardModule],
 })
 export class PSCategoryListComponent implements AfterViewInit, OnInit {
-  displayedColumns: string[] = ['KOD', 'AD', 'TARIH','DUZENLE','SIL']; // Görüntülenecek sütunlar
-  dataSource = new MatTableDataSource<UserData>([
-    { KOD: 'blueberry', AD: 'Maia', TARIH: '01-10-2025'},
-    { KOD: 'lychee', AD: 'Asher', TARIH: '08-03-2024' },
-    { KOD: 'kiwi', AD: 'Olivia', TARIH: '12-12-2024'},
-    { KOD: 'mango', AD: 'Atticus', TARIH: '01-12-2023'},
-  ]);
+  // Tablodaki sütun başlıkları
+  displayedColumns: string[] = ['KOD', 'AD','DUZENLE', 'SIL'];
 
+  // Tablo verilerini tutacak olan MatTableDataSource
+  dataSource: MatTableDataSource<Category> = new MatTableDataSource<Category>([]);
   @ViewChild(MatPaginator) paginator!: MatPaginator; // MatPaginator'ı erişebilmek için ViewChild ile alıyoruz
   @ViewChild(MatSort) sort!: MatSort; // MatSort'ı erişebilmek için ViewChild ile alıyoruz
 
@@ -41,24 +35,37 @@ export class PSCategoryListComponent implements AfterViewInit, OnInit {
     private activatedRoute: ActivatedRoute,
     private cdRef: ChangeDetectorRef,
     private dialog: MatDialog,
+    private snackBar: MatSnackBar,
+    private categoryService: CategoryService,
   ) { }
 
   ngOnInit() {
     // Verilerinizi burada almak isterseniz, API çağrısı yapabilirsiniz
+    this.getCategories();
   }
 
   ngAfterViewInit() {
-    // Paginator ve Sort işlemleri ngAfterViewInit içinde yapılır, çünkü bu işlem görünümdeki öğeler tamamlandıktan sonra yapılır
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+    this.cdRef.detectChanges();  // Tablonun güncellenmesini sağlamak için
   }
 
+  getCategories() {
+    this.categoryService.getAllCategories().subscribe(data => {
+      console.log("Kategoriler:", data);  // Burada veriyi kontrol edin
+      this.dataSource = new MatTableDataSource(data);
+    }, error => {
+      console.error('Veri alınırken hata oluştu:', error);
+    });
+  }
+
+
+
   applyFilter(event: Event) {
-    // Filtreleme işlemi
     const filterValue = (event.target as HTMLInputElement).value;
+    console.log("Filtre Değeri:", filterValue);  // Burada filtre değerini kontrol edin
     this.dataSource.filter = filterValue.trim().toLowerCase();
 
-    // Eğer paginator varsa, ilk sayfaya git
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
@@ -69,7 +76,7 @@ export class PSCategoryListComponent implements AfterViewInit, OnInit {
     this.cdRef.detectChanges();
   }
 
-  setData(data: PSCategory[]) {
+  setData(data: Category[]) {
     // Veriyi ayarlamak için bu metodu kullanabilirsiniz
   }
 
@@ -77,13 +84,37 @@ export class PSCategoryListComponent implements AfterViewInit, OnInit {
     // Veriyi almak için bu metodu kullanabilirsiniz
   }
   edit(row: any) {
-    // 'pscategory/create' yoluna yönlendir
-    this.router.navigate(['/coredata/pscategory/update']);
+    // Category nesnesini JSON string olarak encode ediyoruz ve URL'ye ekliyoruz
+    this.router.navigate(['/coredata/pscategory/update'], {
+      queryParams: { category: JSON.stringify(row) }
+    });
   
   }
-  delete(row:any) {
-    // Veriyi almak için bu metodu kullanabilirsiniz
+  delete(row: any): void {
+
+    const categoryData = {
+      id: row.id,  // Satırdaki kategori ID'sini alıyoruz
+      //name: row.name,  // Formdaki kategori adı
+      //categoryCode: row.categoryCode,  // Kategori kodu (eğer varsa)
+    };
+
+
+  
+
+    // Silme işlemini başlatıyoruz
+    this.categoryService.deleteCategory(categoryData).subscribe(
+      (response) => {
+        console.log('Kategori başarıyla silindi:', response);
+        this.getCategories();
+        //this.router.navigate(['/coredata/pscategory/list']); // Silme işleminden sonra kategoriler listesine yönlendiriyoruz
+      },
+      (error) => {
+        console.error('Kategori silinirken bir hata oluştu:', error);
+        this.snackBar.open('Silme işlemi başarısız oldu!', '', { duration: 3000 });
+      }
+    );
   }
+
   add() {
     // 'pscategory/create' yoluna yönlendir
     this.router.navigate(['/coredata/pscategory/create']);

@@ -23,19 +23,13 @@
     <!-- ID Column -->
     <ng-container matColumnDef="KOD">
       <th mat-header-cell *matHeaderCellDef> KOD </th>
-      <td mat-cell *matCellDef="let row"> {{row.KOD}} </td>
+      <td mat-cell *matCellDef="let row"> {{row.categoryCode}} </td>
     </ng-container>
 
     <!-- Progress Column -->
     <ng-container matColumnDef="AD">
       <th mat-header-cell *matHeaderCellDef> AD </th>
-      <td mat-cell *matCellDef="let row"> {{row.AD}} </td>
-    </ng-container>
-
-    <!-- Name Column -->
-    <ng-container matColumnDef="TARIH">
-      <th mat-header-cell *matHeaderCellDef> TARIH </th>
-      <td mat-cell *matCellDef="let row"> {{row.TARIH}} </td>
+      <td mat-cell *matCellDef="let row"> {{row.name}} </td>
     </ng-container>
 
     <!-- DUZENLE Column with Button -->

@@ -43,37 +43,37 @@ export class PSService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     // POST isteği ile ürün oluştur
-    return this.http.post(`${this.apiUrl}/create`, productData, { headers });
+    return this.http.post(`${this.apiUrl}/create/`, productData , { headers});
   }
   // Ürünü güncelleme
-  updateProduct(productId: string, productData: any): Observable<any> {
+  updateProduct( productData: any): Observable<any> {
     const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
 
     // Eğer token varsa, Authorization header'ına ekle
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     // PUT isteği ile ürünü güncelle
-    return this.http.put(`${this.apiUrl}/update/${productId}`, productData, { headers });
+    return this.http.put(`${this.apiUrl}/update/`, productData, { headers });
   }
   // Ürünü silme
-  deleteProduct(productId: string): Observable<any> {
+  deleteProduct(product:any): Observable<any> {
     const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
 
     // Eğer token varsa, Authorization header'ına ekle
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     // DELETE isteği ile ürünü sil
-    return this.http.delete(`${this.apiUrl}/delete/${productId}`, { headers });
+    return this.http.delete(`${this.apiUrl}/delete/`,  { headers, body: product });
   }
   // Ürünü ID ile getirme
-  getProductById(productId: string): Observable<any> {
+  getProductById(id: string): Observable<any> {
     const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
 
     // Eğer token varsa, Authorization header'ına ekle
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     // GET isteği ile ürünü getir
-    return this.http.get(`${this.apiUrl}/get-by-id/${productId}`, { headers });
+    return this.http.get(`${this.apiUrl}/get-by-id/?id=${id}`, { headers });
   }
 
   // Favori ürünleri getirme

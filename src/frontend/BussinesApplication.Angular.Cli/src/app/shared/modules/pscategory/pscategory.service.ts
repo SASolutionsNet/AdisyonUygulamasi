@@ -1,10 +1,9 @@
 import { Component, Injectable } from '@angular/core';
 import { Observable } from "rxjs";
-import { HttpClient, HttpParams, HttpHeaders, HttpResponse } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 
 
 import { BaseEntity } from '../common/baseEntity';
-import { WebApiJsonResult, HttpServiceResult, HttpService } from '../common/httpService';
 
 import { PSService } from '../ps/services/ps.service';
 import { Product } from '../ps/models/ps.model';
@@ -19,19 +18,26 @@ export interface CategoryConstantsEnum {
 @Injectable()
 export class Category extends BaseEntity {
 
-  products: Product[] = [];
+  
   categoryCode: string = "";
   name: string = "";
  
 }
-
+@Injectable({
+  providedIn: 'root'
+})
 @Injectable()
-export class PSCategoryService {
+export class CategoryService {
  
   private apiUrl = 'http://localhost:5025/api/Category'; // API URL'sini buraya ekleyin
-  constructor(
-    private http: HttpClient) {
+  constructor(private http: HttpClient) { }
+
+
+  // Token'ı almak
+  getToken(): string | null {
+    return localStorage.getItem('authToken'); // Token'ı yerel depolamadan alır
   }
+
   // Tüm kategorileri getirme
   getAllCategories(): Observable<any> {
     const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
@@ -54,33 +60,38 @@ export class PSCategoryService {
     return this.http.post(`${this.apiUrl}/create`, categoryData, { headers });
   }
   // Kategoriyi güncelleme
-  updateCategory(categoryId: string, categoryData: any): Observable<any> {
+  updateCategory( categoryData: any): Observable<any> {
     const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
 
     // Eğer token varsa, Authorization header'ına ekle
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     // PUT isteği ile kategori güncelle
-    return this.http.put(`${this.apiUrl}/update/${categoryId}`, categoryData, { headers });
+    return this.http.put(`${this.apiUrl}/update/`, categoryData, { headers });
   }
   // Kategoriyi silme
-  deleteCategory(categoryId: string): Observable<any> {
+  deleteCategory(categoryData: any): Observable<any> {
     const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
 
     // Eğer token varsa, Authorization header'ına ekle
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     // DELETE isteği ile kategori sil
-    return this.http.delete(`${this.apiUrl}/delete/${categoryId}`, { headers });
+    return this.http.delete(`${this.apiUrl}/delete/`, { headers, body: categoryData });
   }
   // Kategori bilgilerini ID'ye göre almak
-  getCategoryById(categoryId: string): Observable<any> {
+  getCategoryById(id: string): Observable<any> {
     const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
 
     // Eğer token varsa, Authorization header'ına ekle
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    // GET isteği ile kategori bilgilerini al
-    return this.http.get(`${this.apiUrl}/get-by-id/${categoryId}`, { headers });
+
+    // GET isteğini headers ve params ile gönder
+    return this.http.get(`${this.apiUrl}/get-by-id/?id=${id}`, { headers });
   }
+
+
+
 }
+

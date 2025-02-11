@@ -1,52 +1,51 @@
 <div class="category-form-container">
   <mat-card class="category-card">
-
-
-
     <!-- Kart İçeriği -->
     <mat-card-content>
-      <form class="category-form">
-
-
+      <form [formGroup]="productForm" class="product-form">
 
         <!-- Kategori Adı Input Alanı -->
-        <mat-form-field appearance="fill" class="category-form-field">
+        <mat-form-field appearance="fill" class="product-form-field">
           <mat-label>Ürün Adı</mat-label>
-          <input matInput placeholder="Ürün adı girin" required>
+          <input matInput formControlName="name" placeholder="Ürün adı girin" required>
         </mat-form-field>
 
-        <!-- Kategori Kodu Dropdown Menüsü -->
-        <mat-form-field appearance="fill" class="category-form-field">
+        <mat-form-field appearance="fill" class="product-form-field">
           <mat-label>Kategori Kodu</mat-label>
-          <mat-select placeholder="Kategori kodu seçin" required>
-            <mat-option *ngFor="let kategori of kategoriler" [value]="kategori.id">
-              {{ kategori.kod }}
+          <mat-select formControlName="categoryCode" placeholder="Kategori kodu seçin" required>
+            <mat-option *ngFor="let category of categoryCodes" [value]="category.categoryCode">
+              {{ category.categoryCode }}
             </mat-option>
           </mat-select>
         </mat-form-field>
 
-        <!-- Kategori Kodu Input Alanı -->
-        <mat-form-field appearance="fill" class="category-form-field">
+
+
+        <!-- Ürün Fiyatı Input Alanı -->
+        <mat-form-field appearance="fill" class="product-form-field">
           <mat-label>Ürün Fiyatı</mat-label>
-          <input matInput placeholder="Ürün Fiyatı girin" required>
+          <input matInput formControlName="price" placeholder="Ürün fiyatı girin" required>
         </mat-form-field>
 
-        <!--favori ürün mü-->
+        <!-- Favori Ürün Checkbox -->
         <section class="example-section">
-          <mat-checkbox class="example-margin"
-                        [(indeterminate)]="indeterminate"
-                        [labelPosition]="labelPosition()"
-                        [disabled]="disabled()">
-            <b>Favori Ürün </b>
+          <mat-checkbox formControlName="isFavorite">
+            <b>Favori Ürün</b>
           </mat-checkbox>
         </section>
 
         <!-- Form İşlemleri için Butonlar -->
         <div class="form-actions">
-          <!-- Ekle Butonu -->
-          <button mat-flat-button color="primary" class="submit-button">Ekle</button>
+          <!-- Ekle/Düzenle Butonu -->
+          <button mat-flat-button color="primary" class="submit-button" (click)="submitForm()">
+            {{ isEditMode ? 'Düzenle' : 'Ekle' }}
+          </button>
+
+
           <!-- İptal Butonu -->
-          <button mat-flat-button color="warn" class="cancel-button">İptal</button>
+          <button mat-flat-button color="warn" class="cancel-button" (click)="cancel()">
+            İptal
+          </button>
         </div>
       </form>
     </mat-card-content>

@@ -13,48 +13,45 @@ import { CommonModule } from '@angular/common';
 import { PSService } from '../../services/ps.service';
 import { Product } from '../../models/ps.model';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
+import { Category, CategoryService } from '../../../pscategory/pscategory.service';
+import { forkJoin, map } from 'rxjs';
 
 @Component({
   selector: 'sasolution-ps-list',
   templateUrl: './ps.list.component.html',
   styleUrls: ['./ps.list.component.scss'],
-  imports: [CommonModule,MatCheckboxModule,MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule, MatIconModule, MatCardModule],
+  imports: [CommonModule, MatCheckboxModule, MatFormFieldModule, MatInputModule, MatTableModule, MatSortModule, MatPaginatorModule, MatIconModule, MatCardModule],
 })
 export class PSListComponent implements OnInit, AfterViewChecked {
-  displayedColumns: string[] = ['AD', 'KOD', 'FIYAT', 'TARIH', 'FAVORI', 'DUZENLE', 'SIL'];
+  displayedColumns: string[] = ['AD', 'KOD', 'FIYAT', 'FAVORI', 'DUZENLE', 'SIL'];
   dataSource: MatTableDataSource<Product> = new MatTableDataSource<Product>([]);
 
-
-  products: any[] = [];
+  products: Product[] = [];
+  category: Category= new Category;
   errorMessage: string = '';
 
-  //displayedColumns: string[] = ['KOD', 'AD', 'FIYAT', 'TARIH','FAVORI', 'DUZENLE', 'SIL']; // Görüntülenecek sütunlar
-  //dataSource = new MatTableDataSource<UserData>([
-  //  { KOD: 'blueberry', AD: 'Maia', FIYAT: '10', TARIH: '01-10-2025',FAVORI:true },
-  //  { KOD: 'lychee', AD: 'Asher', FIYAT: '10', TARIH: '08-03-2024', FAVORI: true },
-  //  { KOD: 'kiwi', AD: 'Olivia', FIYAT: '10', TARIH: '12-12-2024', FAVORI: false },
-  //  { KOD: 'mango', AD: 'Atticus', FIYAT: '10', TARIH: '01-12-2023', FAVORI: true },
-  //]);
   @ViewChild(MatPaginator) paginator!: MatPaginator; // MatPaginator'ı erişebilmek için ViewChild ile alıyoruz
   @ViewChild(MatSort) sort!: MatSort; // MatSort'ı erişebilmek için ViewChild ile alıyoruz
+
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private cdRef: ChangeDetectorRef,
     private dialog: MatDialog,
     private snackBar: MatSnackBar,
-    private productService: PSService
+    private productService: PSService,
+    private categoryService: CategoryService,
   ) { }
+
   ngOnInit() {
     // Verilerinizi burada almak isterseniz, API çağrısı yapabilirsiniz
     this.loadProducts(); // Bileşen yüklendiğinde ürünleri al
   }
 
   ngAfterViewInit() {
-    //// Paginator ve Sort işlemleri ngAfterViewInit içinde yapılır, çünkü bu işlem görünümdeki öğeler tamamlandıktan sonra yapılır
-    //this.dataSource.paginator = this.paginator;
-    //this.dataSource.sort = this.sort;
+    // Paginator ve Sort işlemleri ngAfterViewInit içinde yapılır, çünkü bu işlem görünümdeki öğeler tamamlandıktan sonra yapılır
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
 
   // Filtreleme metodu
@@ -63,17 +60,38 @@ export class PSListComponent implements OnInit, AfterViewChecked {
     this.dataSource.filter = filterValue.trim().toLowerCase(); // Gelen değeri filtrele
   }
 
-
   ngAfterViewChecked() {
     // Eğer herhangi bir değişiklik algılanırsa, explicit olarak change detection yapıyoruz
     this.cdRef.detectChanges();
   }
-  // Ürünleri almak için servis çağrısı yapıyoruz
+
   loadProducts(): void {
     this.productService.getAllProducts().subscribe({
       next: (response) => {
         if (response) {
           this.products = response; // Ürünleri alıyoruz ve listeye atıyoruz
+          this.dataSource.data = this.products; // Tabloya veri kaynağını atıyoruz
+
+          // Her bir ürün için kategori kodunu almak ve güncellemek için forkJoin kullanıyoruz
+          const categoryObservables = this.products.map((product) => {
+            return this.categoryService.getCategoryById(product.categoryId).pipe(
+              // Category verisini almak ve ürün objesinin categoryCode özelliğini güncellemek
+              map((category) => {
+                product.categoryCode = category.categoryCode;
+              })
+            );
+          });
+
+          // Tüm kategori verileri alındıktan sonra tabloyu güncelleme
+          forkJoin(categoryObservables).subscribe({
+            next: () => {
+              console.log('Tüm kategori kodları güncellendi.');
+              this.dataSource.data = [...this.products]; // Tabloyu güncelleme
+            },
+            error: (err) => {
+              console.error('Kategori bilgileri alınırken hata oluştu:', err);
+            }
+          });
         }
       },
       error: (err) => {
@@ -82,22 +100,34 @@ export class PSListComponent implements OnInit, AfterViewChecked {
       }
     });
   }
-  setData(data: Product[]) {
-    // Veriyi ayarlamak için bu metodu kullanabilirsiniz
+
+  
+
+  edit(row: Product) {
+    // Ürün düzenleme için yönlendirme yapıyoruz
+    this.router.navigate(['/coredata/ps/update'], { queryParams: { product: JSON.stringify(row) } });
   }
 
-  getList() {
-    // Veriyi almak için bu metodu kullanabilirsiniz
-  }
-  edit(row: any) {
-    // 'pscategory/update' yoluna yönlendir
-    this.router.navigate(['/coredata/ps/update']);
-  }
   delete(row: any) {
-    // Veriyi almak için bu metodu kullanabilirsiniz
+    // Ürünü silme işlemi
+   
+  
+      this.productService.deleteProduct(row).subscribe({
+        next: (response) => {
+          console.log('Ürün başarıyla silindi:', response);
+          this.loadProducts(); // Silme işlemi başarılıysa ürünler listesini yenile
+          this.snackBar.open('Ürün başarıyla silindi!', '', { duration: 3000 });
+        },
+        error: (err) => {
+          console.error('Ürün silinirken hata oluştu:', err);
+          this.snackBar.open('Silme işlemi başarısız oldu!', '', { duration: 3000 });
+        }
+      });
+    
   }
+
   add() {
-    // 'pscategory/create' yoluna yönlendir
+    // Yeni ürün eklemek için yönlendirme yapıyoruz
     this.router.navigate(['/coredata/ps/create']);
   }
 }
