@@ -7,6 +7,8 @@ import { HeaderComponent } from '../../../header/header.component';
 import { PSCategoryListComponent } from '../../../shared/modules/pscategory/list/pscategory.list.component';
 import { SidebarComponent } from '../../../sidebar/sidebar.component';
 import { MatCardModule } from '@angular/material/card';
+import { FormBuilder } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'pscategory-list',
@@ -23,7 +25,10 @@ export class CoreDataPSCategoryListComponent implements OnInit {
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private cdRef: ChangeDetectorRef) {
+    private cdRef: ChangeDetectorRef,
+    private fb: FormBuilder,
+    private dialog: MatDialog
+  ) {
   }
 
   ngOnInit() {

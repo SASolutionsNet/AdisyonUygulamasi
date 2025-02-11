@@ -44,12 +44,12 @@ namespace BillApp.Api
 
         [Authorize]
         [HttpGet("get-by-id")]
-        public async Task<IActionResult> GetById([FromBody] ProductGetByIdAndDeleteRequest model)
+        public async Task<IActionResult> GetById([FromQuery] Guid id)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _productService.GetById(model.Id);
+            var result = await _productService.GetById(id);
 
 
             if (result.Success)

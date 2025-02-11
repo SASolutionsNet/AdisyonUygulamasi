@@ -9,8 +9,8 @@
       <h2 class="sub-title">Adisyon Uygulaması</h2>
     </div>
     <div class="user-info">
-      <span>Hoş geldiniz, Kullanıcı Adı</span>
-      <button class="logout-btn">Çıkış Yap</button>
+      <span>Hoş geldiniz, {{user?.userName}}</span>
+      <button class="logout-btn" (click)="logout()">Çıkış Yap</button>
     </div>
     <!-- Hamburger Menu Icon (mobile) -->
     <button class="hamburger-menu" aria-label="Open Menu">&#9776;</button>

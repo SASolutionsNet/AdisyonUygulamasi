@@ -3,6 +3,18 @@ using BillApp.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigins",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+        });
+});
+
 // Add Swagger for API documentation
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
@@ -19,6 +31,8 @@ builder.Services.AddControllers();
 builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
+
+app.UseCors("AllowSpecificOrigins");
 
 // Configure middleware
 if (app.Environment.IsDevelopment())

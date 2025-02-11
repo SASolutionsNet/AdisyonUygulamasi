@@ -31,12 +31,12 @@ export class AppHomeComponent implements OnInit {
   }
 
   onSignInClick() {
-    this.router.navigate(['/dashboard']);
+    this.router.navigate(['/user/login']);
     //this.router.navigate(['/inventory/item/detail/eb969f13-e05c-4bf4-9c0b-0754cf8c49ab']);
   }
 
   onSignUpClick() {
-    this.router.navigate(['/coredata']);
+    this.router.navigate(['/user/register']);
     //this.router.navigate(['/inventory/item/detail/eb969f13-e05c-4bf4-9c0b-0754cf8c49ab']);
   }
 

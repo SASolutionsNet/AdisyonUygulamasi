@@ -8,59 +8,59 @@ import { HttpClient, HttpParams, HttpHeaders, HttpResponse } from "@angular/comm
 import { WebApiJsonResult, HttpServiceResult, HttpService } from '../../../common/httpService';
 
 @Injectable()
-export class SalesOrderService {
-
-  private apiUrl = 'http://localhost:5025/api/Order'; // API URL'sini buraya ekleyin
-  constructor(private http: HttpClient) {
+export class SalesAccountingService {
+  private apiUrl = 'http://localhost:5025/api/Bill'; // API URL'sini buraya ekleyin
+  constructor(private http: HttpClient ) {
   }
-  // Tüm siparişleri alma
-  getAllOrders(): Observable<any> {
+
+  // Tüm faturaları almak
+  getAllBills(): Observable<any> {
     const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
 
     // Eğer token varsa, Authorization header'ına ekle
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    // GET isteği ile tüm siparişleri al
+    // GET isteği ile faturaları al
     return this.http.get(`${this.apiUrl}/get-all`, { headers });
   }
-  // Yeni sipariş oluşturma
-  createOrder(orderData: any): Observable<any> {
+  // Yeni bir fatura oluşturma
+  createBill(bill: any): Observable<any> {
     const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
 
     // Eğer token varsa, Authorization header'ına ekle
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    // POST isteği ile yeni sipariş oluştur
-    return this.http.post(`${this.apiUrl}/create`, orderData, { headers });
+    // POST isteği ile yeni fatura oluştur
+    return this.http.post(`${this.apiUrl}/create`, bill, { headers });
   }
-  // Siparişi güncelleme
-  updateOrder(orderId: string, updatedData: any): Observable<any> {
+  // Fatura güncelleme
+  updateBill(billId: string, bill: any): Observable<any> {
     const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
 
     // Eğer token varsa, Authorization header'ına ekle
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    // PUT isteği ile siparişi güncelle
-    return this.http.put(`${this.apiUrl}/update/${orderId}`, updatedData, { headers });
+    // PUT isteği ile faturayı güncelle
+    return this.http.put(`${this.apiUrl}/update/${billId}`, bill, { headers });
   }
-  // Siparişi silme
-  deleteOrder(orderId: string): Observable<any> {
+  // Fatura silme
+  deleteBill(billId: string): Observable<any> {
     const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
 
     // Eğer token varsa, Authorization header'ına ekle
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    // DELETE isteği ile siparişi sil
-    return this.http.delete(`${this.apiUrl}/delete/${orderId}`, { headers });
+    // DELETE isteği ile faturayı sil
+    return this.http.delete(`${this.apiUrl}/delete/${billId}`, { headers });
   }
-  // Siparişi ID ile almak
-  getOrderById(orderId: string): Observable<any> {
+  // Fatura ID'ye göre detaylarını alma
+  getBillById(billId: string): Observable<any> {
     const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
 
     // Eğer token varsa, Authorization header'ına ekle
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
-    // GET isteği ile siparişi ID'sine göre al
-    return this.http.get(`${this.apiUrl}/get-by-id/${orderId}`, { headers });
+    // GET isteği ile faturanın detaylarını al
+    return this.http.get(`${this.apiUrl}/get-by-id/${billId}`, { headers });
   }
 }

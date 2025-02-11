@@ -1,190 +1,97 @@
 import { Component, Injectable } from '@angular/core';
 import { Observable } from "rxjs";
-import { HttpClient, HttpParams, HttpHeaders, HttpResponse } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams} from "@angular/common/http";
 
-/*import { environment } from '../../../../environments/environment';*/
 
 import { BaseEntity } from '../common/baseEntity';
-import { WebApiJsonResult, HttpServiceResult, HttpService } from '../common/httpService';
 
-import { PS } from '../ps/models/ps.model';
 import { PSService } from '../ps/services/ps.service';
+import { Product } from '../ps/models/ps.model';
 
 
-export interface PSCategoryConstantsEnum {
+export interface CategoryConstantsEnum {
   code: string;
   name: string;
 }
 
 
 @Injectable()
-export class PSCategory extends BaseEntity {
-  id: string = "";
+export class Category extends BaseEntity {
 
+  
+  categoryCode: string = "";
   name: string = "";
  
 }
-
+@Injectable({
+  providedIn: 'root'
+})
 @Injectable()
-export class PSCategoryService {
- /* constructor(private http: HttpClient, private httpService: HttpService, private authService: AuthService) {*/
-    constructor(private http: HttpClient, private httpService: HttpService) {
+export class CategoryService {
+ 
+  private apiUrl = 'http://localhost:5025/api/Category'; // API URL'sini buraya ekleyin
+  constructor(private http: HttpClient) { }
+
+
+  // Token'ı almak
+  getToken(): string | null {
+    return localStorage.getItem('authToken'); // Token'ı yerel depolamadan alır
+  }
+
+  // Tüm kategorileri getirme
+  getAllCategories(): Observable<any> {
+    const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
+
+    // Eğer token varsa, Authorization header'ına ekle
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    // GET isteği ile tüm kategorileri al
+    return this.http.get(`${this.apiUrl}/get-all`, { headers });
+  }
+
+  // Yeni kategori oluşturma
+  createCategory(categoryData: any): Observable<any> {
+    const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
+
+    // Eğer token varsa, Authorization header'ına ekle
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    // POST isteği ile yeni kategori oluştur
+    return this.http.post(`${this.apiUrl}/create`, categoryData, { headers });
+  }
+  // Kategoriyi güncelleme
+  updateCategory( categoryData: any): Observable<any> {
+    const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
+
+    // Eğer token varsa, Authorization header'ına ekle
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    // PUT isteği ile kategori güncelle
+    return this.http.put(`${this.apiUrl}/update/`, categoryData, { headers });
+  }
+  // Kategoriyi silme
+  deleteCategory(categoryData: any): Observable<any> {
+    const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
+
+    // Eğer token varsa, Authorization header'ına ekle
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    // DELETE isteği ile kategori sil
+    return this.http.delete(`${this.apiUrl}/delete/`, { headers, body: categoryData });
+  }
+  // Kategori bilgilerini ID'ye göre almak
+  getCategoryById(id: string): Observable<any> {
+    const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
+
+    // Eğer token varsa, Authorization header'ına ekle
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+
+    // GET isteğini headers ve params ile gönder
+    return this.http.get(`${this.apiUrl}/get-by-id/?id=${id}`, { headers });
   }
 
 
 
-  //getList(queryOptions: QueryOptions): Observable<HttpServiceResult> {
-  //  let headers = new HttpHeaders({
-  //    'Content-Type': 'application/json',
-  //    'Authorization': this.authService.currentUser.token_type + ' ' + this.authService.currentUser.access_token
-  //  });
-  //  let options = { headers, observe: 'response' as 'response' };
-
-  //  return this.http.get(
-  //    environment.urls.popsep + "/api/pscategory/options/" + JSON.stringify(queryOptions),
-  //    options)
-  //    .map((response) => {
-  //      let httpServiceResult: HttpServiceResult = this.httpService.handleResponse(response);
-
-  //      return httpServiceResult;
-  //    })
-  //    .catch((error) => {
-  //      return this.httpService.handleError(error);
-  //    });
-  //}
-
-  //getCount(): Observable<HttpServiceResult> {
-  //  let headers = new HttpHeaders({
-  //    'Content-Type': 'application/json',
-  //    'Authorization': this.authService.currentUser.token_type + ' ' + this.authService.currentUser.access_token
-  //  });
-  //  let options = { headers, observe: 'response' as 'response' };
-
-  //  return this.http.get(
-  //    environment.urls.popsep + "/api/pscategory/count",
-  //    options)
-  //    .map((response) => {
-  //      let httpServiceResult: HttpServiceResult = this.httpService.handleResponse(response);
-
-  //      return httpServiceResult;
-  //    })
-  //    .catch((error) => {
-  //      return this.httpService.handleError(error);
-  //    });
-  //}
-
-  //getPSCount(psCategoryId: string): Observable<HttpServiceResult> {
-  //  let headers = new HttpHeaders({
-  //    'Content-Type': 'application/json',
-  //    'Authorization': this.authService.currentUser.token_type + ' ' + this.authService.currentUser.access_token
-  //  });
-  //  let options = { headers, observe: 'response' as 'response' };
-
-  //  return this.http.get(
-  //    environment.urls.popsep + "/api/pscategory/" + psCategoryId + "/ps/count",
-  //    options)
-  //    .map((response) => {
-  //      let httpServiceResult: HttpServiceResult = this.httpService.handleResponse(response);
-
-  //      return httpServiceResult;
-  //    })
-  //    .catch((error) => {
-  //      return this.httpService.handleError(error);
-  //    });
-  //}
-
-  //getById(id: string): Observable<HttpServiceResult> {
-  //  let headers = new HttpHeaders({
-  //    'Content-Type': 'application/json',
-  //    'Authorization': this.authService.currentUser.token_type + ' ' + this.authService.currentUser.access_token
-  //  });
-  //  let options = { headers, observe: 'response' as 'response' };
-
-  //  return this.http.get(
-  //    environment.urls.popsep + "/api/pscategory/" + id,
-  //    options)
-  //    .map((response) => {
-  //      let httpServiceResult: HttpServiceResult = this.httpService.handleResponse(response);
-
-  //      return httpServiceResult;
-  //    })
-  //    .catch((error) => {
-  //      return this.httpService.handleError(error);
-  //    });
-  //}
-
-  //create(entity: PSCategory): Observable<HttpServiceResult> {
-  //   https://www.metaltoad.com/blog/angular-2-using-http-service-write-data-api
-  //  let headers = new HttpHeaders({
-  //    'Content-Type': 'application/json',
-  //    'Authorization': this.authService.currentUser.token_type + ' ' + this.authService.currentUser.access_token
-  //  });
-  //  let options = { headers, observe: 'response' as 'response' };
-
-  //  http://stackoverflow.com/questions/40618878/angular-2-http-post-null-web-api-core
-  //  var body = entity;
-
-  //  return this.http.post(
-  //    environment.urls.popsep + "/api/pscategory",
-  //    body,
-  //    options)
-  //    .map((response) => {
-  //      let httpServiceResult: HttpServiceResult = this.httpService.handleResponse(response);
-
-  //      return httpServiceResult;
-  //    })
-  //    .catch((error) => {
-  //      return this.httpService.handleError(error);
-  //    });
-  //}
-
-  //update(entity: PSCategory): Observable<HttpServiceResult> {
-  //   https://www.metaltoad.com/blog/angular-2-using-http-service-write-data-api
-  //  let headers = new HttpHeaders({
-  //    'Content-Type': 'application/json',
-  //    'Authorization': this.authService.currentUser.token_type + ' ' + this.authService.currentUser.access_token
-  //  });
-  //  let options = { headers, observe: 'response' as 'response' };
-
-  //  http://stackoverflow.com/questions/40618878/angular-2-http-post-null-web-api-core
-  //  var body = entity;
-
-  //  return this.http.put(
-  //    environment.urls.popsep + "/api/pscategory",
-  //    body,
-  //    options)
-  //    .map((response) => {
-  //      let httpServiceResult: HttpServiceResult = this.httpService.handleResponse(response);
-
-  //      return httpServiceResult;
-  //    })
-  //    .catch((error) => {
-  //      return this.httpService.handleError(error);
-  //    });
-  //}
-
-  //createPSs(psCategoryId: string): Observable<HttpServiceResult> {
-  //   https://www.metaltoad.com/blog/angular-2-using-http-service-write-data-api
-  //  let headers = new HttpHeaders({
-  //    'Content-Type': 'application/json',
-  //    'Authorization': this.authService.currentUser.token_type + ' ' + this.authService.currentUser.access_token
-  //  });
-  //  let options = { headers, observe: 'response' as 'response' };
-
-  //  http://stackoverflow.com/questions/40618878/angular-2-http-post-null-web-api-core
-  //  var body = null;
-
-  //  return this.http.post(
-  //    environment.urls.popsep + "/api/pscategory/" + psCategoryId + "/ps",
-  //    body,
-  //    options)
-  //    .map((response) => {
-  //      let httpServiceResult: HttpServiceResult = this.httpService.handleResponse(response);
-
-  //      return httpServiceResult;
-  //    })
-  //    .catch((error) => {
-  //      return this.httpService.handleError(error);
-  //    });
-  //}
 }
+
