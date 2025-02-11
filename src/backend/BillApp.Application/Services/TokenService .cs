@@ -31,7 +31,7 @@ namespace BillApp.Application.Services
             new Claim("Username", user.UserName)
 
         };
-
+            var expirationDays = 90; // 3 months
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Secret"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
@@ -39,7 +39,7 @@ namespace BillApp.Application.Services
                 _configuration["JwtSettings:Issuer"],
                 _configuration["JwtSettings:Audience"],
                 claims,
-                expires: DateTime.Now.AddHours(1),
+                expires: DateTime.Now.AddDays(90),
                 signingCredentials: creds);
 
             return new ServiceResponse<string> { Data = new JwtSecurityTokenHandler().WriteToken(token), Message = "Generate token succesfully.", Success = true };

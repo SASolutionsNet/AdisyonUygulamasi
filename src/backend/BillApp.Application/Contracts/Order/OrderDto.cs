@@ -1,4 +1,5 @@
-﻿using BillApp.Application.Models.Base;
+﻿using BillApp.Application.Contracts.Product;
+using BillApp.Application.Models.Base;
 using System;
 using System.Collections.Generic;
 using System.Linq;
