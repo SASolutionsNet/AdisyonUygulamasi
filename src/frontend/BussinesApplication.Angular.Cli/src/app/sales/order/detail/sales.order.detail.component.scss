@@ -119,3 +119,18 @@ mat-card-header {
     font-size: 18px; /* Başlık boyutunu daha da küçült */
   }
 }
+.amount-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.amount-label {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.amount-value {
+  font-size: 1.2em;
+  color: #333;
+}

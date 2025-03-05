@@ -1,8 +1,11 @@
-import { Component, OnInit } from "@angular/core";
+import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { OrderListComponent } from "../../../shared/modules/sales/order/components/list/order.list.component";
 import { HeaderComponent } from "../../../header/header.component";
 import { SidebarComponent } from "../../../sidebar/sidebar.component";
 import { MatCardModule } from "@angular/material/card";
+import { ActivatedRoute, Router } from "@angular/router";
+import { FormBuilder } from "@angular/forms";
+import { MatDialog } from "@angular/material/dialog";
 
 @Component({
   selector: 'app-sales-order-list',
@@ -13,7 +16,11 @@ import { MatCardModule } from "@angular/material/card";
 })
 export class SalesOrderListComponent implements OnInit {
 
-  constructor() { }
+  constructor(private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private cdRef: ChangeDetectorRef,
+    private fb: FormBuilder,
+    private dialog: MatDialog) { }
   ngOnInit(): void {
 
   }

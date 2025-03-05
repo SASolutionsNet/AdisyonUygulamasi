@@ -7,7 +7,9 @@ import { HttpClient, HttpParams, HttpHeaders, HttpResponse } from "@angular/comm
 
 import { WebApiJsonResult, HttpServiceResult, HttpService } from '../../../common/httpService';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class SalesAccountingService {
   private apiUrl = 'http://localhost:5025/api/Bill'; // API URL'sini buraya ekleyin
   constructor(private http: HttpClient ) {
