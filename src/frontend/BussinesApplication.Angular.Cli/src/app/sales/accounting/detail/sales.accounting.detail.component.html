@@ -12,7 +12,11 @@
     </mat-card-header>
 
      <!--Accounting Detail Component--> 
-    <sasolution-sales-accounting-detail   [ELEMENT_DATA]="orders">
+    <sasolution-sales-accounting-detail
+      [ELEMENT_DATA]="orders"
+      (printOrdersClick)="printOrders()"
+      (closeTableClick)="closeTable()"
+      (payAllOrdersClick)="payAllOrders()">
     </sasolution-sales-accounting-detail>
 
   </div>

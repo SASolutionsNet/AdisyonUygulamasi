@@ -11,13 +11,12 @@
     <mat-card-header class="mat-content">
       <mat-card-title class="category-card-title">Siparişler</mat-card-title>
     </mat-card-header>
-
-    <!-- Accounting Detail Component -->
+   
     <sasolution-sales-order-detail [tabs]="tabsData"
-                                   [ELEMENT_DATA]="orders"
+                                   [ELEMENT_DATA]="matchingOrders"
                                    (tileClicked)="onTileClick($event)"
-                                   (buttonClicked)="handleButtonClick($event)"
-                                 >
+                                   (buttonClicked)="handleButtonClick($event)">
+
     </sasolution-sales-order-detail>
 
   </div>

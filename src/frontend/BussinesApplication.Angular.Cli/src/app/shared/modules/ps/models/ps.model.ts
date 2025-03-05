@@ -17,6 +17,7 @@ name: string = "";
 price: number = 0;
 isFavorite: boolean = false;
 categoryId: string = "";
-categoryCode: string = "";
+  categoryCode: string = "";
+  categoryName: string = "";
 
 }

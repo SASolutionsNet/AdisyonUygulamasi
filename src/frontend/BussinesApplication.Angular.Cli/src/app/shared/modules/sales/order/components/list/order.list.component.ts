@@ -5,12 +5,24 @@ import { MatDialog } from '@angular/material/dialog';
 import { DateAdapter } from '@angular/material/core';
 import { MatTabsModule } from '@angular/material/tabs';
 import { CommonModule } from '@angular/common';
+import { SalesOrderService } from '../../services/order.service';
+import { PSService } from '../../../../ps/services/ps.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatCardModule } from '@angular/material/card';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 
 @Component({
   selector: 'sasolution-sales-order-list',
   templateUrl: './order.list.component.html',
   styleUrls: ['./order.list.component.scss'],
-  imports: [MatTabsModule, CommonModule],
+  imports: [MatTabsModule, CommonModule, CommonModule, ReactiveFormsModule, MatCheckboxModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatCardModule, MatIconModule],
 })
 export class OrderListComponent implements OnInit {
   private _rows: any;
@@ -21,12 +33,19 @@ export class OrderListComponent implements OnInit {
   bahceBoxes: string[] = Array.from({ length: 24 }, (_, i) => `B${i + 1}`);
 
 
+  @ViewChild(MatPaginator) paginator!: MatPaginator; // MatPaginator'ı erişebilmek için ViewChild ile alıyoruz
+  @ViewChild(MatSort) sort!: MatSort; // MatSort'ı erişebilmek için ViewChild ile alıyoruz
+
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private cdRef: ChangeDetectorRef,
     private dialog: MatDialog,
-    private dateAdapter: DateAdapter<Date>,) {
+    private snackBar: MatSnackBar,
+    private dateAdapter: DateAdapter<Date>,
+    private orderService: SalesOrderService,
+    private productService: PSService,
+  ) {
 
     // https://github.com/angular/material2/issues/4876
     this.dateAdapter.setLocale('tr');

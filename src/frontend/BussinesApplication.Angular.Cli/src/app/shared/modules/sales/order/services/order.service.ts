@@ -1,18 +1,30 @@
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, Injectable } from '@angular/core';
 import { Observable } from "rxjs";
-import { HttpClient, HttpParams, HttpHeaders, HttpResponse } from "@angular/common/http";
 
 
-/*import { environment } from '../../../../../../environments/environment';*/
 
-import { WebApiJsonResult, HttpServiceResult, HttpService } from '../../../common/httpService';
 
-@Injectable()
+
+
+@Injectable({
+  providedIn: 'root'
+})
 export class SalesOrderService {
 
   private apiUrl = 'http://localhost:5025/api/Order'; // API URL'sini buraya ekleyin
-  constructor(private http: HttpClient) {
+  constructor(
+    private http: HttpClient) {
   }
+
+
+
+
+  // Token'ı almak
+  getToken(): string | null {
+    return localStorage.getItem('authToken'); // Token'ı yerel depolamadan alır
+  }
+
   // Tüm siparişleri alma
   getAllOrders(): Observable<any> {
     const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
@@ -33,6 +45,31 @@ export class SalesOrderService {
     // POST isteği ile yeni sipariş oluştur
     return this.http.post(`${this.apiUrl}/create`, orderData, { headers });
   }
+
+  // Yeni siparişler oluşturma (Liste alacak şekilde güncellendi)
+  addOrders(orderDataList: any[]): Observable<any> {
+    const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
+
+    // Eğer token varsa, Authorization header'ına ekle
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    // POST isteği ile yeni siparişleri oluştur
+    return this.http.post(`${this.apiUrl}/create`, orderDataList, { headers });
+  }
+
+  // Yeni siparişler oluşturma (Liste alacak şekilde güncellendi)
+  printOrders(orderList: any): Observable<any> {
+    const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
+
+    // Eğer token varsa, Authorization header'ına ekle
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    // POST isteği ile yeni siparişleri oluştur
+    return this.http.post(`${this.apiUrl}/print`, orderList, { headers });
+  }
+
+
+
   // Siparişi güncelleme
   updateOrder(orderId: string, updatedData: any): Observable<any> {
     const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al

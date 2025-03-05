@@ -95,6 +95,8 @@ export class PSFormComponent implements OnInit, AfterViewChecked {
   }
 
   loadProductById(productId: string) {
+
+
     this.productService.getProductById(productId).subscribe({
       next: (product) => {
         this.product = product;

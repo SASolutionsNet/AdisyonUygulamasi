@@ -3,13 +3,13 @@ import { Component, Injectable } from '@angular/core';
 import { BaseEntity } from '../../../common/baseEntity';
 
 import { Product } from '../../../ps/models/ps.model';
-import { PSCategory } from '../../../pscategory/pscategory.service';
 import { SalesAccounting } from '../../accounting/models/accounting.model';
 
 
 @Injectable()
 export class SalesOrder extends BaseEntity {
-
+ 
+  table: string = "";
 
   billId: string = "";
   psId: string = "";
@@ -17,7 +17,15 @@ export class SalesOrder extends BaseEntity {
 
   bill!: SalesAccounting;
   product!: Product;
-
-
+  productName: string = "";
+  cost: number = 0;
 }
 
+@Injectable()
+export class Orders{
+  id: string = "";
+  table: string = "";
+  quantity: number = 0;
+  productName: string = "";
+  cost: number = 0;
+}

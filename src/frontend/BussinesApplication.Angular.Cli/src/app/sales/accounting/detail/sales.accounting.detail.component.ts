@@ -4,16 +4,17 @@ import { AccountingDetailComponent } from '../../../shared/modules/sales/account
 import { MatCardModule } from '@angular/material/card';
 import { SidebarComponent } from '../../../sidebar/sidebar.component';
 import { HeaderComponent } from '../../../header/header.component';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { SalesOrderService } from '../../../shared/modules/sales/order/services/order.service';
 
-interface Order {
+export interface Order {
+  id: string;
   table: string;
-  position: number;
-  name: string;
-  category: string;
+  productName: string;
   cost: number;
+  paid: boolean;  // Satırların ödeme durumu
+  quantity: number;
 }
-
 @Component({
   selector: 'app-sales-accounting-detail',
   templateUrl: './sales.accounting.detail.component.html',
@@ -28,7 +29,7 @@ export class SalesAccountingDetailComponent implements OnInit {
   box: string = '';
 
 
-  constructor(private cdRef: ChangeDetectorRef, private route: ActivatedRoute) { }
+  constructor(private router: Router, private cdRef: ChangeDetectorRef, private route: ActivatedRoute, private orderService:SalesOrderService) { }
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
@@ -45,27 +46,10 @@ export class SalesAccountingDetailComponent implements OnInit {
   ngAfterViewChecked() {
     this.cdRef.detectChanges();
   }
-  // Yeni veriyi set etmek için kullanılan metod
-  setData(tileNumber: number): void {
-    const newItem: Order = {
-      table: this.box,  // box parametresini doğru şekilde ekliyoruz
-      position: this.getNextPosition(), // Yeni pozisyon
-      name: `${tileNumber}`, // Item adı
-      category: 'New Category', // Sabit kategori
-      cost: Math.random() * 100, // Rastgele maliyet
-    };
 
-    // Yeni öğeyi orders array'ine ekliyoruz
-    this.orders.push(newItem);
-  }
-  // Yeni bir pozisyon numarası almak için kullanılan metod
-  getNextPosition(): number {
-    const orders: Order[] = JSON.parse(localStorage.getItem('orders') || '[]');
-    return orders.length > 0 ? orders[orders.length - 1].position + 1 : 1;
-  }
   // LocalStorage'dan "orders" verisini alıyoruz ve box'a göre filtreliyoruz
   loadOrdersFromLocalStorage() {
-    const orders: Order[] = JSON.parse(localStorage.getItem('orders') || '[]');
+    const orders: Order[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
     // 'box' parametresine göre filtreleme yapıyoruz
     const filteredOrders = orders.filter(order => order.table === this.box);
     this.orders = filteredOrders;  // Filtrelenmiş veriyi 'orders' array'ine atıyoruz
@@ -74,6 +58,59 @@ export class SalesAccountingDetailComponent implements OnInit {
 
   // LocalStorage'a "orders" verisini kaydediyoruz
   saveOrdersToLocalStorage() {
-    localStorage.setItem('orders', JSON.stringify(this.orders));
+    localStorage.setItem('salesAccountingOrders', JSON.stringify(this.orders));
+  }
+  closeTable(): void {
+    console.log("masa kapandı1");
+
+    // ActivatedRoute'den table parametresini al
+    const tableParam = this.route.snapshot.paramMap.get('box');  // 'table' URL parametresinin adı olmalı
+
+    if (tableParam) {
+      // localStorage'dan salesAccountingOrders verisini al
+      let savedOrders: Order[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
+      // localStorage'dan salesAccountingOrders verisini al
+      let paidOrders: Order[] = JSON.parse(localStorage.getItem('paidOrders') || '[]');
+
+      // 'table' parametresi ile eşleşen kayıtları filtrele ve çıkar
+      savedOrders = savedOrders.filter(order => order.table !== tableParam);
+      // 'table' parametresi ile eşleşen kayıtları filtrele ve çıkar
+      paidOrders = paidOrders.filter(order => order.table !== tableParam);
+
+      // OrderService'den addOrders fonksiyonunu çağırma *********
+      this.orderService.addOrders(savedOrders).subscribe(response => {
+        console.log('Siparişler başarıyla oluşturuldu:', response);
+      }, error => {
+        console.error('Sipariş oluşturma hatası:', error);
+      });
+
+
+      // Yeni listeyi tekrar localStorage'a kaydet
+      localStorage.setItem('salesAccountingOrders', JSON.stringify(savedOrders));
+      // Yeni listeyi tekrar localStorage'a kaydet
+      localStorage.setItem('paidOrders', JSON.stringify(paidOrders));
+
+      // Kayıt silindi, konsola yaz
+      console.log(`Table ${tableParam} ile eşleşen kayıtlar silindi.`);
+
+      this.router.navigate(['/sales/accounting/list']);
+    } else {
+      console.log("Table parametresi bulunamadı.");
+    }
+  }
+  printOrders(): void {
+    let orderList: any;
+    // OrderService'den addOrders fonksiyonunu çağırma *********
+    this.orderService.addOrders(orderList).subscribe(response => {
+      console.log('Siparişler başarıyla yazdırıldı:', response);
+    }, error => {
+      console.error('Sipariş yazdırma hatası:', error);
+    });
+    console.log("yazdır1");
+  }
+  payAllOrders(): void {
+
+
+  
   }
 }

@@ -15,6 +15,32 @@ div > div:first-child {
   justify-content: flex-start;
   padding: 20px;
 }
+.mat-mdc-table {
+  width: 100%;
+  max-height: 500px;
+  overflow: auto;
+}
+
+.table-container {
+  height: 350px;
+  /*overflow: auto;*/ /* Kaydırma çubuğu ekler */
+}
+.amount-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.amount-label {
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.amount-value {
+  font-size: 1.2em;
+  color: #333;
+}
+
 
 /* Tab Yapısının Genel Stili */
 .mat-tab-group.tabs {
@@ -69,7 +95,89 @@ div > div:first-child {
   justify-content: flex-end; /* Butonu sola hizalar */
   margin-top: 20px; /* Butonun üst kısmına biraz boşluk eklemek için */
 }
+th.mat-column-position, td.mat-column-position {
+  padding-left: 8px;
+}
 
+.mat-mdc-table-sticky-border-elem-right {
+  border-left: 1px solid #e0e0e0;
+  
+}
+
+.mat-mdc-table-sticky-border-elem-left {
+  border-right: 1px solid #e0e0e0;
+
+}
+/* Tablet ve telefon için responsive düzenlemeler */
+/*@media (max-width: 768px) {
+  div {
+    flex-direction: column;
+    align-items: center;
+  }*/
+
+  /* Sekmeleri 2 satırda ve her satırda 4 sekme olacak şekilde düzenle */
+  /*.mat-tab-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 30px;*/ /* Tablar ile tablonun arasındaki boşluğu artır */
+  /*}
+
+  .mat-tab-group .mat-tab-label {
+    font-size: 12px;*/ /* Daha küçük font boyutu */
+    /*padding: 5px;
+    margin: 0;*/ /* Sekmeler arasındaki boşluğu azalt */
+    /*width: 45%;*/ /* Her satırda 2 sekme olacak şekilde düzenle */
+    /*box-sizing: border-box;
+  }*/
+
+  /* Grid Yapısı (tab kısmında) */
+  /*.mat-grid-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);*/ /* 2 tile olacak şekilde düzenlendi */
+    /*gap: 10px;
+    margin-bottom: 40px;*/ /* Grid ve tablo arasındaki boşluğu artır */
+  /*}*/
+
+  /* Grid Tile'ları daha küçük yapalım */
+  /*.grid-tile {
+    font-size: 12px;*/ /* Font boyutunu küçült */
+    /*height: 7px;*/ /* Grid hücrelerini daha küçük yap */
+    /*display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #3498db;*/ /* Varsayılan renk */
+    /*color: white;
+    font-weight: bold;
+    border-radius: 1px;*/ /* Yuvarlatılmış köşeler */
+  /*}*/
+
+  /* Tablo ve Diğer Alanlar */
+  /*.table-container {
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;*/ /* Tabloyu biraz aşağıya kaydırmak için */
+  /*}*/
+
+  /* Tablo içeriği */
+  /*.mat-header-cell,
+  .mat-cell {
+    font-size: 12px;*/ /* Font boyutunu küçült */
+    /*padding: 6px;
+  }*/
+
+  /* Silme butonu */
+  /*button.mat-icon-button {
+    padding: 4px;
+    background-color: #e74c3c;
+  }*/
+
+  /* Mobile-friendly table */
+  /*table.mat-table {
+    font-size: 12px;*/ /* Tabloyu küçük ekranlara uygun hale getirelim */
+    /*overflow: auto;
+  }*/
 /* Tablet ve telefon için responsive düzenlemeler */
 @media (max-width: 768px) {
   div {
@@ -120,6 +228,9 @@ div > div:first-child {
     width: 100%;
     padding: 10px;
     margin-top: 20px; /* Tabloyu biraz aşağıya kaydırmak için */
+    height: 350px; /* Tabloyu sabit yüksekliğe ayarladık */
+    overflow-x: auto; /* Yatay kaydırma ekler */
+    overflow-y: auto; /* Dikey kaydırma çubuğunu aktif eder */
   }
 
   /* Tablo içeriği */
@@ -138,5 +249,13 @@ div > div:first-child {
   /* Mobile-friendly table */
   table.mat-table {
     font-size: 12px; /* Tabloyu küçük ekranlara uygun hale getirelim */
+    width: 100%; /* Tabloyu konteynerin genişliğine sığdırır */
+    table-layout: fixed; /* Hücreler arasında sabit bir düzen sağlar */
+  }
+
+  /* Yatay kaydırma eklemek için tabloların daraldığı alanlarda */
+  .table-container {
+    -webkit-overflow-scrolling: touch; /* iOS için pürüzsüz kaydırma */
   }
 }
+

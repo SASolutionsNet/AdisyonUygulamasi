@@ -1,44 +1,63 @@
 <br />
-<!-- Sola Dayalı Buton -->
+
 <div class="button-container">
-  <button mat-raised-button color="primary" (click)="openPopup()">Masa Taşı</button>
+  <!-- Tutar Bölümü -->
+  <div class="amount-container" style="background-color:palevioletred;">
+
+
+
+    <label for="amount" class="amount-label">Tutar:</label>
+    <span id="amount" class="amount-value">{{ sumCost }}₺</span>
+
+
+  </div>
+
+  <button mat-raised-button color="primary" (click)="openPopup()" class="action-button">
+    <span class="button-text">Masa Taşı</span>
+  </button>
+  <button mat-raised-button color="accent" (click)="goTableList()" class="action-button">
+    <span class="button-text">Geri</span>
+  </button>
 </div>
+
 <br />
 
 
 <div style="display: flex; width: 100%; justify-content: space-between;">
-  <div style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-    <mat-tab-group class="tabs">
+  <div style="width: 100%; height:200px; display: flex; flex-direction: column; align-items: center;">
+    <mat-tab-group class="tabs" style="width: 100%; flex-grow: 1;">
       <mat-tab *ngFor="let tab of tabs" [label]="tab.label">
-        <mat-grid-list cols="4" rowHeight="2:1" class="grid-list">
-          <mat-grid-tile *ngFor="let tile of tab.tiles" (click)="onTileClick(tile)" class="grid-tile">
-            <div>{{tile}}</div>
+        <mat-grid-list cols="4" rowHeight="2:1" class="grid-list" style="width: 100%; height: auto;">
+          <mat-grid-tile *ngFor="let tile of tab.tiles" (click)="onTileClick(tile)">
+            <div>{{ tile.name }} <br />   {{tile.price }}  ₺ </div> <!-- Ürün adı ve fiyatını gösteriyoruz -->
           </mat-grid-tile>
         </mat-grid-list>
       </mat-tab>
     </mat-tab-group>
   </div>
 
+
+
+
   <!--Sağ Tarafta Tablo-->
-  <div class="table-container">
-    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+  <div class="table-container" style="height: 350px">
 
-      <!--Name Column-->
-      <ng-container matColumnDef="name">
-        <tr>
-          <th mat-header-cell *matHeaderCellDef> Ürün </th>
-          <td mat-cell *matCellDef="let element"> {{element.name}} </td>
-        </tr>
-      </ng-container>
-
-      <!--Cost Column-->
-      <ng-container matColumnDef="cost">
+    <!--<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">-->
+    <!--Name Column-->
+    <!--<ng-container matColumnDef="name" sticky>
+      <tr>
+        <th mat-header-cell *matHeaderCellDef> Ürün </th>
+        <td mat-cell *matCellDef="let element"> {{element.productName}} </td>
+      </tr>
+    </ng-container>-->
+    <!--Cost Column-->
+    <!--<ng-container matColumnDef="cost">
         <tr>
           <th mat-header-cell *matHeaderCellDef> Tutar </th>
           <td mat-cell *matCellDef="let element"> {{formatCost(element.cost)}} </td>
         </tr>
       </ng-container>
-      <ng-container matColumnDef="action">
+      <ng-container matColumnDef="action" stickyEnd>
         <th mat-header-cell *matHeaderCellDef> Sil </th>
         <td mat-cell *matCellDef="let element">
           <button mat-icon-button (click)="onClick(element)">
@@ -51,7 +70,48 @@
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-    </table>
+
+    </table>-->
+    <div class="table-container" style="height: 350px; overflow: auto;">
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+        <!-- Row Number Column -->
+        <ng-container matColumnDef="rowNumber">
+          <th mat-header-cell *matHeaderCellDef> No </th>
+          <td mat-cell *matCellDef="let element; let i = index"> {{i + 1}} </td>
+        </ng-container>
+
+        <!-- Ürün Column -->
+        <ng-container matColumnDef="name" sticky>
+          <th mat-header-cell *matHeaderCellDef> Ürün </th>
+          <td mat-cell *matCellDef="let element"> {{element.productName}} </td>
+        </ng-container>
+
+        <!-- Tutar Column -->
+        <ng-container matColumnDef="cost">
+          <th mat-header-cell *matHeaderCellDef> Tutar </th>
+          <td mat-cell *matCellDef="let element"> {{formatCost(element.cost)}} </td>
+        </ng-container>
+
+        <!-- Sil Column -->
+        <ng-container matColumnDef="action" stickyEnd>
+          <th mat-header-cell *matHeaderCellDef> Sil </th>
+          <td mat-cell *matCellDef="let element">
+            <button mat-icon-button (click)="onClick(element)">
+              <span class="icon-circle">
+                <mat-icon>delete</mat-icon>
+              </span>
+            </button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+      </table>
+    </div>
+
+
   </div>
 
 </div>

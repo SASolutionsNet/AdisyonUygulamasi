@@ -49,12 +49,32 @@ export class DialogChangeTableComponent implements OnInit {
     //explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
     this.cdRef.detectChanges();
   }
-  onBoxClick(box: string) {
-    // 1. localStorage'dan orders verisini alıyoruz
-    const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+  //onBoxClick(box: string) {
+  //  // 1. localStorage'dan orders verisini alıyoruz
+  //  const orders = JSON.parse(localStorage.getItem('orders') || '[]');
 
-    // 2. this.data.id ile eşleşen orders öğelerini buluyoruz
-    const updatedOrders = orders.map((order: { table: string; box: any; }) => {
+  //  // 2. this.data.id ile eşleşen orders öğelerini buluyoruz
+  //  const updatedOrders = orders.map((order: { table: string; box: any; }) => {
+  //    if (order.table === this.data.id) {
+  //      // 3. Bu öğelerin table değerini box ile değiştiriyoruz
+  //      order.table = box;  // Eğer box değeri varsa, table'ı box ile değiştiriyoruz.
+  //    }
+  //    return order;
+  //  });
+
+  //  // 4. Güncellenmiş veriyi localStorage'a kaydediyoruz
+  //  localStorage.setItem('orders', JSON.stringify(updatedOrders));
+
+  //  this.router.navigate([`/sales/order/list`]);  // Yönlendirme
+  //  this.dialogRef.close(); 
+  //}
+
+  onBoxClick(box: string) {
+    // 1. salesAccountingOrders verisini alıyoruz (localStorage'dan alabilirsiniz veya bu veriyi direkt component içinde tutuyor olabilirsiniz)
+    const orders = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
+
+    // 2. this.data.id ile eşleşen orders öğelerini buluyoruz ve güncelliyoruz
+    const updatedOrders = orders.map((order: { table: string; productName: string; cost: number; quantity: number; }) => {
       if (order.table === this.data.id) {
         // 3. Bu öğelerin table değerini box ile değiştiriyoruz
         order.table = box;  // Eğer box değeri varsa, table'ı box ile değiştiriyoruz.
@@ -63,12 +83,12 @@ export class DialogChangeTableComponent implements OnInit {
     });
 
     // 4. Güncellenmiş veriyi localStorage'a kaydediyoruz
-    localStorage.setItem('orders', JSON.stringify(updatedOrders));
+    localStorage.setItem('salesAccountingOrders', JSON.stringify(updatedOrders));
 
-    this.router.navigate([`/sales/order/list`]);  // Yönlendirme
-    this.dialogRef.close(); 
+    // 5. Yönlendirme işlemi ve dialog kapama
+    this.router.navigate([`/sales/order/list`]);
+    this.dialogRef.close();
   }
-
 
 
 }

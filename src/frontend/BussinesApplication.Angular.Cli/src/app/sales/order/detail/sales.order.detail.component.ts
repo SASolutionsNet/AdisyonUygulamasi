@@ -1,135 +1,245 @@
 
-import { ChangeDetectorRef, Component, OnInit } from "@angular/core";
-import { HeaderComponent } from "../../../header/header.component";
-import { SidebarComponent } from "../../../sidebar/sidebar.component";
-import { MatCardModule } from "@angular/material/card";
-import { OrderDetailComponent } from "../../../shared/modules/sales/order/components/detail/order.detail.component";
-import { ActivatedRoute, RouterModule } from "@angular/router";
-import { MatTableDataSource } from "@angular/material/table";
-import { MatPaginatorModule } from "@angular/material/paginator";
-import { MatButtonModule } from "@angular/material/button";
-
-interface Order {
-  table: string;
-  position: number;
-  name: string;
-  category: string;
-  cost: number;
+import { Component, OnInit, ChangeDetectorRef, SimpleChanges, ViewChild } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SalesOrderService } from "../../../shared/modules/sales/order/services/order.service";
+import { PSService } from "../../../shared/modules/ps/services/ps.service";
+import { Orders, SalesOrder } from "../../../shared/modules/sales/order/models/order.model";
+import { Product } from "../../../shared/modules/ps/models/ps.model";
+import { OrderDetailComponent } from "../../../shared/modules/sales/order/components/detail/order.detail.component"; // Import işlemi
+import { MatCardModule } from '@angular/material/card';
+import { SidebarComponent } from '../../../sidebar/sidebar.component';
+import { HeaderComponent } from '../../../header/header.component';
+import { SalesAccounting } from '../../../shared/modules/sales/accounting/models/accounting.model';
+import { ActivatedRoute, Router } from '@angular/router';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+interface Tab {
+  label: string;
+  tiles: { name: string, price: number }[];  // 'tiles' should be an array of objects
 }
 
 @Component({
   selector: 'app-sales-order-detail',
   templateUrl: './sales.order.detail.component.html',
   styleUrls: ['./sales.order.detail.component.scss'],
-  imports: [OrderDetailComponent, HeaderComponent, SidebarComponent, MatCardModule, MatPaginatorModule, MatButtonModule],
   standalone: true,
+  imports: [MatPaginatorModule,OrderDetailComponent, MatCardModule, SidebarComponent, HeaderComponent],  // Import dependencies
 })
 export class SalesOrderDetailComponent implements OnInit {
-
-  tabsData = [
-    {
-      label: 'Sık Kullanılanlar', tiles: [
-        "Çay", "Kahve", "Oralet", "Salep",
-        "Soda", "M.Soda", "Gazoz", "Kola",
-        "Gofret", "Biskuvi", "Kek", "Snackers",
-        "Simit", "1/2 Tost", "3/4 Tost", "Tam Tost",
-      ]
-    },
-    { label: 'Sıcak Meşrubatlar', tiles: ["Çay", "Kahve", "Oralet", "S. Çikolata", "Salep"] },
-    { label: 'Soğuk Meşrubatlar', tiles: ["Ayran", "Soda", "Gazoz", "M. Soda", "Fanta"] }
-  ];
-
-  orders: Order[] = [];
-  dataSource: MatTableDataSource<Order> = new MatTableDataSource(this.orders);
-  box: string = '';
-
-  constructor(private cdRef: ChangeDetectorRef, private route: ActivatedRoute) { }
+  // Initialize SalesAccounting object
+  salesAccounting: SalesAccounting = new SalesAccounting();  // Initialized correctly
+  tabsData: Tab[] = [];  // Array of tabs, each with a label and tiles (products)
+  boxParam!: string;
+  orders: Orders[] = [];  // Array to hold order data
+  products: Product[] = [];  // Product data from API
+  salesAccountings: SalesAccounting[] = [];  // List of sales accounting data
+  dataSource = new MatTableDataSource<any>([]); // Başlangıçta boş veri
+  matchingOrders: Orders[] = [];
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private cdRef: ChangeDetectorRef,
+    private snackBar: MatSnackBar,
+    private productService: PSService,
+  ) { }
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
-      const boxParam = params.get('box');
-      this.box = boxParam !== null ? boxParam : '';  // Eğer null ise boş bir string atıyoruz
-      this.loadOrdersFromLocalStorage();  // Sayfaya her döndüğünde veriyi yükle
-    });
-  }
-
-  ngOnChanges() {
+   
+    // Check if orders are stored in localStorage
+    const storedOrders = localStorage.getItem('salesAccountingOrders');
+    if (storedOrders) {
+      this.salesAccounting.orders = JSON.parse(storedOrders);  // Parse the stored JSON string back to an array
+    }
+    this.setProductTabs();
     this.cdRef.detectChanges();
+    this.getOrdersByBoxParam();
   }
 
   ngAfterViewChecked() {
+    //explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
     this.cdRef.detectChanges();
   }
-
-  // Tile tıklandığında çağrılacak metod
-  onTileClick(tileNumber: number): void {
-    this.setData(tileNumber);
-    this.saveOrdersToLocalStorage();  // Veriyi localStorage'a kaydediyoruz
-    this.loadOrdersFromLocalStorage();  // Veriyi tekrar yüklüyoruz
-    this.cdRef.detectChanges();  // Değişiklikleri manuel olarak tespit ederiz
+  ngOnChanges(changes: SimpleChanges): void {
+    // Burada değişen değerleri kontrol edebiliriz
+    if (changes['tabsData']) {
+      console.log('tabsData değişti:', changes['tabsData']);
+    }
   }
 
-  // Yeni veriyi set etmek için kullanılan metod
-  setData(tileNumber: number): void {
-    const newItem: Order = {
-      table: this.box,  // box parametresini doğru şekilde ekliyoruz
-      position: this.getNextPosition(), // Yeni pozisyon
-      name: `${tileNumber}`, // Item adı
-      category: 'New Category', // Sabit kategori
-      cost: Math.random() * 100, // Rastgele maliyet
+  // Handle page change
+  onPageChanged(event: any) {
+    console.log('Page changed: ', event);
+  }
+
+  // Sets tabs for the products based on category name
+  setProductTabs() {
+    this.tabsData = [];  // Reset tabs data
+
+    this.productService.getAllProducts().subscribe({
+      next: (response) => {
+        this.products = response;
+
+        // Organize products into tabs by category name
+        this.products.forEach((product: Product) => {
+          console.log('Product Category Name:', product.categoryName);
+
+          const tabIndex = this.tabsData.findIndex((tab) => tab.label === product.categoryName);
+
+          if (tabIndex === -1) {
+            this.tabsData.push({
+              label: product.categoryName,
+              tiles: [{ name: product.name, price: product.price }]
+            });
+          } else {
+            this.tabsData[tabIndex].tiles.push({ name: product.name, price: product.price });
+          }
+        });
+
+        console.log('Tabs Data:', this.tabsData);
+      },
+      error: (err) => {
+        console.error('Error fetching categories:', err);
+        this.snackBar.open('An error occurred while fetching categories.', '', { duration: 3000 });
+      }
+    });
+  }
+
+  //// Handle tile click event
+  //onTileClick(tile: { name: string, price: number }): void {
+  //  // Retrieve 'box' param from the URL using ActivatedRoute
+  //  this.activatedRoute.paramMap.subscribe(params => {
+  //    this.boxParam = params.get('box')?.toString() ?? '';
+  //    if (this.boxParam) {
+  //      console.log('Box Param:', this.boxParam);  // Log box param
+  //    }
+  //  });
+
+  //  let order: Orders = {
+  //    productName: tile.name,
+  //    cost: tile.price,
+  //    table: this.boxParam,
+  //    quantity: 0,
+  //  };
+
+  //  // Add the new order to salesAccounting.orders
+  //  if (Array.isArray(this.salesAccounting.orders)) {
+  //    // Instead of directly pushing to the array, update the reference
+  //    this.salesAccounting.orders.push(order);
+  //    this.salesAccounting.orders = [...this.salesAccounting.orders]; // Create a new array reference
+  //    this.cdRef.detectChanges(); // Trigger change detection
+
+  //  }
+
+  //  console.log('Updated orders:', this.salesAccounting.orders);
+  //  this.cdRef.detectChanges();  // Manually trigger change detection
+  //}
+  // Handle tile click event
+  onTileClick(tile: { name: string, price: number }): void {
+
+   
+
+    // Retrieve 'box' param from the URL using ActivatedRoute
+    this.activatedRoute.paramMap.subscribe(params => {
+      this.boxParam = params.get('box')?.toString() ?? '';
+      if (this.boxParam) {
+        console.log('Box Param:', this.boxParam);  // Log box param
+      }
+    });
+
+    let order: Orders = {
+      // id : Guid.NewGuid()
+      id: this.generateGUID(),
+      productName: tile.name,
+      cost: tile.price,
+      table: this.boxParam,
+      quantity: 1,
     };
 
-    // Yeni öğeyi orders array'ine ekliyoruz
-    this.orders.push(newItem);
-  }
-
-  // Yeni bir pozisyon numarası almak için kullanılan metod
-  getNextPosition(): number {
-    const orders: Order[] = JSON.parse(localStorage.getItem('orders') || '[]');
-    return orders.length > 0 ? orders[orders.length - 1].position + 1 : 1;
-  }
-
-  // LocalStorage'dan "orders" verisini alıyoruz ve box'a göre filtreliyoruz
-  loadOrdersFromLocalStorage() {
-    const orders: Order[] = JSON.parse(localStorage.getItem('orders') || '[]');
-    // 'box' parametresine göre filtreleme yapıyoruz
-    const filteredOrders = orders.filter(order => order.table === this.box);
-    this.orders = filteredOrders;  // Filtrelenmiş veriyi 'orders' array'ine atıyoruz
-    this.dataSource.data = this.orders;  // DataSource'u güncelliyoruz
-  }
-
-  // LocalStorage'a "orders" verisini kaydediyoruz
-  saveOrdersToLocalStorage() {
-    localStorage.setItem('orders', JSON.stringify(this.orders));
-  }
-
-  // Siparişi silme işlemi
-  handleButtonClick(order: Order): void {
-    if (!order) {
-      console.error('Hata: Tıklanan satır verisi bulunamadı!');
-      return;
+    // Add the new order to salesAccounting.orders
+    if (Array.isArray(this.salesAccounting.orders)) {
+      // Instead of directly pushing to the array, update the reference
+      this.salesAccounting.orders.push(order);
+      this.salesAccounting.orders = [...this.salesAccounting.orders]; // Create a new array reference
+      this.cdRef.detectChanges(); // Trigger change detection
     }
 
-    console.log('Tıklanan satır:', order);
+    // Save the updated orders to localStorage
+    localStorage.setItem('salesAccountingOrders', JSON.stringify(this.salesAccounting.orders));
 
-    // LocalStorage'dan "orders" verisini alıyoruz
-    let orders: Order[] = JSON.parse(localStorage.getItem('orders') || '[]');
-
-    // Tıklanan 'Order'ı diziden çıkarıyoruz
-    orders = orders.filter(o => o.position !== order.position);
-
-    // Güncellenmiş veriyi tekrar localStorage'a kaydediyoruz
-    localStorage.setItem('orders', JSON.stringify(orders));
-
-    // Güncellenmiş veriyi UI'ye yansıtmak için dataSource'u güncelleriz
-    this.orders = orders;
-    this.dataSource.data = this.orders;
-
-    console.log('Updated orders:', orders);
+    console.log('Updated orders:', this.salesAccounting.orders);
+    this.cdRef.detectChanges();  // Manually trigger change detection
+    this.getOrdersByBoxParam();
   }
 
-  // Toplam maliyeti hesaplama
-  getTotalCost(): number {
-    return this.orders.reduce((acc, curr) => acc + curr.cost, 0);
+  generateGUID(): string {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      const r = Math.random() * 16 | 0;
+      const v = c === 'x' ? r : (r & 0x3 | 0x8); // v için 8, 9, a, b sayılarından biri seçilir
+      return v.toString(16);
+    });
   }
+
+  // Method to get orders with matching table value from the route
+  getOrdersByBoxParam(): Orders[] {
+    
+
+    // Retrieve 'box' param from the URL using ActivatedRoute
+    this.activatedRoute.paramMap.subscribe(params => {
+      const boxParam = params.get('box')?.toString() ?? '';  // Get the 'box' parameter from the URL
+
+      if (boxParam) {
+        // Filter orders where the table value matches the box param
+        this.matchingOrders = this.salesAccounting.orders.filter(order => order.table === boxParam);
+
+        console.log('Matching Orders:', this.matchingOrders);  // Log the filtered orders
+      }
+    });
+
+    return this.matchingOrders;
+  }
+
+  // Handle button click event (to remove order)
+  //handleButtonClick(order: Orders): void {
+  //  console.log('Button clicked for order:', order);
+
+  //  // Remove order from salesAccounting.orders based on product name
+  //  if (Array.isArray(this.salesAccounting.orders)) {
+  //    const index = this.salesAccounting.orders.findIndex(o => o.productName === order.productName);
+
+  //    if (index !== -1) {
+  //      this.salesAccounting.orders.splice(index, 1);  // Remove the order from the array
+  //      this.salesAccounting.orders = [...this.salesAccounting.orders]; // Create a new array reference
+  //      this.cdRef.detectChanges(); // Trigger change detection
+
+  //      // Save the updated orders to localStorage
+  //      localStorage.setItem('salesAccountingOrders', JSON.stringify(this.salesAccounting.orders));
+  //    }
+  //  }
+  //}
+
+  // Handle button click event (to remove order)
+  handleButtonClick(order: Orders): void {
+    console.log('Button clicked for order:', order);
+
+    // Remove order from salesAccounting.orders based on product name
+    if (Array.isArray(this.salesAccounting.orders)) {
+      const index = this.salesAccounting.orders.findIndex(o => o.productName === order.productName);
+
+      if (index !== -1) {
+        this.salesAccounting.orders.splice(index, 1);  // Remove the order from the array
+        this.salesAccounting.orders = [...this.salesAccounting.orders]; // Create a new array reference
+        this.cdRef.detectChanges(); // Trigger change detection
+      }
+    }
+
+    // Update the localStorage with the new orders array
+    localStorage.setItem('salesAccountingOrders', JSON.stringify(this.salesAccounting.orders));
+
+    // Optionally, you can call the getOrdersByBoxParam method again if you want to filter based on the box param
+    this.getOrdersByBoxParam();
+  }
+
+
+
+
 }
