@@ -6,7 +6,6 @@ using BillApp.Application.Utilities;
 using BillApp.Domain.Order;
 using Microsoft.EntityFrameworkCore;
 
-
 namespace BillApp.Application.Services
 {
     public class OrderService : IOrderService
@@ -120,6 +119,38 @@ namespace BillApp.Application.Services
                 Success = true,
                 Message = "Order created successfully."
             };
+        }
+
+        public async Task<ServiceResponse<List<OrderDto>>> CreateRange(IEnumerable<OrderDto> dtos)
+        {
+
+            if (dtos == null)
+            {
+                return new ServiceResponse<List<OrderDto>>
+                {
+                    Data = null,
+                    Message = "Invalid Model",
+                    Success = false
+                };
+            }
+
+            var newOrdersList = _mapper.Map<List<Order>>(dtos);
+
+            newOrdersList.ForEach(x => x.CreatedUser = _currentUserService.Username ?? string.Empty);
+
+            var createdOrders = await _orderRepository.CreateRangeAsync(newOrdersList);
+
+            var mappedReturnModel = _mapper.Map<List<OrderDto>>(createdOrders);
+
+
+            return new ServiceResponse<List<OrderDto>>
+            {
+                Data = mappedReturnModel,
+                Success = true,
+                Message = "Orders created successfully."
+            };
+
+
         }
 
         public async Task<ServiceResponse<OrderDto>> Delete(Guid id)
@@ -311,5 +342,7 @@ namespace BillApp.Application.Services
                 Message = "Order updated successfully."
             };
         }
+
+
     }
 }
