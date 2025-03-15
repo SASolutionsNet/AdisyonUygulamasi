@@ -11,7 +11,6 @@ export class SalesAccounting extends BaseEntity {
 
   table:    string = "";
   isClosed: boolean = false;
-  orders:   Orders[]= []
-
+  orders: Orders[] = [];
 }
 

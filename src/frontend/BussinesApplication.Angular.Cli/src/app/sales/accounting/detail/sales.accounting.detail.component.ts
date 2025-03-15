@@ -1,11 +1,20 @@
 import { ChangeDetectorRef, Component, OnInit, SimpleChanges } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
+import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { AccountingDetailComponent } from '../../../shared/modules/sales/accounting/components/detail/accounting.detail.component';
 import { MatCardModule } from '@angular/material/card';
 import { SidebarComponent } from '../../../sidebar/sidebar.component';
 import { HeaderComponent } from '../../../header/header.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SalesOrderService } from '../../../shared/modules/sales/order/services/order.service';
+import { DialogPaidAlertComponent } from '../../../shared/modules/dialogpaidalert/dialogpaidalert.component';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { CommonModule } from '@angular/common';
+import { MatSortModule } from '@angular/material/sort';
+import { MatTabsModule } from '@angular/material/tabs';
 
 export interface Order {
   id: string;
@@ -20,7 +29,8 @@ export interface Order {
   templateUrl: './sales.accounting.detail.component.html',
   styleUrls: ['./sales.accounting.detail.component.scss'],
   standalone: true,
-  imports: [AccountingDetailComponent, MatCardModule, HeaderComponent, SidebarComponent]  // Standalone bileşenler
+  imports: [MatGridListModule, MatTabsModule, CommonModule, MatTableModule, MatPaginatorModule, MatSortModule, MatButtonModule,
+    MatIconModule, AccountingDetailComponent, MatCardModule, HeaderComponent, SidebarComponent, MatDialogModule]  // Standalone bileşenler
 })
 export class SalesAccountingDetailComponent implements OnInit {
 
@@ -29,7 +39,8 @@ export class SalesAccountingDetailComponent implements OnInit {
   box: string = '';
 
 
-  constructor(private router: Router, private cdRef: ChangeDetectorRef, private route: ActivatedRoute, private orderService:SalesOrderService) { }
+  constructor(private router: Router, private cdRef: ChangeDetectorRef, private route: ActivatedRoute, private orderService: SalesOrderService,
+    private dialog: MatDialog,) { }
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
@@ -61,6 +72,18 @@ export class SalesAccountingDetailComponent implements OnInit {
     localStorage.setItem('salesAccountingOrders', JSON.stringify(this.orders));
   }
   closeTable(): void {
+
+
+    // Popup bileşenine id parametresini gönderiyoruz
+    this.dialog.open(DialogPaidAlertComponent, {
+      width: '1000px'
+    });
+
+
+
+
+
+
     console.log("masa kapandı1");
 
     // ActivatedRoute'den table parametresini al
@@ -111,6 +134,6 @@ export class SalesAccountingDetailComponent implements OnInit {
   payAllOrders(): void {
 
 
-  
+
   }
 }

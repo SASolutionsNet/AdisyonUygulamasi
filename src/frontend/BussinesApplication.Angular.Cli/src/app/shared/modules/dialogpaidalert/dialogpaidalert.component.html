@@ -1,0 +1,8 @@
+<h3 mat-dialog-title>{{title}}</h3>
+<mat-dialog-content>
+  <p>{{text}}</p>
+</mat-dialog-content>
+<mat-dialog-actions [attr.align]="'end'">
+  <button mat-raised-button mat-dialog-close color="warn" (click)="onClickYes()">{{yesButtonText}}</button> &nbsp;
+  <button mat-raised-button mat-dialog-close color="primary" (click)="onClickNo()">{{noButtonText}}</button>
+</mat-dialog-actions>
