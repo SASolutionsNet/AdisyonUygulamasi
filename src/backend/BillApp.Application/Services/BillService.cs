@@ -4,6 +4,11 @@ using BillApp.Application.Interfaces.IRepositories;
 using BillApp.Application.Interfaces.IServices;
 using BillApp.Application.Utilities;
 using BillApp.Domain.Bill;
+using iText.Kernel.Geom;
+using iText.Kernel.Pdf;
+using iText.Layout;
+using iText.Layout.Element;
+using iText.Layout.Properties;
 using Microsoft.IdentityModel.Tokens;
 
 
@@ -31,7 +36,7 @@ namespace BillApp.Application.Services
 
 
             mappedModel.CreatedUser = _currentUserService.Username ?? "";
-
+            mappedModel.IsClosed = true;
             var createdBill = await _billRepository.CreateAsync(mappedModel);
 
             var mappedReturnModel = _mapper.Map<Bill, BillDto>(createdBill);
@@ -164,6 +169,60 @@ namespace BillApp.Application.Services
                 Success = true,
                 Message = "Bill updated successfully."
             };
+        }
+
+        public byte[] GenerateInvoicePdf(BillDto bill)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                var pageSize = new PageSize(226.77f, 566.93f); // 1mm ≈ 2.83f points
+
+                // PDF oluştur
+                using (var writer = new PdfWriter(memoryStream))
+                {
+                    using (var pdf = new PdfDocument(writer))
+                    {
+                        pdf.SetDefaultPageSize(pageSize);
+                        var document = new Document(pdf);
+
+                        // **Başlık**
+                        document.Add(new Paragraph("HESAP")
+                            .SetTextAlignment(TextAlignment.CENTER)
+                            .SetBold()
+                            .SetFontSize(14)
+                            .SetMarginBottom(10));
+
+                        // **Masa Bilgisi**
+                        document.Add(new Paragraph($"Masa: {bill.Table}")
+                            .SetBold()
+                            .SetFontSize(12)
+                            .SetMarginBottom(5));
+
+                        // **Sipariş Listesi**
+                        Table table = new Table(UnitValue.CreatePercentArray(new float[] { 70, 30 }))
+                                           .UseAllAvailableWidth();
+                        table.AddHeaderCell("Ürün");
+                        table.AddHeaderCell("Adet");
+
+                        foreach (var order in bill.Orders)
+                        {
+                            table.AddCell(order.Product.Name);
+                            table.AddCell(order.Quantity.ToString());
+                        }
+
+                        document.Add(table);
+
+                        // **Toplam Fiyat**
+                        document.Add(new Paragraph($"\nToplam Fiyat: {bill.TotalPrice} ₺")
+                            .SetBold()
+                            .SetFontSize(12)
+                            .SetMarginTop(10));
+
+                        document.Close();
+                    }
+                }
+                return memoryStream.ToArray();
+            }
         }
     }
 }

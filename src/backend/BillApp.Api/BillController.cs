@@ -3,6 +3,7 @@ using BillApp.Api.Models.Bill.Request;
 using BillApp.Api.Models.Bill.Response;
 using BillApp.Application.Contracts.Bill;
 using BillApp.Application.Interfaces.IServices;
+using BillApp.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -139,6 +140,31 @@ namespace BillApp.Api
 
             return StatusCode(500, "Request Failed");
 
+        }
+
+        [HttpPost("print-bill")]
+        //[Authorize(Roles = "Admin")] 
+        [Authorize()]
+        public async Task<IActionResult> PrintBill([FromBody] BillGetByIdAndDeleteRequest model)
+        {
+            if (!ModelState.IsValid || model == null)
+                return BadRequest(ModelState);
+
+            var result = await _billService.GetById(model.Id);
+
+            if (result.Data == null)
+                return NotFound(new { message = "Fatura bulunamadı." });
+
+            try
+            {
+                byte[] pdfBytes = _billService.GenerateInvoicePdf(result.Data);
+
+                return File(pdfBytes, "application/pdf", "fatura.pdf");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = "PDF oluşturulurken hata oluştu", error = ex.Message });
+            }
         }
 
 

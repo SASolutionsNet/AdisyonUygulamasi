@@ -13,6 +13,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DateAdapter } from '@angular/material/core';
 import { MatTabsModule } from '@angular/material/tabs';
 import { CommonModule } from '@angular/common';
+import { Order } from '../../../../../../sales/accounting/detail/sales.accounting.detail.component';
 
 @Component({
   selector: 'sasolution-sales-accounting-list',
@@ -23,6 +24,7 @@ import { CommonModule } from '@angular/common';
 export class AccountingListComponent implements OnInit {
   private _rows: any;
     dataLoadedEvent: any;
+  distinctTables: string[] = [];
 
   salonBoxes: string[] = Array.from({ length: 24 }, (_, i) => `S${i + 1}`);
   bahceBoxes: string[] = Array.from({ length: 24 }, (_, i) => `B${i + 1}`);
@@ -44,9 +46,12 @@ export class AccountingListComponent implements OnInit {
   }
 
   ngOnInit() {
-    
+    const salesAccountingOrders: Order[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
+    this.distinctTables = [...new Set(salesAccountingOrders.map(order => order.table))];
   }
-
+  isOpen(box: string): boolean {
+    return this.distinctTables.includes(box);
+  }
   ngAfterViewChecked() {
     //explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
     this.cdRef.detectChanges();

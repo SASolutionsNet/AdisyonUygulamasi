@@ -55,12 +55,14 @@ namespace BillApp.Infrastructure.Repositories
         {
             return await _context.Bills.AsQueryable()
                 .Include(p => p.Orders)
+                .ThenInclude(p => p.Product)
                 .ToListAsync();
         }
 
         public async Task<Bill?> GetByIdAsync(Guid id)
         {
-            return await _context.Bills.FindAsync(id);
+            return _context.Bills.AsQueryable().Where(x => x.Id.Equals(id)).Include(p => p.Orders).ThenInclude(p => p.Product).First();
+
         }
 
 

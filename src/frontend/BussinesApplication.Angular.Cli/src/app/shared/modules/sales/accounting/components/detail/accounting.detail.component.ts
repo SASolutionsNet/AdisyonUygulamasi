@@ -158,7 +158,7 @@
 //  }
 //  // paidOrders fiyatlarının toplamını hesaplayan fonksiyon
 //  closeTableClick(): void {
-   
+
 
 //    console.log("masa kapandı");
 //  }
@@ -222,7 +222,7 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
   constructor(private cdRef: ChangeDetectorRef) { }
 
   ngOnInit() {
-    // localStorage'dan ödenmiş siparişleri al
+     // localStorage'dan ödenmiş siparişleri al
     const savedPaidOrders = JSON.parse(localStorage.getItem('paidOrders') || '[]');
     this.paidRows = savedPaidOrders;  // Sayfa yüklendiğinde 'paidOrders' verilerini al
 
@@ -308,8 +308,8 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
   // Orders fiyatlarının toplamını hesaplayan fonksiyon
   calculateSumCost(): void {
     this.sumCost = this.dataSource.data.reduce((total, order) => {
-      return total + (order.cost * order.quantity);  // Fiyat ve miktarı çarparak toplamı alıyoruz
-    }, 0);
+        return total + (order.cost * order.quantity);  // Fiyat ve miktarı çarparak toplamı alıyoruz
+      }, 0);
   }
 
   // SelectedOrders fiyatlarının toplamını hesaplayan fonksiyon
@@ -342,7 +342,7 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
 
 
   payAllOrders(): void {
- 
+
 
     // Seçilen satırları "paid" olarak işaretleyin ve güncelleyin
     this.selectedRows.forEach(order => {
