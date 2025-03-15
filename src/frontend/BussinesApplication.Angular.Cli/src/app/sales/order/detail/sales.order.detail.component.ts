@@ -15,7 +15,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 interface Tab {
   label: string;
-  tiles: { name: string, price: number }[];  // 'tiles' should be an array of objects
+  tiles: { name: string, price: number, productId : string }[];  // 'tiles' should be an array of objects
 }
 
 @Component({
@@ -88,10 +88,10 @@ export class SalesOrderDetailComponent implements OnInit {
           if (tabIndex === -1) {
             this.tabsData.push({
               label: product.categoryName,
-              tiles: [{ name: product.name, price: product.price }]
+              tiles: [{ name: product.name, price: product.price, productId : product.id }]
             });
           } else {
-            this.tabsData[tabIndex].tiles.push({ name: product.name, price: product.price });
+            this.tabsData[tabIndex].tiles.push({ name: product.name, price: product.price, productId: product.id });
           }
         });
 
@@ -134,7 +134,7 @@ export class SalesOrderDetailComponent implements OnInit {
   //  this.cdRef.detectChanges();  // Manually trigger change detection
   //}
   // Handle tile click event
-  onTileClick(tile: { name: string, price: number }): void {
+  onTileClick(tile: { name: string, price: number, productId : string }): void {
 
    
 
@@ -153,6 +153,7 @@ export class SalesOrderDetailComponent implements OnInit {
       cost: tile.price,
       table: this.boxParam,
       quantity: 1,
+      productId: tile.productId 
     };
 
     // Add the new order to salesAccounting.orders

@@ -58,60 +58,11 @@ namespace BillApp.Application.Services
                 };
             }
 
-            var existingOrders = await _orderRepository.GetQueryable()
-                .Where(o => o.BillId == dto.BillId && o.ProductId == dto.ProductId)
-                .ToListAsync();
-
-            if (existingOrders.Any())
-            {
-                var existingOrder = existingOrders.First();
-                dto.Id = existingOrder.Id;
-                dto.Quantity = existingOrder.Quantity + 1;
-
-                var updateResponse = await Update(dto);
-                if (!updateResponse.Success)
-                {
-                    return new ServiceResponse<OrderDto>
-                    {
-                        Success = false,
-                        Message = "Creating order failed during update."
-                    };
-                }
-
-                var billUpdateResult = await UpdateTotalPriceForBill(dto.BillId);
-                if (!billUpdateResult)
-                {
-                    dto.Quantity = existingOrder.Quantity;
-                    var rollbackResponse = await Update(dto);
-                    if (!rollbackResponse.Success)
-                    {
-                        return new ServiceResponse<OrderDto>
-                        {
-                            Success = false,
-                            Message = "Creating order failed during rollback."
-                        };
-                    }
-                }
-
-                return new ServiceResponse<OrderDto>
-                {
-                    Data = dto,
-                    Success = true,
-                    Message = "Order updated successfully."
-                };
-            }
 
             var newOrder = _mapper.Map<Order>(dto);
             newOrder.CreatedUser = _currentUserService.Username ?? string.Empty;
 
             var createdOrder = await _orderRepository.CreateAsync(newOrder);
-
-            var isBillUpdated = await UpdateTotalPriceForBill(dto.BillId);
-            if (!isBillUpdated)
-            {
-                return await Delete(createdOrder.Id);
-            }
-
             var mappedReturnModel = _mapper.Map<OrderDto>(createdOrder);
             return new ServiceResponse<OrderDto>
             {
@@ -119,6 +70,14 @@ namespace BillApp.Application.Services
                 Success = true,
                 Message = "Order created successfully."
             };
+        }
+
+        private List<OrderDto> ArrangeMultipleProductInOrder(IEnumerable<OrderDto> orders)
+        {
+            return orders
+            .GroupBy(o => o.ProductId)
+            .Select(g => new OrderDto { ProductId = g.Key, Quantity = g.Sum(o => o.Quantity), BillId = g.First().BillId })
+            .ToList();
         }
 
         public async Task<ServiceResponse<List<OrderDto>>> CreateRange(IEnumerable<OrderDto> dtos)
@@ -133,6 +92,7 @@ namespace BillApp.Application.Services
                     Success = false
                 };
             }
+            dtos = ArrangeMultipleProductInOrder(dtos);
 
             var newOrdersList = _mapper.Map<List<Order>>(dtos);
 
@@ -149,8 +109,6 @@ namespace BillApp.Application.Services
                 Success = true,
                 Message = "Orders created successfully."
             };
-
-
         }
 
         public async Task<ServiceResponse<OrderDto>> Delete(Guid id)

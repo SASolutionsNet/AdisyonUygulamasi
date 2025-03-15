@@ -1,3 +1,4 @@
+using BillApp.Application.Services;
 using BillApp.Infrastructure;
 using BillApp.Infrastructure.Extensions;
 
@@ -23,6 +24,8 @@ builder.Services.AddSwaggerGen(c =>
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
 });
+
+//builder.Services.AddScoped<PrintService>();  // PrintService'i DI konteynerine kaydediyoruz.
 
 // Add Controllers 
 builder.Services.AddControllers();

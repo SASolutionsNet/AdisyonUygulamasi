@@ -4,6 +4,5 @@
     {
         public string Table { get; set; }
         public float TotalPrice { get; set; }
-
     }
 }

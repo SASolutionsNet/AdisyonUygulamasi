@@ -54,7 +54,7 @@ export class SalesOrderService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     // POST isteği ile yeni siparişleri oluştur
-    return this.http.post(`${this.apiUrl}/create`, orderDataList, { headers });
+    return this.http.post(`${this.apiUrl}/create-range`, orderDataList, { headers });
   }
 
   // Yeni siparişler oluşturma (Liste alacak şekilde güncellendi)

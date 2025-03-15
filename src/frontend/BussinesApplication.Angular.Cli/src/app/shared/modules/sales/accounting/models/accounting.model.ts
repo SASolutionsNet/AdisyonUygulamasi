@@ -8,10 +8,8 @@ import { Orders, SalesOrder } from '../../order/models/order.model';
 
 @Injectable()
 export class SalesAccounting extends BaseEntity {
-
-  table:    string = "";
-  isClosed: boolean = false;
-  orders:   Orders[]= []
-
+  table: string = "";
+  orders: Orders[] = []
+  totalPrice: number = 0;
 }
 
