@@ -30,6 +30,29 @@ namespace BillApp.Infrastructure.Repositories
 
             return createdOrder ?? throw new Exception("Bill not found after creation.");
         }
+
+        public async Task<List<Order>> CreateRangeAsync(List<Order> orders)
+        {
+            if (orders == null || orders.Count == 0)
+            {
+                throw new ArgumentException("Order list cannot be null or empty.");
+            }
+
+            _context.Orders.AddRange(orders);
+            await _context.SaveChangesAsync();
+
+            var createdOrders = await _context.Orders
+                .Where(o => orders.Select(order => order.Id).Contains(o.Id))
+                .ToListAsync();
+
+            if (createdOrders.Count != orders.Count)
+            {
+                throw new Exception("Some orders were not found after creation.");
+            }
+
+            return createdOrders;
+        }
+
         public async Task<Order> DeleteAsync(Order order)
         {
             var existingOrder = await _context.Orders.FindAsync(order.Id);

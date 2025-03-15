@@ -8,12 +8,12 @@ import { SalesAccounting } from '../../accounting/models/accounting.model';
 
 @Injectable()
 export class SalesOrder extends BaseEntity {
- 
+
   table: string = "";
 
   billId: string = "";
   psId: string = "";
-  quantity: number = 0 ;
+  quantity: number = 0;
 
   bill!: SalesAccounting;
   product!: Product;
@@ -22,10 +22,11 @@ export class SalesOrder extends BaseEntity {
 }
 
 @Injectable()
-export class Orders{
+export class Orders {
   id: string = "";
   table: string = "";
   quantity: number = 0;
   productName: string = "";
   cost: number = 0;
+  productId: string = "";
 }

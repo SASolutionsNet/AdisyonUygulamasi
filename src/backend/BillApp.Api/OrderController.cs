@@ -82,6 +82,27 @@ namespace BillApp.Api
             }
             return StatusCode(500, "Request Failed");
         }
+        
+        
+        [HttpPost("create-range")]
+        //[Authorize(Roles = "Admin")] 
+        [Authorize()]
+        public async Task<IActionResult> CreateRange([FromBody] List<OrderCreateRequest> model)
+        {
+            if (!ModelState.IsValid || model == null)
+                return BadRequest(ModelState);
+
+            var mappedModel = _mapper.Map<List<OrderCreateRequest>, List<OrderDto>>(model);
+
+            var result = await _orderService.CreateRange(mappedModel);
+
+            if (result.Success)
+            {
+                var mappedResult = _mapper.Map<List<OrderDto>, List<OrderResponse>>(result.Data);
+                return Ok(mappedResult);
+            }
+            return StatusCode(500, "Request Failed");
+        }
 
         [HttpPut("update")]
         [Authorize()]

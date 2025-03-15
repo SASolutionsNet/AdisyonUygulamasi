@@ -17,6 +17,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { Order } from '../../../../../../sales/accounting/detail/sales.accounting.detail.component';
 
 @Component({
   selector: 'sasolution-sales-order-list',
@@ -27,7 +28,7 @@ import { MatSort } from '@angular/material/sort';
 export class OrderListComponent implements OnInit {
   private _rows: any;
   dataLoadedEvent: any;
-
+  distinctTables: string[] = [];
 
   salonBoxes: string[] = Array.from({ length: 24 }, (_, i) => `S${i + 1}`);
   bahceBoxes: string[] = Array.from({ length: 24 }, (_, i) => `B${i + 1}`);
@@ -56,7 +57,14 @@ export class OrderListComponent implements OnInit {
   }
 
   ngOnInit() {
-    
+    const salesAccountingOrders: Order[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
+    this.distinctTables = [...new Set(salesAccountingOrders.map(order => order.table))];
+
+  }
+
+
+  isOpen(box: string): boolean {
+    return this.distinctTables.includes(box);
   }
 
   ngAfterViewChecked() {
@@ -66,7 +74,7 @@ export class OrderListComponent implements OnInit {
   onBoxClick(box: string) {
     this.router.navigate([`/sales/order/detail/${box}`]);  // Yönlendirme
   }
- 
+
 
 
 }
