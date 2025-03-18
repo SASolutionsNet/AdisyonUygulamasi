@@ -4,19 +4,19 @@ using BillApp.Infrastructure.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add
+// CORS Politikasý Tanýmlama
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigins",
         policy =>
         {
             policy.WithOrigins("http://localhost:4200")
-            .AllowAnyHeader()
-            .AllowAnyMethod();
+                .AllowAnyHeader()
+                .AllowAnyMethod();
         });
 });
 
-// Add Swagger for API documentation
+// Swagger Desteði
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -25,19 +25,18 @@ builder.Services.AddSwaggerGen(c =>
     c.IncludeXmlComments(xmlPath);
 });
 
-//builder.Services.AddScoped<PrintService>();  // PrintService'i DI konteynerine kaydediyoruz.
-
-// Add Controllers 
+// Kontrolleri Ekle
 builder.Services.AddControllers();
 
-// Register application dependencies
+// Altyapý Baðýmlýlýklarýný Kaydet
 builder.Services.AddInfrastructure(builder.Configuration);
 
 var app = builder.Build();
 
+// CORS Kullanýmý
 app.UseCors("AllowSpecificOrigins");
 
-// Configure middleware
+// Middleware Konfigürasyonu
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -50,10 +49,22 @@ else
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+// HTTPS yönlendirmeyi kaldýrdýk çünkü Render zaten HTTPS kullanýyor
+// app.UseHttpsRedirection();
+
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// Port Bilgisini Al ve Ayarla
+var portString = Environment.GetEnvironmentVariable("PORT");
+if (!int.TryParse(portString, out int port) || port < 1024 || port > 65535)
+{
+    port = 5025;
+}
+
+// Kestrel'i HTTP Üzerinden Çalýþtýr
+var url = $"http://0.0.0.0:{port}";
+
 app.MapControllers();
-app.Run();
+app.Run(url);
