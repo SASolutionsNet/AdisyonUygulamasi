@@ -33,14 +33,7 @@
               "src/styles.scss",
               "@angular/material/prebuilt-themes/indigo-pink.css"
             ],
-            "scripts": {
-              "ng": "ng",
-              "start": "ng serve",
-              "build": "ng build --configuration=production",
-              "test": "ng test",
-              "lint": "ng lint",
-              "e2e": "ng e2e"
-            }
+            "scripts": []
           },
           "configurations": {
             "production": {
