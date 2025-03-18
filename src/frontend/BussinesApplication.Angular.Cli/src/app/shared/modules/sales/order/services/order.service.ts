@@ -35,6 +35,17 @@ export class SalesOrderService {
     // GET isteği ile tüm siparişleri al
     return this.http.get(`${this.apiUrl}/get-all`, { headers });
   }
+
+  // Bir fatura için tüm siparişleri alma
+  getAllOrdersForBill(id: string): Observable<any> {
+    const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
+
+    // Eğer token varsa, Authorization header'ına ekle
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    //GET isteği ile tüm siparişleri al
+    return this.http.get(`${this.apiUrl}/get-orders-for-bill/?id=${id}`, { headers });
+  }
   // Yeni sipariş oluşturma
   createOrder(orderData: any): Observable<any> {
     const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
@@ -67,8 +78,6 @@ export class SalesOrderService {
     // POST isteği ile yeni siparişleri oluştur
     return this.http.post(`${this.apiUrl}/print`, orderList, { headers });
   }
-
-
 
   // Siparişi güncelleme
   updateOrder(orderId: string, updatedData: any): Observable<any> {
