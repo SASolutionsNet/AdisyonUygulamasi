@@ -61,7 +61,7 @@ export class ReportListComponent implements OnInit {
     // Initialize the data source for the table
     this.dataSource.data = this.data;
     this.filteredDataSource.data = this.data;
-    
+
   }
 
 
@@ -120,9 +120,12 @@ export class ReportListComponent implements OnInit {
 
 
 
-  onButtonClick(id: string) {
+  onButtonClick(id: string, table: string) {
     console.log("id", id);
-    this.router.navigate([`/report/detail/${id}`]);  // Yönlendirme
+    this.router.navigate([`/report/detail/${id}_${table}`]);  // Yönlendirme
   }
+
+  //!!!!! Tablo ismini başka bir parametre olarak alamadım ben de
+  //_ olarak aldım sonra onu splitledim: D
 
 }

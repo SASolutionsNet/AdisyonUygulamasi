@@ -301,6 +301,23 @@ namespace BillApp.Application.Services
             };
         }
 
+        public async Task<ServiceResponse<List<OrderForBillDto>>> GetOrdersForBill(Guid billId)
+        {
+            var bill = await _billService.GetById(billId);
 
+            if (bill.Data == null)
+                return new ServiceResponse<List<OrderForBillDto>> { Message = "Bill not found", Success = false };
+
+            var result = bill.Data.Orders.Select(x => new OrderForBillDto
+            {
+                CreatedDate = x.CreatedDate,
+                ProductName = x.Product != null ? x.Product.Name : "",
+                Quantity = x.Quantity,
+                Cost = x.Product != null ? x.Quantity * x.Product.Price : 0,
+            }).ToList();
+
+            return new ServiceResponse<List<OrderForBillDto>> { Data = result, Message = "Orders found for the bill", Success = true };
+
+        }
     }
 }

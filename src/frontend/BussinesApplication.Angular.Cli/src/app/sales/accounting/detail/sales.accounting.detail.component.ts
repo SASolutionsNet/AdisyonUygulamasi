@@ -9,7 +9,7 @@ import { SalesOrderService } from '../../../shared/modules/sales/order/services/
 import { SalesAccountingService } from '../../../shared/modules/sales/accounting/services/accounting.service';
 import { SalesAccounting } from '../../../shared/modules/sales/accounting/models/accounting.model';
 import { DialogPaidAlertComponent } from '../../../shared/modules/dialogpaidalert/dialogpaidalert.component';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDialog, MatDialogModule, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -47,11 +47,7 @@ export class SalesAccountingDetailComponent implements OnInit {
   box: string = '';
   paidRows: Order[] = [];  // Ödenen satırları saklayacağız
   sumPaidOrdersCost: number = 0; // Başlangıçta toplam tutar 0
-  constructor(private router: Router, private cdRef: ChangeDetectorRef, private route: ActivatedRoute, private orderService: SalesOrderService, private accountingService: SalesAccountingService) { }
-
-
-  constructor(private router: Router, private cdRef: ChangeDetectorRef, private route: ActivatedRoute, private orderService: SalesOrderService,
-    private dialog: MatDialog,) { }
+  constructor(private router: Router, private cdRef: ChangeDetectorRef, private route: ActivatedRoute, private orderService: SalesOrderService, private accountingService: SalesAccountingService, private dialog: MatDialog) { }
 
   ngOnInit() {
     this.route.paramMap.subscribe(params => {
@@ -94,19 +90,6 @@ export class SalesAccountingDetailComponent implements OnInit {
   }
   closeTable(): void {
 
-
-    // Popup bileşenine id parametresini gönderiyoruz
-    this.dialog.open(DialogPaidAlertComponent, {
-      width: '1000px'
-    });
-
-
-
-
-
-
-    console.log("masa kapandı1");
-
     // ActivatedRoute'den table parametresini al
     const tableParam = this.route.snapshot.paramMap.get('box');  // 'table' URL parametresinin adı olmalı
 
@@ -120,50 +103,66 @@ export class SalesAccountingDetailComponent implements OnInit {
       // 'table' parametresi ile eşleşen kayıtları filtrele ve çıkar
       paidOrders = paidOrders.filter(order => order.table == tableParam);
 
-      let otherSavedOrders: Order[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
-      let otherPaidOrders: Order[] = JSON.parse(localStorage.getItem('paidOrders') || '[]');
-      otherSavedOrders = otherSavedOrders.filter(order => order.table != tableParam);
-      otherPaidOrders = otherPaidOrders.filter(order => order.table != tableParam);
+      var flag = (paidOrders.length != savedOrders.length) // hala ödenmemiş hesap varsa true
 
-      this.paidRows = paidOrders;
+      if (flag) {
+        let dialog: MatDialogRef<DialogPaidAlertComponent> = this.dialog.open(DialogPaidAlertComponent, { width: '500px', data: { name: 'DialogPaidAlertComponent input data' } });
+        /*dialog.componentInstance.setContent("Emin misiniz?", "Kayıt silinecek onaylıyor musunuz ?", "Evet, Sil", "Hayır");*/
 
-      this.bill.table = tableParam;
-      this.bill.totalPrice = this.calculatePaidOrdersSumCost();
+        dialog.afterClosed().subscribe(result => {
+          console.log('The dialog was closed, result: ', result);
+          if (result) {
+            if (result.answer == 'yes') {
+              let otherSavedOrders: Order[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
+              let otherPaidOrders: Order[] = JSON.parse(localStorage.getItem('paidOrders') || '[]');
+              otherSavedOrders = otherSavedOrders.filter(order => order.table != tableParam);
+              otherPaidOrders = otherPaidOrders.filter(order => order.table != tableParam);
+              this.paidRows = paidOrders;
 
-      this.accountingService.createBill(this.bill).subscribe(response => {
+              this.bill.table = tableParam;
+              this.bill.totalPrice = this.calculatePaidOrdersSumCost();
 
-        for (var i = 0; i < paidOrders.length; i++) {
-          var model = {
-            billId: response.id,
-            productId: paidOrders[i].productId,
-            quantity: paidOrders[i].quantity
+              this.accountingService.createBill(this.bill).subscribe(response => {
+
+                for (var i = 0; i < paidOrders.length; i++) {
+                  var model = {
+                    billId: response.id,
+                    productId: paidOrders[i].productId,
+                    quantity: paidOrders[i].quantity
+                  }
+                  this.orderCreate.push(model);
+                }
+
+                // OrderService'den addOrders fonksiyonunu çağırma *********
+                this.orderService.addOrders(this.orderCreate).subscribe(response => {
+                  console.log('Siparişler başarıyla oluşturuldu:', response);
+                }, error => {
+                  console.error('Sipariş oluşturma hatası:', error);
+                });
+
+
+              }, error => {
+                console.error('Bill oluşturma hatası:', error);
+              });
+
+              // Yeni listeyi tekrar localStorage'a kaydet
+              localStorage.setItem('salesAccountingOrders', JSON.stringify(otherSavedOrders));
+              // Yeni listeyi tekrar localStorage'a kaydet
+              localStorage.setItem('paidOrders', JSON.stringify(otherPaidOrders));
+
+              // Kayıt silindi, konsola yaz
+              console.log(`Table ${tableParam} ile eşleşen kayıtlar silindi.`);
+              this.router.navigate(['/sales/accounting/list']);
+
+            }
           }
-          this.orderCreate.push(model);
-        }
+          else {
 
-        // OrderService'den addOrders fonksiyonunu çağırma *********
-        this.orderService.addOrders(this.orderCreate).subscribe(response => {
-          console.log('Siparişler başarıyla oluşturuldu:', response);
-        }, error => {
-          console.error('Sipariş oluşturma hatası:', error);
+          }
         });
-
-
-      }, error => {
-        console.error('Bill oluşturma hatası:', error);
-      });
-
-
-      // Yeni listeyi tekrar localStorage'a kaydet
-      localStorage.setItem('salesAccountingOrders', JSON.stringify(otherSavedOrders));
-      // Yeni listeyi tekrar localStorage'a kaydet
-      localStorage.setItem('paidOrders', JSON.stringify(otherPaidOrders));
-
-      // Kayıt silindi, konsola yaz
-      console.log(`Table ${tableParam} ile eşleşen kayıtlar silindi.`);
-
-      this.router.navigate(['/sales/accounting/list']);
-    } else {
+      }
+    }
+    else {
       console.log("Table parametresi bulunamadı.");
     }
   }

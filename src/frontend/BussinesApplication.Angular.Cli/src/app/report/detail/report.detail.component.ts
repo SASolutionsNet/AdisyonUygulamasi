@@ -4,7 +4,7 @@ import { SidebarComponent } from "../../sidebar/sidebar.component";
 import { MatCardModule } from "@angular/material/card";
 import { MatPaginator, MatPaginatorModule } from "@angular/material/paginator";
 import { FormBuilder, FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { Router } from "@angular/router";
+import { ActivatedRoute, Router } from "@angular/router";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { SalesOrderService } from "../../shared/modules/sales/order/services/order.service";
 import { MatFormFieldModule } from "@angular/material/form-field";
@@ -16,7 +16,9 @@ import { MatDatepickerModule } from "@angular/material/datepicker";
 import { MatDividerModule } from "@angular/material/divider";
 import { MatIconModule } from "@angular/material/icon";
 import { MatSortModule } from "@angular/material/sort";
-import { SalesOrder } from "../../shared/modules/sales/order/models/order.model";
+import { ReportDetailOrders, SalesOrder } from "../../shared/modules/sales/order/models/order.model";
+import { SalesAccountingService } from "../../shared/modules/sales/accounting/services/accounting.service";
+import { SalesAccounting } from "../../shared/modules/sales/accounting/models/accounting.model";
 
 @Component({
   selector: 'app-report-detail',
@@ -30,22 +32,37 @@ import { SalesOrder } from "../../shared/modules/sales/order/models/order.model"
   ]  // Import dependencies
 })
 export class ReportDetailComponent implements OnInit {
-
-  data: SalesOrder[] = [];
-  dataSource = new MatTableDataSource<SalesOrder>();
-  displayedColumns: string[] = ['no', 'name', 'table', 'price'];
+  idParam!: string;
+  tableParam!: string;
+  data: ReportDetailOrders[] = [];
+  dataSource = new MatTableDataSource<ReportDetailOrders>();
+  displayedColumns: string[] = ['no', 'name', 'table', 'quantity', 'price'];
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   constructor(
     private fb: FormBuilder,
     private router: Router,
+    private activatedRoute: ActivatedRoute,
     private cdRef: ChangeDetectorRef,
     private snackBar: MatSnackBar,
-    private orderService: SalesOrderService
+    private orderService: SalesOrderService,
+    private accountingService: SalesAccountingService,
+    private changeDetectorRefs: ChangeDetectorRef
   ) { }
 
   ngOnInit(): void {
-
-    this.setData();
+    //Retrieve 'box' param from the URL using ActivatedRoute
+    this.activatedRoute.paramMap.subscribe(params => {
+      var param = params.get('id')?.toString() ?? '';
+      this.idParam = param.split("_")[0];
+      this.tableParam = param.split("_")[1];
+      if (this.idParam) {
+        console.log('id Param:', this.idParam);  // Log box param
+      }
+      if (this.tableParam) {
+        console.log('table Param:', this.tableParam);  // Log box param
+      }
+    });
+    this.setData(this.idParam);
     // Initialize the data source for the table
     this.dataSource.data = this.data;
   }
@@ -54,32 +71,8 @@ export class ReportDetailComponent implements OnInit {
   }
 
 
-  //getOrders(id:string) {
-  //  this.orderService.By   getAllOrders().subscribe((data: SalesOrder[]) => {
-  //    // Her bir item için createdDate'i dönüştürme
-  //    data.forEach(item => {
-  //      // createdDate'i Date nesnesine dönüştür
-  //      const dateObj = new Date(item.createdDate);
-
-  //      // Date nesnesini gg/aa/yyyy formatına dönüştür
-  //      const formattedDate = this.formatDate(dateObj);
-
-  //      // Bu değeri item'ın createdDate'ine atıyoruz
-  //      item.createdDate = formattedDate;
-
-
-  //    });
-
-  //    // Veriyi DataSource'a atıyoruz
-  //    this.dataSource.data = data;
-
-  //    // Paginatörü set ediyoruz
-  //    this.dataSource.paginator = this.paginator;
-  //  });
-/*  }*/
-
-  setData() {
-    this.orderService.getAllOrders().subscribe((data:SalesOrder[]) => {
+  setData(id: string) {
+    this.orderService.getAllOrdersForBill(id).subscribe((data: ReportDetailOrders[]) => {
       // Her bir item için createdDate'i dönüştürme
       data.forEach(item => {
         // createdDate'i Date nesnesine dönüştür
@@ -91,7 +84,6 @@ export class ReportDetailComponent implements OnInit {
         // Bu değeri item'ın createdDate'ine atıyoruz
         item.createdDate = formattedDate;
 
-
       });
 
       // Veriyi DataSource'a atıyoruz
@@ -101,6 +93,7 @@ export class ReportDetailComponent implements OnInit {
       this.dataSource.paginator = this.paginator;
     });
   }
+
   goReportList() {
     this.router.navigate([`/report/list`]);
   }

@@ -30,3 +30,12 @@ export class Orders {
   cost: number = 0;
   productId: string = "";
 }
+@Injectable()
+export class ReportDetailOrders {
+  productName: string = "";
+  quantity: number = 0;
+  cost: number = 0;
+  createdDate: string = "";
+
+  
+}
