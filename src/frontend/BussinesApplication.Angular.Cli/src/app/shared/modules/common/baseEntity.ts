@@ -6,7 +6,7 @@ export class BaseEntity {
 
     id: string = "";
     isDel: boolean = false;
-    createdDate: string = "";
+  createdDate: string |Date = "";
     createdUser: string = "";
     updatedDate: string = "";
     updatedUser: string = "";

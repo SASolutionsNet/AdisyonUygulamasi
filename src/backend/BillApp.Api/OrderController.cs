@@ -82,8 +82,7 @@ namespace BillApp.Api
             }
             return StatusCode(500, "Request Failed");
         }
-        
-        
+
         [HttpPost("create-range")]
         //[Authorize(Roles = "Admin")] 
         [Authorize()]
@@ -145,5 +144,28 @@ namespace BillApp.Api
             return StatusCode(500, "Request Failed");
 
         }
+
+        [HttpGet("get-orders-for-bill")]
+        [Authorize()]
+        public async Task<IActionResult> GetOrdersForBill([FromQuery] Guid id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var result = await _orderService.GetOrdersForBill(id);
+
+            if (result.Success)
+            {
+                if (result.Data == null)
+                    return NotFound("Orders for the bill not found.");
+
+                var mappedResult = _mapper.Map<List<OrderForBillDto>, List<OrderForBillResponse>>(result.Data);
+                return Ok(mappedResult);
+            }
+
+            return StatusCode(500, "Request Failed");
+
+        }
+
     }
 }

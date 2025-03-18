@@ -104,35 +104,6 @@ export class SalesOrderDetailComponent implements OnInit {
     });
   }
 
-  //// Handle tile click event
-  //onTileClick(tile: { name: string, price: number }): void {
-  //  // Retrieve 'box' param from the URL using ActivatedRoute
-  //  this.activatedRoute.paramMap.subscribe(params => {
-  //    this.boxParam = params.get('box')?.toString() ?? '';
-  //    if (this.boxParam) {
-  //      console.log('Box Param:', this.boxParam);  // Log box param
-  //    }
-  //  });
-
-  //  let order: Orders = {
-  //    productName: tile.name,
-  //    cost: tile.price,
-  //    table: this.boxParam,
-  //    quantity: 0,
-  //  };
-
-  //  // Add the new order to salesAccounting.orders
-  //  if (Array.isArray(this.salesAccounting.orders)) {
-  //    // Instead of directly pushing to the array, update the reference
-  //    this.salesAccounting.orders.push(order);
-  //    this.salesAccounting.orders = [...this.salesAccounting.orders]; // Create a new array reference
-  //    this.cdRef.detectChanges(); // Trigger change detection
-
-  //  }
-
-  //  console.log('Updated orders:', this.salesAccounting.orders);
-  //  this.cdRef.detectChanges();  // Manually trigger change detection
-  //}
   // Handle tile click event
   onTileClick(tile: { name: string, price: number, productId : string }): void {
 
@@ -199,24 +170,6 @@ export class SalesOrderDetailComponent implements OnInit {
     return this.matchingOrders;
   }
 
-  // Handle button click event (to remove order)
-  //handleButtonClick(order: Orders): void {
-  //  console.log('Button clicked for order:', order);
-
-  //  // Remove order from salesAccounting.orders based on product name
-  //  if (Array.isArray(this.salesAccounting.orders)) {
-  //    const index = this.salesAccounting.orders.findIndex(o => o.productName === order.productName);
-
-  //    if (index !== -1) {
-  //      this.salesAccounting.orders.splice(index, 1);  // Remove the order from the array
-  //      this.salesAccounting.orders = [...this.salesAccounting.orders]; // Create a new array reference
-  //      this.cdRef.detectChanges(); // Trigger change detection
-
-  //      // Save the updated orders to localStorage
-  //      localStorage.setItem('salesAccountingOrders', JSON.stringify(this.salesAccounting.orders));
-  //    }
-  //  }
-  //}
 
   // Handle button click event (to remove order)
   handleButtonClick(order: Orders): void {
@@ -239,8 +192,6 @@ export class SalesOrderDetailComponent implements OnInit {
     // Optionally, you can call the getOrdersByBoxParam method again if you want to filter based on the box param
     this.getOrdersByBoxParam();
   }
-
-
 
 
 }
