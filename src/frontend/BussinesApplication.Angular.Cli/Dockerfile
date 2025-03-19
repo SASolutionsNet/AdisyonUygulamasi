@@ -4,7 +4,7 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm install
 COPY . .
-RUN npm run build --configuration=production --base-href=/
+RUN npm run build --configuration=development --base-href=/
 
 # Nginx ile yayınlama
 FROM nginx:alpine
