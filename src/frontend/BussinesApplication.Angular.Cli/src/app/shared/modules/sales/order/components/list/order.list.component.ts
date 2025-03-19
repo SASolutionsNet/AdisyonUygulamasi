@@ -30,8 +30,8 @@ export class OrderListComponent implements OnInit {
   dataLoadedEvent: any;
   distinctTables: string[] = [];
 
-  salonBoxes: string[] = Array.from({ length: 24 }, (_, i) => `S${i + 1}`);
-  bahceBoxes: string[] = Array.from({ length: 24 }, (_, i) => `B${i + 1}`);
+  salonBoxes: string[] = Array.from({ length: 16 }, (_, i) => `S${i + 1}`);
+  bahceBoxes: string[] = Array.from({ length: 16 }, (_, i) => `B${i + 1}`);
 
 
   @ViewChild(MatPaginator) paginator!: MatPaginator; // MatPaginator'ı erişebilmek için ViewChild ile alıyoruz
