@@ -2,13 +2,15 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { HttpService, HttpServiceResult } from '../../common/httpService';
+import { environment } from '../../../../../environments/environment';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class PSService {
-  private apiUrl = 'http://localhost:5025/api/Product'; // API URL'sini buraya ekleyin
+  private apiUrl = `${environment.apiUrl}/Product`; 
+
   constructor(
     private http: HttpClient) {
   }

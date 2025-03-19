@@ -6,12 +6,13 @@ import { HttpClient, HttpParams, HttpHeaders, HttpResponse } from "@angular/comm
 /*import { environment } from '../../../../../../environments/environment';*/
 
 import { WebApiJsonResult, HttpServiceResult, HttpService } from '../../../common/httpService';
+import { environment } from '../../../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SalesAccountingService {
-  private apiUrl = 'http://localhost:5025/api/Bill'; // API URL'sini buraya ekleyin
+  private apiUrl = `${environment.apiUrl}/Bill`; 
   constructor(private http: HttpClient ) {
   }
 

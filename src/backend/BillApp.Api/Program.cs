@@ -28,6 +28,12 @@ builder.Services.AddSwaggerGen(c =>
 // Kontrolleri Ekle
 builder.Services.AddControllers();
 
+builder.Configuration
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .AddJsonFile($"appsettings.{builder.Environment.EnvironmentName}.json", optional: true, reloadOnChange: true)
+    .AddEnvironmentVariables();
+
 // Altyapý Baðýmlýlýklarýný Kaydet
 builder.Services.AddInfrastructure(builder.Configuration);
 
