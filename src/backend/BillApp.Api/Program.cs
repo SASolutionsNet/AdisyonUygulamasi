@@ -1,6 +1,7 @@
 using BillApp.Application.Services;
 using BillApp.Infrastructure;
 using BillApp.Infrastructure.Extensions;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -44,12 +45,18 @@ var app = builder.Build();
 // CORS Kullanýmý
 app.UseCors("AllowSpecificOrigins");
 
+bool applyMigrations = builder.Configuration.GetValue<bool>("APP_APPLY_MIGRATIONS");
+
+if (app.Environment.IsDevelopment() || applyMigrations)
+{
+    app.ApplyMigrations();
+}
+
 // Middleware Konfigürasyonu
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.ApplyMigrations();
 }
 else
 {
