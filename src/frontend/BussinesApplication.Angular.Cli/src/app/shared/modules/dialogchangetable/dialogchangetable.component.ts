@@ -35,8 +35,6 @@ export class DialogChangeTableComponent implements OnInit {
     // https://github.com/angular/material2/issues/4876
     this.dateAdapter.setLocale('tr');
 
-    //this.datePickerMinDate = moment().utc().subtract(2, 'days').local().toDate();
-    //this.datePickerStartDate = this.datePickerMinDate;
 
   }
 
@@ -49,25 +47,7 @@ export class DialogChangeTableComponent implements OnInit {
     //explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
     this.cdRef.detectChanges();
   }
-  //onBoxClick(box: string) {
-  //  // 1. localStorage'dan orders verisini alıyoruz
-  //  const orders = JSON.parse(localStorage.getItem('orders') || '[]');
-
-  //  // 2. this.data.id ile eşleşen orders öğelerini buluyoruz
-  //  const updatedOrders = orders.map((order: { table: string; box: any; }) => {
-  //    if (order.table === this.data.id) {
-  //      // 3. Bu öğelerin table değerini box ile değiştiriyoruz
-  //      order.table = box;  // Eğer box değeri varsa, table'ı box ile değiştiriyoruz.
-  //    }
-  //    return order;
-  //  });
-
-  //  // 4. Güncellenmiş veriyi localStorage'a kaydediyoruz
-  //  localStorage.setItem('orders', JSON.stringify(updatedOrders));
-
-  //  this.router.navigate([`/sales/order/list`]);  // Yönlendirme
-  //  this.dialogRef.close(); 
-  //}
+  
 
   onBoxClick(box: string) {
     // 1. salesAccountingOrders verisini alıyoruz (localStorage'dan alabilirsiniz veya bu veriyi direkt component içinde tutuyor olabilirsiniz)

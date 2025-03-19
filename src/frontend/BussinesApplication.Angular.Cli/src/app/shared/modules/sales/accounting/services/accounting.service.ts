@@ -1,10 +1,6 @@
 import { Component, Injectable } from '@angular/core';
 import { Observable } from "rxjs";
 import { HttpClient, HttpParams, HttpHeaders, HttpResponse } from "@angular/common/http";
-
-
-/*import { environment } from '../../../../../../environments/environment';*/
-
 import { WebApiJsonResult, HttpServiceResult, HttpService } from '../../../common/httpService';
 import { environment } from '../../../../../../environments/environment';
 

@@ -67,7 +67,6 @@ export class OrderDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngAfterViewInit(): void {
     // Paginator ve Sort işlemleri ngAfterViewInit içinde yapılır, çünkü bu işlem görünümdeki öğeler tamamlandıktan sonra yapılır
-   /* this.dataSource.paginator = this.paginator;*/
     this.dataSource.sort = this.sort;
     // Yenileme için Change Detection tetikleme
     this.cdRef.detectChanges();
