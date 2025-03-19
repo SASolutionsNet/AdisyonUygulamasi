@@ -50,14 +50,6 @@ export class ReportListComponent implements OnInit {
   ngOnInit(): void {
     this.setData();
 
-    //// Initialize the form with start and end date validators
-    //this.range = this.fb.group({
-    //  start: [null, Validators.required],
-    //  end: [null, Validators.required]
-    //});
-
-
-
     // Initialize the data source for the table
     this.dataSource.data = this.data;
     this.filteredDataSource.data = this.data;
@@ -124,8 +116,4 @@ export class ReportListComponent implements OnInit {
     console.log("id", id);
     this.router.navigate([`/report/detail/${id}_${table}`]);  // Yönlendirme
   }
-
-  //!!!!! Tablo ismini başka bir parametre olarak alamadım ben de
-  //_ olarak aldım sonra onu splitledim: D
-
 }

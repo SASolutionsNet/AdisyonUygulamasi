@@ -51,9 +51,6 @@ export class OrderListComponent implements OnInit {
     // https://github.com/angular/material2/issues/4876
     this.dateAdapter.setLocale('tr');
 
-    //this.datePickerMinDate = moment().utc().subtract(2, 'days').local().toDate();
-    //this.datePickerStartDate = this.datePickerMinDate;
-
   }
 
   ngOnInit() {

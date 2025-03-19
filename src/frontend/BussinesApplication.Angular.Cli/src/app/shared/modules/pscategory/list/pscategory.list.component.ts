@@ -94,8 +94,7 @@ export class PSCategoryListComponent implements AfterViewInit, OnInit {
 
     const categoryData = {
       id: row.id,  // Satırdaki kategori ID'sini alıyoruz
-      //name: row.name,  // Formdaki kategori adı
-      //categoryCode: row.categoryCode,  // Kategori kodu (eğer varsa)
+
     };
 
 
@@ -106,7 +105,6 @@ export class PSCategoryListComponent implements AfterViewInit, OnInit {
       (response) => {
         console.log('Kategori başarıyla silindi:', response);
         this.getCategories();
-        //this.router.navigate(['/coredata/pscategory/list']); // Silme işleminden sonra kategoriler listesine yönlendiriyoruz
       },
       (error) => {
         console.error('Kategori silinirken bir hata oluştu:', error);

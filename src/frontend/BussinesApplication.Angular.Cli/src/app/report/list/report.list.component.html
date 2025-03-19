@@ -20,34 +20,6 @@
           <input matInput (keyup)="applyFilter($event)" placeholder="Buraya giriniz..." #input>
         </mat-form-field>
 
-        <!-- Date Range Picker -->
-        <!--<mat-form-field>
-          <mat-label>Aralık Seçiniz</mat-label>
-          <mat-date-range-input [formGroup]="range" [rangePicker]="picker">
-            <input matStartDate formControlName="start" placeholder="Start date" required>
-            <input matEndDate formControlName="end" placeholder="End date" required>
-          </mat-date-range-input>
-          <mat-hint>MM/DD/YYYY – MM/DD/YYYY</mat-hint>
-          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-date-range-picker #picker></mat-date-range-picker>
-
-          <mat-error *ngIf="range.controls['start'].hasError('matStartDateInvalid')">
-            Geçersiz Başlama Tarihi
-          </mat-error>
-          <mat-error *ngIf="range.controls['end'].hasError('matEndDateInvalid')">
-            Geçersiz Bitiş Tarihi
-          </mat-error>
-        </mat-form-field>
-
-
-
-        <button mat-fab extended>
-          <mat-icon>search</mat-icon>
-          Ara
-        </button>-->
-
-
-
         <div class="mat-elevation-z8">
           <table mat-table [dataSource]="filteredDataSource" matSort>
 
@@ -94,8 +66,6 @@
             </tr>
 
           </table>
-
-
 
           <!-- Paginator -->
           <mat-paginator [pageSizeOptions]="[10, 20, 50, 100]" aria-label="Select page of users"></mat-paginator>

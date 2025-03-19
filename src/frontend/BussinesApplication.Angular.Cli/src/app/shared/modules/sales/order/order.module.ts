@@ -1,16 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
-
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
-
-
-import { SalesOrderListComponent } from './components/list/order.list.component';
-import { SalesOrderDetailComponent } from './components/detail/order.detail.component';
-
 import { SalesOrderRoutes } from './order.routing';
-
 import { SalesOrderService } from './services/order.service';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatIconModule } from '@angular/material/icon';
@@ -52,12 +44,8 @@ import { SharedModule } from '../../../shared.module';
 
   ],
   declarations: [
-    //SalesOrderListComponent,
-    //SalesOrderDetailComponent
   ],
   exports: [
-    //SalesOrderListComponent,
-    //SalesOrderDetailComponent
   ],
   // services, pipes and providers
   providers: [
