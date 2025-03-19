@@ -5,15 +5,17 @@ using BillApp.Infrastructure.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
 // CORS Politikasý Tanýmlama
+var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigins",
-        policy =>
-        {
-            policy.WithOrigins("http://localhost:4200")
-                .AllowAnyHeader()
-                .AllowAnyMethod();
-        });
+          policy =>
+          {
+              policy.WithOrigins(allowedOrigins)
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+          });
 });
 
 // Swagger Desteði
