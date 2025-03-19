@@ -7,6 +7,7 @@ import { BaseEntity } from '../common/baseEntity';
 
 import { PSService } from '../ps/services/ps.service';
 import { Product } from '../ps/models/ps.model';
+import { environment } from '../../../../environments/environment';
 
 
 export interface CategoryConstantsEnum {
@@ -29,7 +30,8 @@ export class Category extends BaseEntity {
 @Injectable()
 export class CategoryService {
  
-  private apiUrl = 'http://localhost:5025/api/Category'; // API URL'sini buraya ekleyin
+  private apiUrl = `${environment.apiUrl}/Category`; 
+
   constructor(private http: HttpClient) { }
 
 

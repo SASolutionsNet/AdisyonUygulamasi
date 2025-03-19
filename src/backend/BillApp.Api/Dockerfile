@@ -2,9 +2,6 @@
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
 
-# Set environment variable for ASP.NET Core URL
-ENV ASPNETCORE_URLS=http://+:5025
-
 # Projeyi kopyala ve restore et
 COPY BillApp.Api/BillApp.Api.csproj BillApp.Api/
 COPY BillApp.Application/BillApp.Application.csproj BillApp.Application/
@@ -14,7 +11,7 @@ COPY BillApp.Infrastructure/BillApp.Infrastructure.csproj BillApp.Infrastructure
 RUN dotnet restore "BillApp.Api/BillApp.Api.csproj"
 
 # Tüm projeyi kopyala ve build et
-COPY . .
+COPY . . 
 WORKDIR "/app/BillApp.Api"
 RUN dotnet publish -c Release -o out
 
@@ -22,8 +19,10 @@ RUN dotnet publish -c Release -o out
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 
+# Ortam değişkenleri dışarıdan yönetilecek
 COPY --from=build /app/BillApp.Api/out ./ 
-ENTRYPOINT ["dotnet", "BillApp.Api.dll"]
 
 # API'nin dışarıya açılacağı port
 EXPOSE 5025
+
+ENTRYPOINT ["dotnet", "BillApp.Api.dll"]

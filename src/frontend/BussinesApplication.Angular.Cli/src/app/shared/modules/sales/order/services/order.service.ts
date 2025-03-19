@@ -1,6 +1,7 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Component, Injectable } from '@angular/core';
 import { Observable } from "rxjs";
+import { environment } from '../../../../../../environments/environment';
 
 
 
@@ -11,8 +12,7 @@ import { Observable } from "rxjs";
   providedIn: 'root'
 })
 export class SalesOrderService {
-
-  private apiUrl = 'http://localhost:5025/api/Order'; // API URL'sini buraya ekleyin
+  private apiUrl = `${environment.apiUrl}/Order`; 
   constructor(
     private http: HttpClient) {
   }
