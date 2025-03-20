@@ -1,6 +1,6 @@
-import { Component, Injectable, ChangeDetectorRef, OnInit, AfterViewInit, Input, Output, EventEmitter, ViewChild } from '@angular/core';
+// order.list.component.ts
+import { Component, ChangeDetectorRef, OnInit, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import 'moment/locale/tr';
 import { MatDialog } from '@angular/material/dialog';
 import { DateAdapter } from '@angular/material/core';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -23,19 +23,15 @@ import { Order } from '../../../../../../sales/accounting/detail/sales.accountin
   selector: 'sasolution-sales-order-list',
   templateUrl: './order.list.component.html',
   styleUrls: ['./order.list.component.scss'],
-  imports: [MatTabsModule, CommonModule, CommonModule, ReactiveFormsModule, MatCheckboxModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatCardModule, MatIconModule],
+  imports: [MatTabsModule, CommonModule, ReactiveFormsModule, MatCheckboxModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatCardModule, MatIconModule],
 })
 export class OrderListComponent implements OnInit {
-  private _rows: any;
-  dataLoadedEvent: any;
   distinctTables: string[] = [];
-
   salonBoxes: string[] = Array.from({ length: 16 }, (_, i) => `S${i + 1}`);
   bahceBoxes: string[] = Array.from({ length: 16 }, (_, i) => `B${i + 1}`);
 
-
-  @ViewChild(MatPaginator) paginator!: MatPaginator; // MatPaginator'ı erişebilmek için ViewChild ile alıyoruz
-  @ViewChild(MatSort) sort!: MatSort; // MatSort'ı erişebilmek için ViewChild ile alıyoruz
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
 
   constructor(
     private router: Router,
@@ -47,31 +43,23 @@ export class OrderListComponent implements OnInit {
     private orderService: SalesOrderService,
     private productService: PSService,
   ) {
-
-    // https://github.com/angular/material2/issues/4876
     this.dateAdapter.setLocale('tr');
-
   }
 
   ngOnInit() {
     const salesAccountingOrders: Order[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
     this.distinctTables = [...new Set(salesAccountingOrders.map(order => order.table))];
-
   }
-
 
   isOpen(box: string): boolean {
     return this.distinctTables.includes(box);
   }
 
   ngAfterViewChecked() {
-    //explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
     this.cdRef.detectChanges();
   }
+
   onBoxClick(box: string) {
     this.router.navigate([`/sales/order/detail/${box}`]);  // Yönlendirme
   }
-
-
-
 }

@@ -5,6 +5,8 @@ using BillApp.Application.Interfaces.IServices;
 using BillApp.Application.Utilities;
 using BillApp.Domain.Order;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
+using System.Collections.Concurrent;
 
 namespace BillApp.Application.Services
 {
@@ -14,13 +16,16 @@ namespace BillApp.Application.Services
         private readonly IBillService _billService;
         private readonly ICurrentUserService _currentUserService;
         private readonly IMapper _mapper;
+        private readonly IMemoryCache _cache;
+        private const string CacheKey = "Orders";
 
-        public OrderService(IOrderRepository orderRepository, IBillService billService, ICurrentUserService currentUserService, IMapper mapper)
+        public OrderService(IOrderRepository orderRepository, IBillService billService, ICurrentUserService currentUserService, IMapper mapper, IMemoryCache cache)
         {
             _orderRepository = orderRepository;
             _billService = billService;
             _currentUserService = currentUserService;
             _mapper = mapper;
+            _cache = cache;
         }
 
         private async Task<bool> UpdateTotalPriceForBill(Guid billId)
@@ -223,7 +228,6 @@ namespace BillApp.Application.Services
             }
         }
 
-
         public async Task<ServiceResponse<IEnumerable<OrderDto>>> GetAll()
         {
             var orders = await _orderRepository.GetAllAsync();
@@ -318,6 +322,33 @@ namespace BillApp.Application.Services
 
             return new ServiceResponse<List<OrderForBillDto>> { Data = result, Message = "Orders found for the bill", Success = true };
 
+        }
+
+        public List<OrderDto> GetOrders(Guid billId)
+        {
+            var orders = _cache.Get<ConcurrentDictionary<Guid, List<OrderDto>>>(CacheKey);
+            if (orders != null && orders.TryGetValue(billId, out var orderList))
+            {
+                return orderList;
+            }
+            return new List<OrderDto>();
+        }
+
+        public void AddOrder(OrderDto orderDto)
+        {
+            var orders = _cache.GetOrCreate(CacheKey, entry =>
+            {
+                entry.SlidingExpiration = TimeSpan.FromHours(2);
+                return new ConcurrentDictionary<Guid, List<OrderDto>>();
+            });
+
+            if (!orders.ContainsKey(orderDto.BillId))
+            {
+                orders[orderDto.BillId] = new List<OrderDto>();
+            }
+
+            orders[orderDto.BillId].Add(orderDto);
+            _cache.Set(CacheKey, orders);
         }
     }
 }
