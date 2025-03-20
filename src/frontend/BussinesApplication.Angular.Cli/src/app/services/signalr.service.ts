@@ -10,7 +10,7 @@ export class SignalRService {
   private hubConnection!: HubConnection;
   private orderUpdateSubject = new Subject<{ table: string; totalCost: number }>();
   private tableClosedSubject = new Subject<string>();
-  private apiUrl = `${environment.apiUrl}`; 
+  private apiUrl = environment.apiUrl.replace(/\/api$/, '');
 
   constructor() { }
 
