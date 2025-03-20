@@ -13,6 +13,7 @@ import { SalesAccounting } from '../../../shared/modules/sales/accounting/models
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatIcon } from '@angular/material/icon';
 interface Tab {
   label: string;
   tiles: { name: string, price: number, productId : string }[];  // 'tiles' should be an array of objects
@@ -23,7 +24,7 @@ interface Tab {
   templateUrl: './sales.order.detail.component.html',
   styleUrls: ['./sales.order.detail.component.scss'],
   standalone: true,
-  imports: [MatPaginatorModule,OrderDetailComponent, MatCardModule, SidebarComponent, HeaderComponent],  // Import dependencies
+  imports: [MatIcon,MatPaginatorModule,OrderDetailComponent, MatCardModule, SidebarComponent, HeaderComponent],  // Import dependencies
 })
 export class SalesOrderDetailComponent implements OnInit {
   // Initialize SalesAccounting object
@@ -42,6 +43,12 @@ export class SalesOrderDetailComponent implements OnInit {
     private snackBar: MatSnackBar,
     private productService: PSService,
   ) { }
+  sidebarVisible = false;
+
+  // Yeni fonksiyon eklendi
+  toggleSidebar() {
+    this.sidebarVisible = !this.sidebarVisible;
+  }
 
   ngOnInit() {
    

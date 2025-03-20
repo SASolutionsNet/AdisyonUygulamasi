@@ -1,4 +1,4 @@
-import { Component, Injectable, NgZone, OnInit, OnDestroy, AfterViewInit, ChangeDetectorRef, ChangeDetectionStrategy, Input, Output, EventEmitter, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, Injectable, NgZone, OnInit, OnDestroy, AfterViewInit, ChangeDetectorRef, ChangeDetectionStrategy, Input, Output, EventEmitter, SimpleChanges, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute, NavigationEnd } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, FormControl, AbstractControl, ValidationErrors } from '@angular/forms';
 
@@ -24,7 +24,7 @@ import { Orders, SalesOrder } from '../../models/order.model';
   selector: 'sasolution-sales-order-detail',
   templateUrl: './order.detail.component.html',
   styleUrls: ['./order.detail.component.scss'],
-  imports: [MatPaginatorModule,MatGridListModule, MatTabsModule, CommonModule, MatTableModule, MatPaginatorModule, MatSortModule, MatButtonModule, MatIconModule],
+  imports: [MatPaginatorModule, MatGridListModule, MatTabsModule, CommonModule, MatTableModule, MatPaginatorModule, MatSortModule, MatButtonModule, MatIconModule],
 })
 export class OrderDetailComponent implements OnInit, OnDestroy, AfterViewInit {
 
@@ -51,14 +51,37 @@ export class OrderDetailComponent implements OnInit, OnDestroy, AfterViewInit {
     private dateAdapter: DateAdapter<Date>,
     private orderService: SalesOrderService,
     private productService: PSService,
-  ) { }
+    private elementRef: ElementRef
+
+  ) {
+    this.resizeObserver = new ResizeObserver(entries => {
+      this.updateGridColumns();
+    });
+  }
+
+  gridColumns = 4; // Varsayılan sütun sayısı
+  private resizeObserver: ResizeObserver;
 
   ngOnInit(): void {
     // Initialization logic here
-   
-      this.dataSource.data = [...this.ELEMENT_DATA]; // Ensure a new array reference is set
-      this.cdRef.detectChanges();  // Trigger change detection after updating data
+    this.updateGridColumns();
+    this.resizeObserver.observe(this.elementRef.nativeElement);
+    this.dataSource.data = [...this.ELEMENT_DATA]; // Ensure a new array reference is set
+    this.cdRef.detectChanges();  // Trigger change detection after updating data
     this.calculateSumCost();  // Başlangıçta toplam tutarı hesapla
+  }
+  updateGridColumns() {
+    const containerWidth = this.elementRef.nativeElement.offsetWidth;
+
+    if (containerWidth <= 480) {
+      this.gridColumns = 3;
+    } else if (containerWidth <= 768) {
+      this.gridColumns = 3;
+    } else {
+      this.gridColumns = 4;
+    }
+
+    this.cdRef.detectChanges();
   }
 
   ngOnDestroy(): void {
@@ -99,7 +122,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy, AfterViewInit {
   }
   // Her tıklamada tetiklenecek fonksiyon
   onTileClick(tileNumber: number): void {
- 
+
     console.log('Tile clicked:', tileNumber); // Tıklanan tile'ı görmek için log ekliyoruz
     this.tileClicked.emit(tileNumber); // Tıklanan numarayı dışarıya gönderiyoruz
     //explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
@@ -141,4 +164,3 @@ export class OrderDetailComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 }
-

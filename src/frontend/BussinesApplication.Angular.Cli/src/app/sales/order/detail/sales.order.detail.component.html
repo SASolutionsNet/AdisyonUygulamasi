@@ -1,23 +1,20 @@
-
-
 <div class="app-container">
-  <!-- Sidebar -->
-  <app-sidebar></app-sidebar>
 
-  <!-- Başlık -->
+  <!-- Sidebar -->
+  <app-sidebar [class.hidden]="!sidebarVisible"></app-sidebar>
+
+  <!-- Main Content -->
   <div class="main-content">
     <app-header></app-header>
 
     <mat-card-header class="mat-content">
       <mat-card-title class="category-card-title">Siparişler</mat-card-title>
     </mat-card-header>
-   
+
     <sasolution-sales-order-detail [tabs]="tabsData"
                                    [ELEMENT_DATA]="matchingOrders"
                                    (tileClicked)="onTileClick($event)"
                                    (buttonClicked)="handleButtonClick($event)">
-
     </sasolution-sales-order-detail>
-
   </div>
 </div>
