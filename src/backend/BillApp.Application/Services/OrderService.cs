@@ -23,29 +23,6 @@ namespace BillApp.Application.Services
             _mapper = mapper;
         }
 
-        private async Task<bool> UpdateTotalPriceForBill(Guid billId)
-        {
-            var billResult = await _billService.GetById(billId);
-            if (!billResult.Success || billResult.Data == null)
-            {
-                return false;
-            }
-
-            var ordersForBill = await _orderRepository.GetQueryable()
-                .Where(o => o.BillId == billId)
-                .Include(o => o.Product)
-                .ToListAsync();
-
-            float totalPrice = ordersForBill.Sum(order => order.Quantity * order.Product.Price);
-
-            billResult.Data.TotalPrice = totalPrice;
-
-            var updateResult = await _billService.Update(billResult.Data);
-
-            return updateResult.Success;
-        }
-
-
         public async Task<ServiceResponse<OrderDto>> Create(OrderDto dto)
         {
             if (dto == null)
@@ -58,12 +35,41 @@ namespace BillApp.Application.Services
                 };
             }
 
+            var existingOrders = await _orderRepository.GetQueryable()
+                .Where(o => o.BillId == dto.BillId && o.ProductId == dto.ProductId)
+                .ToListAsync();
+
+            if (existingOrders.Any())
+            {
+                var existingOrder = existingOrders.First();
+                dto.Id = existingOrder.Id;
+                dto.Quantity = existingOrder.Quantity + 1;
+
+                var updateResponse = await Update(dto);
+                if (!updateResponse.Success)
+                {
+                    return new ServiceResponse<OrderDto>
+                    {
+                        Success = false,
+                        Message = "Creating order failed during update."
+                    };
+                }
+
+                return new ServiceResponse<OrderDto>
+                {
+                    Data = dto,
+                    Success = true,
+                    Message = "Order updated successfully."
+                };
+            }
 
             var newOrder = _mapper.Map<Order>(dto);
             newOrder.CreatedUser = _currentUserService.Username ?? string.Empty;
 
             var createdOrder = await _orderRepository.CreateAsync(newOrder);
+
             var mappedReturnModel = _mapper.Map<OrderDto>(createdOrder);
+
             return new ServiceResponse<OrderDto>
             {
                 Data = mappedReturnModel,
@@ -111,95 +117,31 @@ namespace BillApp.Application.Services
             };
         }
 
-        public async Task<ServiceResponse<bool>> Delete(Guid id)
+        public async Task<ServiceResponse<OrderDto>> Delete(Guid id)
         {
             if (id == Guid.Empty)
             {
-                return new ServiceResponse<bool>
+                return new ServiceResponse<OrderDto>
                 {
                     Message = "Invalid Model",
                     Success = false
                 };
             }
 
-            var order = await _orderRepository.GetByIdAsync(id);
-            if (order == null)
-            {
-                return new ServiceResponse<bool>
-                {
-                    Success = false,
-                    Message = "Order not found."
-                };
-            }
+            var result = await _orderRepository.HardDeleteAsync(id);
 
-            // Set audit fields
-            order.UpdatedUser = _currentUserService.Username ?? "";
-            order.UpdatedDate = DateTime.UtcNow;
-
-            // Scenario 1: If the order quantity is 1, soft-delete the order.
-            if (order.Quantity <= 1)
-            {
-                var result = await _orderRepository.HardDeleteAsync(order);
-
-                if (result)
-                    return new ServiceResponse<bool>
-                    {
-                        Data = result,
-                        Success = true,
-                        Message = "Order deleted (soft delete applied) and bill total updated successfully."
-                    };
-                else
-                    return new ServiceResponse<bool>
-                    {
-                        Data = false,
-                        Success = true,
-                        Message = "Order delete failed."
-                    };
-            }
-            else // Scenario 2: If the order's quantity is more than 1, decrease the quantity by one.
-            {
-                // Save the original quantity in case rollback is needed.
-                int originalQuantity = order.Quantity;
-                order.Quantity = originalQuantity - 1;
-                order.UpdatedUser = _currentUserService.Username ?? "";
-                order.UpdatedDate = DateTime.UtcNow;
-
-                var updatedOrder = await _orderRepository.UpdateAsync(order);
-
-                bool totalPriceUpdated = await UpdateTotalPriceForBill(order.BillId);
-                if (!totalPriceUpdated)
-                {
-                    // Rollback the quantity update if the bill update fails.
-                    order.Quantity = originalQuantity;
-                    order.UpdatedUser = _currentUserService.Username ?? "";
-                    order.UpdatedDate = DateTime.UtcNow;
-
-                    var rollbackResult = await _orderRepository.UpdateAsync(order);
-                    if (rollbackResult == null)
-                    {
-                        return new ServiceResponse<bool>
-                        {
-                            Data = _mapper.Map<bool>(order),
-                            Success = false,
-                            Message = "Rollback failed: Unable to restore order after bill update failure."
-                        };
-                    }
-
-                    return new ServiceResponse<bool>
-                    {
-                        Data = _mapper.Map<bool>(order),
-                        Success = false,
-                        Message = "Order update rolled back due to failure updating bill total price."
-                    };
-                }
-
-                var mappedReturnModel = _mapper.Map<bool>(order);
-                return new ServiceResponse<bool>
+            if (result)
+                return new ServiceResponse<OrderDto>
                 {
                     Success = true,
-                    Message = "Order quantity decreased successfully and bill total updated."
+                    Message = "Order deleted (hard delete applied)"
                 };
-            }
+            else
+                return new ServiceResponse<OrderDto>
+                {
+                    Success = true,
+                    Message = "Order delete failed."
+                };
         }
 
 
