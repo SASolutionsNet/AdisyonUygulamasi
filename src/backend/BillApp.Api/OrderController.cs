@@ -18,13 +18,29 @@ namespace BillApp.Api
 
         private readonly IOrderService _orderService;
         private readonly IMapper _mapper;
-        private readonly IHubContext<OrderHub> _hubContext;
+        private readonly IHubContext<SalesHub> _hubContext;
 
-        public OrderController(IOrderService orderService, IMapper mapper, IHubContext<OrderHub> hubContext)
+        public OrderController(IOrderService orderService, IMapper mapper, IHubContext<SalesHub> hubContext)
         {
             _orderService = orderService;
             _mapper = mapper;
             _hubContext = hubContext;
+        }
+
+        [HttpPost("add")]
+        public async Task<IActionResult> AddOrder([FromBody] OrderCreateRequest order)
+        {
+            if (order == null)
+            {
+                return BadRequest("Invalid order");
+            }
+
+            // Siparişi veritabanına kaydet (örnek olarak atlıyoruz)
+
+            // Tüm istemcilere sipariş güncellemesini gönder
+            await _hubContext.Clients.All.SendAsync("ReceiveOrderUpdate", order);
+
+            return Ok(new { Message = "Order added successfully", order });
         }
 
         [Authorize]

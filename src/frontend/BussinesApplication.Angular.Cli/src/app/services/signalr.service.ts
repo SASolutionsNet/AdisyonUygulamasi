@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { Observable, Subject } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -9,13 +10,14 @@ export class SignalRService {
   private hubConnection!: HubConnection;
   private orderUpdateSubject = new Subject<{ table: string; totalCost: number }>();
   private tableClosedSubject = new Subject<string>();
+  private apiUrl = `${environment.apiUrl}`; 
 
   constructor() { }
 
   // SignalR bağlantısını başlat ve belirtilen masanın grubuna katıl
   startConnection(table: string): void {
     this.hubConnection = new HubConnectionBuilder()
-      .withUrl('http://localhost:5000/salesHub') // Backend URL’inizi girin
+      .withUrl(`${this.apiUrl}/hubs/sales`)
       .withAutomaticReconnect()
       .build();
 
