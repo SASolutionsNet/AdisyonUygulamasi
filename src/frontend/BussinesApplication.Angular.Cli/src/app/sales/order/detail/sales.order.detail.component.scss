@@ -1,136 +1,81 @@
+:root {
+  --mobile-breakpoint: 768px;
+  --phone-breakpoint: 480px;
+  --primary-color: #3498db;
+  --sidebar-width: 250px;
+}
 
-/* App Container Düzeni */
 .app-container {
   display: flex;
-  flex-direction: row; /* Sidebar ve içerik yan yana */
-  height: 100vh; /* Sayfanın tamamını kaplasın */
-  overflow: hidden; /* Sidebar'ın içerikle üst üste gelmemesi için */
-}
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
 
-/* Sidebar Container */
-.sidebar {
-  background-color: #2c3e50; /* Koyu gri mavi arka plan */
-  width: 250px; /* Sidebar genişliği */
-  height: 100vh; /* Tam yükseklik */
-  padding: 20px;
-  color: white;
-  font-family: 'Roboto', sans-serif;
-  display: flex;
-  flex-direction: column;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-  position: relative; /* Sidebar'ı sabit pozisyon yerine, içerik ile uyumlu yapalım */
-  z-index: 1; /* Sidebar'ı ön planda tut */
-}
-
-/* Main content area */
-.main-content {
-  margin-left: 0px; /* Sidebar genişliği kadar boşluk bırak */
-  padding: 20px; /* İçeriğe padding ekler */
-  flex-grow: 1; /* İçeriğin genişlemesi için */
-  height: 100vh; /* Yüksekliği tam yapalım */
-  overflow-y: auto; /* İçerik fazla olduğunda kaydırma ekler */
-}
-
-/* Header */
-header {
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  width: 100%;
-  height: 60px; /* Sabit yükseklik */
-  background-color: #3498db; /* Başlık arka plan rengi */
-  color: white;
-  padding: 10px 20px;
-  z-index: 2; /* Header'ı sidebar ve içerikten üstte tutar */
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-
-/* Başlık kısmı için stil */
-.category-card-title {
-  font-size: 24px; /* Başlık font boyutu */
-  font-weight: 700; /* Başlık kalın yazı tipi */
-  color: #2c3e50; /* Koyu mavi gri renk */
-  text-transform: uppercase; /* Metni büyük harfe dönüştür */
-  letter-spacing: 1px; /* Harf aralığını aç */
-  margin: 0; /* Margin sıfırlama */
-  padding: 10px 20px; /* Padding ile başlık etrafında boşluk ekleyelim */
-  background-color: #ecf0f1; /* Arka plan rengi */
-  border-radius: 5px; /* Köşe yuvarlama */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Hafif gölge efekti */
-  transition: all 0.3s ease; /* Animasyon */
-}
-
-/* Başlık üzerine gelindiğinde animasyon */
-.category-card-title:hover {
-  background-color: #3498db; /* Hover rengini mavi yap */
-  color: #fff; /* Yazıyı beyaz yap */
-  transform: translateY(-3px); /* Hafif yukarı kaydırma efekti */
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); /* Hover efekti ile daha belirgin gölge */
-}
-
-/* Başlık kutusuna daha modern bir görünüm vermek için */
-mat-card-header {
-  border-bottom: 2px solid #3498db; /* Başlık altına ince mavi çizgi ekleyelim */
-}
-
-/* Tablet ve Telefon İçin Responsive Düzenlemeler */
-@media (max-width: 768px) {
-  /* Sidebar'ı ekranın solunda, daha küçük bir genişlikle yapalım */
   .sidebar {
-    width: 200px; /* Sidebar genişliğini küçült */
-    position: relative; /* Sabit pozisyonu kaldır */
-  }
+    background-color: #2c3e50;
+    width: var(--sidebar-width);
+    height: 100vh;
+    padding: 20px;
+    color: white;
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
 
-  /* Main Content'i sidebar'ın altına yerleştiriyoruz ve ona göre ayar yapıyoruz */
-  .main-content {
-    margin-left: 0;
-    width: 100%;
-    padding: 15px; /* Daha küçük padding */
-  }
-
-  /* Header'ın yüksekliğini küçük ekranlarda daha uygun hale getir */
-  header {
-    height: 50px;
-    padding: 5px 10px;
-  }
-
-  .category-card-title {
-    font-size: 20px; /* Başlık font boyutunu küçült */
-  }
-}
-
-@media (max-width: 480px) {
-  .sidebar {
-    width: 100%; /* Sidebar'ı ekranın tamamına yayalım */
-    height: auto; /* Sidebar'ın yüksekliğini içeriğe göre ayarlayalım */
+    &.hidden {
+      transform: translateX(-100%);
+    }
   }
 
   .main-content {
-    margin-left: 0; /* Sidebar'ı tam genişlik yapınca sol boşluğu kaldır */
-    padding: 10px; /* İçeriğe daha küçük padding ekleyelim */
-  }
-
-  header {
-    height: 45px; /* Başlık yüksekliğini daha da küçült */
-    padding: 10px; /* Başlık içindeki padding'i daha küçük yap */
+    flex-grow: 1;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 20px;
   }
 
   .category-card-title {
-    font-size: 18px; /* Başlık boyutunu daha da küçült */
+    font-size: clamp(1rem, 2vw, 1.5rem);
+    font-weight: 700;
+    padding: 10px 20px;
+    margin: 10px 0;
   }
-}
-.amount-container {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-}
 
-.amount-label {
-  font-weight: bold;
-  margin-right: 10px;
-}
+  @media (max-width: var(--mobile-breakpoint)) {
+    flex-direction: column;
 
-.amount-value {
-  font-size: 1.2em;
-  color: #333;
+    .sidebar {
+      width: 50%;
+      height: auto;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 999;
+    }
+
+    .main-content {
+      margin-top: 60px;
+      padding: 15px;
+    }
+  }
+
+  @media (max-width: var(--phone-breakpoint)) {
+
+    .sidebar {
+      width: 10%;
+      height: auto;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 999;
+    }
+
+    .main-content {
+      padding: 10px;
+      margin-top: 40px;
+    }
+
+    .category-card-title {
+      font-size: 1rem;
+      padding: 8px 15px;
+    }
+  }
 }
