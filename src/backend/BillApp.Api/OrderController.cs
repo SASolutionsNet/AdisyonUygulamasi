@@ -134,9 +134,6 @@ namespace BillApp.Api
 
             if (result.Success)
             {
-                if (result.Data == null)
-                    return NotFound("Order not found.");
-
                 var mappedResult = _mapper.Map<OrderDto, OrderResponse>(result.Data);
                 return Ok(mappedResult);
             }

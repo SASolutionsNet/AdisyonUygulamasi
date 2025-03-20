@@ -101,8 +101,10 @@ namespace BillApp.Infrastructure.Repositories
             return existingOrder;
         }
 
-        public async Task<bool> HardDeleteAsync(Order order)
+        public async Task<bool> HardDeleteAsync(Guid id)
         {
+            var order = await GetByIdAsync(id).ConfigureAwait(false);
+
             if (order == null)
                 throw new KeyNotFoundException("Order not found.");
 
