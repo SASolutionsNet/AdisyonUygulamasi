@@ -93,6 +93,6 @@ if (!int.TryParse(portString, out int port) || port < 1024 || port > 65535)
 var url = $"http://0.0.0.0:{port}";
 
 app.MapControllers();
-app.MapHub<OrderHub>("/orderHub"); // SignalR Hub
+app.MapHub<SalesHub>("/hubs/sales"); // SignalR Hub endpoint
 
 app.Run(url);
