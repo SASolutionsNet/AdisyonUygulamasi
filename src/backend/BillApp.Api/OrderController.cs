@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using BillApp.Api.Hubs;
 using BillApp.Api.Models.Order.Request;
 using BillApp.Api.Models.Order.Response;
 using BillApp.Application.Contracts.Order;
 using BillApp.Application.Interfaces.IServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace BillApp.Api
 {
@@ -16,11 +18,13 @@ namespace BillApp.Api
 
         private readonly IOrderService _orderService;
         private readonly IMapper _mapper;
+        private readonly IHubContext<OrderHub> _hubContext;
 
-        public OrderController(IOrderService orderService, IMapper mapper)
+        public OrderController(IOrderService orderService, IMapper mapper, IHubContext<OrderHub> hubContext)
         {
             _orderService = orderService;
             _mapper = mapper;
+            _hubContext = hubContext;
         }
 
         [Authorize]
@@ -63,26 +67,6 @@ namespace BillApp.Api
 
         }
 
-        [HttpPost("create")]
-        //[Authorize(Roles = "Admin")] 
-        [Authorize()]
-        public async Task<IActionResult> Create([FromBody] OrderCreateRequest model)
-        {
-            if (!ModelState.IsValid || model == null)
-                return BadRequest(ModelState);
-
-            var mappedModel = _mapper.Map<OrderCreateRequest, OrderDto>(model);
-
-            var result = await _orderService.Create(mappedModel);
-
-            if (result.Success)
-            {
-                var mappedResult = _mapper.Map<OrderDto, OrderResponse>(result.Data);
-                return Ok(mappedResult);
-            }
-            return StatusCode(500, "Request Failed");
-        }
-
         [HttpPost("create-range")]
         //[Authorize(Roles = "Admin")] 
         [Authorize()]
@@ -101,48 +85,6 @@ namespace BillApp.Api
                 return Ok(mappedResult);
             }
             return StatusCode(500, "Request Failed");
-        }
-
-        [HttpPut("update")]
-        [Authorize()]
-        public async Task<IActionResult> Update([FromBody] OrderUpdateRequest model)
-        {
-            if (!ModelState.IsValid || model == null)
-                return BadRequest(ModelState);
-
-            var mappedModel = _mapper.Map<OrderUpdateRequest, OrderDto>(model);
-
-            var result = await _orderService.Update(mappedModel);
-
-            if (result.Success)
-            {
-                var mappedResult = _mapper.Map<OrderDto, OrderResponse>(result.Data);
-                return Ok(mappedResult);
-            }
-
-            return StatusCode(500, "Request Failed");
-        }
-
-        [HttpDelete("delete")]
-        [Authorize()]
-        public async Task<IActionResult> Delete([FromBody] OrderGetByIdAndDeleteRequest model)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            var result = await _orderService.Delete(model.Id);
-
-            if (result.Success)
-            {
-                if (result.Data == null)
-                    return NotFound("Order not found.");
-
-                var mappedResult = _mapper.Map<OrderDto, OrderResponse>(result.Data);
-                return Ok(mappedResult);
-            }
-
-            return StatusCode(500, "Request Failed");
-
         }
 
         [HttpGet("get-orders-for-bill")]
@@ -165,6 +107,22 @@ namespace BillApp.Api
 
             return StatusCode(500, "Request Failed");
 
+        }
+
+
+        [HttpGet("{billId}")]
+        public IActionResult GetOrders(Guid billId)
+        {
+            var orders = _orderService.GetOrders(billId);
+            return Ok(orders);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddOrder([FromBody] OrderDto orderDto)
+        {
+            _orderService.AddOrder(orderDto);
+            await _hubContext.Clients.All.SendAsync("ReceiveOrderUpdate", orderDto);
+            return Ok(new { Message = "Order added successfully" });
         }
 
     }

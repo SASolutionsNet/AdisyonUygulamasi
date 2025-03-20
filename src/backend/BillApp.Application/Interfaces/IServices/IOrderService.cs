@@ -7,6 +7,8 @@ namespace BillApp.Application.Interfaces.IServices
     {
         Task<ServiceResponse<List<OrderDto>>> CreateRange(IEnumerable<OrderDto> dtos);
         Task<ServiceResponse<List<OrderForBillDto>>> GetOrdersForBill(Guid billId);
+        List<OrderDto> GetOrders(Guid billId);
+        void AddOrder(OrderDto orderDto);
 
     }
 }
