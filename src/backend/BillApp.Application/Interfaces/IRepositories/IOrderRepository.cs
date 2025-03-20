@@ -10,6 +10,7 @@ namespace BillApp.Application.Interfaces.IRepositories
     public interface IOrderRepository : IApplicationRepository<Order>
     {
         Task<List<Order>> CreateRangeAsync(List<Order> orders);
+        Task<bool> HardDeleteAsync(Order order);
 
     }
 }

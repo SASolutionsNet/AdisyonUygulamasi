@@ -100,5 +100,15 @@ namespace BillApp.Infrastructure.Repositories
 
             return existingOrder;
         }
+
+        public async Task<bool> HardDeleteAsync(Order order)
+        {
+            if (order == null)
+                throw new KeyNotFoundException("Order not found.");
+
+            _context.Orders.Remove(order);
+
+            return true;
+        }
     }
 }

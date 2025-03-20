@@ -111,11 +111,11 @@ namespace BillApp.Application.Services
             };
         }
 
-        public async Task<ServiceResponse<OrderDto>> Delete(Guid id)
+        public async Task<ServiceResponse<bool>> Delete(Guid id)
         {
             if (id == Guid.Empty)
             {
-                return new ServiceResponse<OrderDto>
+                return new ServiceResponse<bool>
                 {
                     Message = "Invalid Model",
                     Success = false
@@ -125,7 +125,7 @@ namespace BillApp.Application.Services
             var order = await _orderRepository.GetByIdAsync(id);
             if (order == null)
             {
-                return new ServiceResponse<OrderDto>
+                return new ServiceResponse<bool>
                 {
                     Success = false,
                     Message = "Order not found."
@@ -139,42 +139,22 @@ namespace BillApp.Application.Services
             // Scenario 1: If the order quantity is 1, soft-delete the order.
             if (order.Quantity <= 1)
             {
-                var deletedOrder = await _orderRepository.DeleteAsync(order);
+                var result = await _orderRepository.HardDeleteAsync(order);
 
-                bool totalPriceUpdated = await UpdateTotalPriceForBill(order.BillId);
-                if (!totalPriceUpdated)
-                {
-                    // Rollback soft delete by marking the order as not deleted.
-                    deletedOrder.IsDel = false;
-                    deletedOrder.UpdatedUser = _currentUserService.Username ?? "";
-                    deletedOrder.UpdatedDate = DateTime.UtcNow;
-
-                    var rollbackResult = await _orderRepository.UpdateAsync(deletedOrder);
-                    if (rollbackResult == null)
+                if (result)
+                    return new ServiceResponse<bool>
                     {
-                        return new ServiceResponse<OrderDto>
-                        {
-                            Data = _mapper.Map<OrderDto>(deletedOrder),
-                            Success = false,
-                            Message = "Rollback failed: Unable to restore order after bill update failure."
-                        };
-                    }
-
-                    return new ServiceResponse<OrderDto>
-                    {
-                        Data = _mapper.Map<OrderDto>(deletedOrder),
-                        Success = false,
-                        Message = "Order delete rolled back due to failure updating bill total price."
+                        Data = result,
+                        Success = true,
+                        Message = "Order deleted (soft delete applied) and bill total updated successfully."
                     };
-                }
-
-                var mappedReturnModel = _mapper.Map<OrderDto>(deletedOrder);
-                return new ServiceResponse<OrderDto>
-                {
-                    Data = mappedReturnModel,
-                    Success = true,
-                    Message = "Order deleted (soft delete applied) and bill total updated successfully."
-                };
+                else
+                    return new ServiceResponse<bool>
+                    {
+                        Data = false,
+                        Success = true,
+                        Message = "Order delete failed."
+                    };
             }
             else // Scenario 2: If the order's quantity is more than 1, decrease the quantity by one.
             {
@@ -197,26 +177,25 @@ namespace BillApp.Application.Services
                     var rollbackResult = await _orderRepository.UpdateAsync(order);
                     if (rollbackResult == null)
                     {
-                        return new ServiceResponse<OrderDto>
+                        return new ServiceResponse<bool>
                         {
-                            Data = _mapper.Map<OrderDto>(order),
+                            Data = _mapper.Map<bool>(order),
                             Success = false,
                             Message = "Rollback failed: Unable to restore order after bill update failure."
                         };
                     }
 
-                    return new ServiceResponse<OrderDto>
+                    return new ServiceResponse<bool>
                     {
-                        Data = _mapper.Map<OrderDto>(order),
+                        Data = _mapper.Map<bool>(order),
                         Success = false,
                         Message = "Order update rolled back due to failure updating bill total price."
                     };
                 }
 
-                var mappedReturnModel = _mapper.Map<OrderDto>(order);
-                return new ServiceResponse<OrderDto>
+                var mappedReturnModel = _mapper.Map<bool>(order);
+                return new ServiceResponse<bool>
                 {
-                    Data = mappedReturnModel,
                     Success = true,
                     Message = "Order quantity decreased successfully and bill total updated."
                 };
