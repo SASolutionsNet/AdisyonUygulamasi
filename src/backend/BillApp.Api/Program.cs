@@ -1,5 +1,3 @@
-using BillApp.Api.Hubs;
-using BillApp.Application.Interfaces.IServices;
 using BillApp.Application.Services;
 using BillApp.Infrastructure;
 using BillApp.Infrastructure.Extensions;
@@ -17,8 +15,7 @@ builder.Services.AddCors(options =>
           {
               policy.WithOrigins(allowedOrigins)
                     .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .AllowCredentials();
+                    .AllowAnyMethod();
           });
 });
 
@@ -42,14 +39,6 @@ builder.Configuration
 
 // Altyapý Baðýmlýlýklarýný Kaydet
 builder.Services.AddInfrastructure(builder.Configuration);
-
-// Memory Cache
-builder.Services.AddMemoryCache();
-
-//SignalR
-builder.Services.AddSignalR();
-
-builder.Services.AddScoped<IOrderService, OrderService>(); // OrderService ekleme
 
 var app = builder.Build();
 
@@ -93,6 +82,4 @@ if (!int.TryParse(portString, out int port) || port < 1024 || port > 65535)
 var url = $"http://0.0.0.0:{port}";
 
 app.MapControllers();
-app.MapHub<OrderHub>("/orderHub"); // SignalR Hub
-
 app.Run(url);
