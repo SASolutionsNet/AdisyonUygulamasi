@@ -1,12 +1,13 @@
+<button (click)="resetReload()">
+  <i class="fa fa-refresh"></i> Sayfayı Yenile
+</button>
 
 <mat-tab-group dynamicHeight>
   <!-- SALON Tab -->
   <mat-tab label="SALON">
     <div class="box-container salon">
       <div class="example-small-box mat-elevation-z4" *ngFor="let box of salonBoxes" (click)="onBoxClick(box)"
-      [ngStyle]="{ 'background-color': isOpen(box) ? 'red' : '#f1c40f'}"
-
-           >
+           [ngStyle]="{ 'background-color': isOpen(box) ? 'red' : '#f1c40f'}">
         {{ box }}
       </div>
     </div>
@@ -14,8 +15,8 @@
 
   <!-- BAHÇE Tab -->
   <mat-tab label="BAHÇE">
-    <div class="box-container bahce" >
-      <div class="example-small-box mat-elevation-z4" *ngFor="let box of bahceBoxes" (click)="onBoxClick(box)"  [ngStyle]="{ 'background-color': isOpen(box) ? 'red' : '#2ecc71'}">
+    <div class="box-container bahce">
+      <div class="example-small-box mat-elevation-z4" *ngFor="let box of bahceBoxes" (click)="onBoxClick(box)" [ngStyle]="{ 'background-color': isOpen(box) ? 'red' : '#2ecc71'}">
         {{ box }}
       </div>
     </div>

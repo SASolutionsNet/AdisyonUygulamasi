@@ -57,6 +57,10 @@ export class OrderListComponent implements OnInit {
 
   }
 
+  resetReload() {
+    window.location.reload();
+  }
+
   ngOnInit() {
     this.setDistinctTables();
     // Sayfayı her 10 saniyede bir yenile

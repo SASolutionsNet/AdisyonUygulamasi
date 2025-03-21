@@ -66,6 +66,9 @@ export class SalesAccountingDetailComponent implements OnInit {
       localStorage.setItem('reloaded', 'true');
       window.location.reload();
     }
+
+    localStorage.setItem('reloaded', 'false');
+
   }
 
   ngOnChanges() {
@@ -99,6 +102,7 @@ export class SalesAccountingDetailComponent implements OnInit {
               table: this.box,
               quantity: 1,
               cost: order.cost / order.quantity,
+              productId: order.productId,
               id: this.generateGUID() // Her öğeye ayrı GUID atanır
             }))
           );
@@ -171,7 +175,9 @@ export class SalesAccountingDetailComponent implements OnInit {
 
               this.bill.id = this.billId;
               this.bill.table = tableParam;
-              this.bill.totalPrice = this.calculatePaidOrdersSumCost();
+              this.bill.totalPrice = this.paidRows.reduce((total, order) => {
+                return total + (order.cost * order.quantity);  // Fiyat ve miktarı çarparak toplamı alıyoruz
+              }, 0);
               this.bill.isClosed = true;
 
               //nonPaidOrders
