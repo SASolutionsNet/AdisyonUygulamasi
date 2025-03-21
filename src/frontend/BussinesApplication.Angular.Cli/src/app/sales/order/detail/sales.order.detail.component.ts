@@ -100,26 +100,30 @@ export class SalesOrderDetailComponent implements OnInit, CanComponentDeactivate
       this.billId = params['billId'];
       this.boxParam = params['box'];
     });
-
+    console.log("billId");
+    console.log(this.billId);
     // Check if orders are stored in localStorage
     var storedOrders: Orders[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
 
     if (storedOrders.filter(item => item.table == this.boxParam).length == 0) {
       this.orderService.getAllOrdersForBill(this.billId).subscribe(response => {
         if (Array.isArray(response)) {
+          console.log("response")
+          console.log(response)
+          console.log("storedOrders")
+          console.log(storedOrders)
           if (storedOrders.length == 0) {
             storedOrders = response as Orders[];
           }
-          else {
+          else
             storedOrders.push(...(response as Orders[]));
-            localStorage.setItem('salesAccountingOrders', JSON.stringify(storedOrders));
-          }
-
         } else {
           console.error("Beklenen dizi formatında veri alınamadı!", response);
         }
       });
     }
+
+    localStorage.setItem('salesAccountingOrders', JSON.stringify(storedOrders));
 
     if (storedOrders) {
       this.salesAccounting.orders = storedOrders;  // Parse the stored JSON string back to an array
