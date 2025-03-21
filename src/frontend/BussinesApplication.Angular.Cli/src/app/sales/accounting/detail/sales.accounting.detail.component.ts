@@ -62,6 +62,7 @@ export class SalesAccountingDetailComponent implements OnInit {
       this.calculatePaidOrdersSumCost();
     });
 
+    window.location.reload();
   }
 
   ngOnChanges() {
@@ -71,6 +72,7 @@ export class SalesAccountingDetailComponent implements OnInit {
   ngAfterViewChecked() {
     this.cdRef.detectChanges();
   }
+
   generateGUID(): string {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
       const r = Math.random() * 16 | 0;
@@ -78,6 +80,7 @@ export class SalesAccountingDetailComponent implements OnInit {
       return v.toString(16);
     });
   }
+
   // LocalStorage'dan "orders" verisini alıyoruz ve box'a göre filtreliyoruz
   loadOrdersFromLocalStorage() {
     var orders: Orders[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
@@ -87,16 +90,15 @@ export class SalesAccountingDetailComponent implements OnInit {
         if (Array.isArray(data)) {
 
           data = data.flatMap(order =>
-            Array(order.quantity).fill({
+            Array(order.quantity).fill(null).map(() => ({
               ...order,
               paid: false,
               table: this.box,
               quantity: 1,
               cost: order.cost / order.quantity,
-              id: this.generateGUID()
-            })
+              id: this.generateGUID() // Her öğeye ayrı GUID atanır
+            }))
           );
-
           if (orders.length == 0) {
             orders = data;
             localStorage.setItem('salesAccountingOrders', JSON.stringify(orders));
