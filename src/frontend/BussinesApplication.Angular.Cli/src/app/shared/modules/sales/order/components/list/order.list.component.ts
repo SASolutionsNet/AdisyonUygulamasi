@@ -19,6 +19,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { Order } from '../../../../../../sales/accounting/detail/sales.accounting.detail.component';
 import { SalesAccountingService } from '../../../accounting/services/accounting.service';
+import { SalesAccounting } from '../../../accounting/models/accounting.model';
 
 @Component({
   selector: 'sasolution-sales-order-list',
@@ -30,9 +31,11 @@ export class OrderListComponent implements OnInit {
   private _rows: any;
   dataLoadedEvent: any;
   distinctTables: string[] = [];
+  bills: SalesAccounting[] = []
   billId: string = "";
   salonBoxes: string[] = Array.from({ length: 16 }, (_, i) => `S${i + 1}`);
   bahceBoxes: string[] = Array.from({ length: 16 }, (_, i) => `B${i + 1}`);
+  private reloadInterval: any;
 
 
   @ViewChild(MatPaginator) paginator!: MatPaginator; // MatPaginator'ı erişebilmek için ViewChild ile alıyoruz
@@ -56,10 +59,25 @@ export class OrderListComponent implements OnInit {
   }
 
   ngOnInit() {
-    const salesAccountingOrders: Order[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
-    this.distinctTables = [...new Set(salesAccountingOrders.map(order => order.table))];
-
+    this.setDistinctTables();
+    // Sayfayı her 10 saniyede bir yenile
+    this.reloadInterval = setInterval(() => {
+      this.setDistinctTables()
+    }, 300);
   }
+
+  setDistinctTables() {
+    this.accountingService.getAllOpenBills().subscribe(response => {
+      if (Array.isArray(response)) {
+        this.bills = response;
+        this.distinctTables = this.bills.map(item => item.table);
+      } else {
+        this.distinctTables = [];
+        console.error("Beklenen dizi formatında veri alınamadı!", response);
+      }
+    });
+  }
+
 
 
   isOpen(box: string): boolean {
@@ -71,17 +89,26 @@ export class OrderListComponent implements OnInit {
     this.cdRef.detectChanges();
   }
   onBoxClick(box: string) {
-    var bill = {
-      table: box,
-      totalPrice: 0
+    var existingBills = this.bills.filter(item => item.table == box);
+    if (existingBills.length == 0) {
+      var bill = {
+        table: box,
+        totalPrice: 0
+      }
+
+      this.accountingService.createBill(bill).subscribe(response => {
+        this.billId = response.id
+        this.router.navigate([`/sales/order/detail/${box}/${this.billId}`]);  // Yönlendirme
+      });
+    }
+    else {
+      this.billId = existingBills[0].id;
+
+      this.router.navigate([`/sales/order/detail/${box}/${this.billId}`]);  // Yönlendirme
+
     }
 
-    this.accountingService.createBill(bill).subscribe(response => {
-      console.log(response)
-      console.log("bill oluştu")
-      this.billId = response.id
-      this.router.navigate([`/sales/order/detail/${box}/${this.billId}`]);  // Yönlendirme
-    });
+
   }
 
 
