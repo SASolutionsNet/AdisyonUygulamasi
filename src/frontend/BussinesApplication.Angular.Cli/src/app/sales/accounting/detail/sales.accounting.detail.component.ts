@@ -66,8 +66,11 @@ export class SalesAccountingDetailComponent implements OnInit {
       localStorage.setItem('reloaded', 'true');
       window.location.reload();
     }
+    else {
 
-    localStorage.removeItem('reloaded');
+      localStorage.removeItem('reloaded');
+    }
+
 
   }
 
