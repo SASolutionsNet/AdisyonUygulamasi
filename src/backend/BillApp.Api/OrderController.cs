@@ -42,7 +42,7 @@ namespace BillApp.Api
 
         [Authorize]
         [HttpGet("get-by-id")]
-        public async Task<IActionResult> GetById([FromBody] OrderGetByIdAndDeleteRequest model)
+        public async Task<IActionResult> GetById([FromBody] OrderGetByIdRequest model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -125,12 +125,12 @@ namespace BillApp.Api
 
         [HttpDelete("delete")]
         [Authorize()]
-        public async Task<IActionResult> Delete([FromBody] OrderGetByIdAndDeleteRequest model)
+        public async Task<IActionResult> Delete([FromBody] OrderDeleteRequest model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            var result = await _orderService.Delete(model.Id);
+            var result = await _orderService.DeleteOrder(model.BillId, model.ProductId);
 
             if (result.Success)
             {

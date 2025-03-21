@@ -117,9 +117,9 @@ namespace BillApp.Application.Services
             };
         }
 
-        public async Task<ServiceResponse<OrderDto>> Delete(Guid id)
+        public async Task<ServiceResponse<OrderDto>> DeleteOrder(Guid billId, Guid productId)
         {
-            if (id == Guid.Empty)
+            if (billId == Guid.Empty || productId == Guid.Empty)
             {
                 return new ServiceResponse<OrderDto>
                 {
@@ -128,14 +128,55 @@ namespace BillApp.Application.Services
                 };
             }
 
-            var result = await _orderRepository.HardDeleteAsync(id);
+            var bill = await _billService.GetById(billId);
+            var order = bill.Data.Orders.Where(x => x.ProductId == productId).ToList()[0];
 
-            return new ServiceResponse<OrderDto>
+            if (order == null)
             {
-                Success = true,
-                Message = "Order deleted (hard delete applied)"
-            };
-            ;
+                return new ServiceResponse<OrderDto>
+                {
+                    Success = false,
+                    Message = "Order not found."
+                };
+            }
+
+            // Set audit fields
+            order.UpdatedUser = _currentUserService.Username ?? "";
+            order.UpdatedDate = DateTime.UtcNow;
+
+            // Scenario 1: If the order quantity is 1,  delete the order.
+            if (order.Quantity <= 1)
+            {
+                var deletedOrder = await _orderRepository.HardDeleteAsync(order.Id);
+
+                var mappedReturnModel = _mapper.Map<OrderDto>(deletedOrder);
+                return new ServiceResponse<OrderDto>
+                {
+                    Data = mappedReturnModel,
+                    Success = true,
+                    Message = "Order deleted (soft delete applied) and bill total updated successfully."
+                };
+            }
+            else // Scenario 2: If the order's quantity is more than 1, decrease the quantity by one.
+            {
+                // Save the original quantity in case rollback is needed.
+                int originalQuantity = order.Quantity;
+                order.Quantity = originalQuantity - 1;
+                order.UpdatedUser = _currentUserService.Username ?? "";
+                order.UpdatedDate = DateTime.UtcNow;
+
+                var mappedOrder = _mapper.Map<Order>(order);
+
+                var updatedOrder = await _orderRepository.UpdateAsync(mappedOrder);
+
+                var mappedReturnModel = _mapper.Map<OrderDto>(order);
+                return new ServiceResponse<OrderDto>
+                {
+                    Data = mappedReturnModel,
+                    Success = true,
+                    Message = "Order quantity decreased successfully and bill total updated."
+                };
+            }
         }
 
 
@@ -258,6 +299,11 @@ namespace BillApp.Application.Services
                 Success = false,
                 Message = "Orders delete failed."
             };
+        }
+
+        public Task<ServiceResponse<OrderDto>> Delete(Guid id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -18,6 +18,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { Order } from '../../../../../../sales/accounting/detail/sales.accounting.detail.component';
+import { SalesAccountingService } from '../../../accounting/services/accounting.service';
 
 @Component({
   selector: 'sasolution-sales-order-list',
@@ -29,7 +30,7 @@ export class OrderListComponent implements OnInit {
   private _rows: any;
   dataLoadedEvent: any;
   distinctTables: string[] = [];
-
+  billId: string = "";
   salonBoxes: string[] = Array.from({ length: 16 }, (_, i) => `S${i + 1}`);
   bahceBoxes: string[] = Array.from({ length: 16 }, (_, i) => `B${i + 1}`);
 
@@ -46,6 +47,7 @@ export class OrderListComponent implements OnInit {
     private dateAdapter: DateAdapter<Date>,
     private orderService: SalesOrderService,
     private productService: PSService,
+    private accountingService: SalesAccountingService
   ) {
 
     // https://github.com/angular/material2/issues/4876
@@ -69,7 +71,17 @@ export class OrderListComponent implements OnInit {
     this.cdRef.detectChanges();
   }
   onBoxClick(box: string) {
-    this.router.navigate([`/sales/order/detail/${box}`]);  // Yönlendirme
+    var bill = {
+      table: box,
+      totalPrice: 0
+    }
+
+    this.accountingService.createBill(bill).subscribe(response => {
+      console.log(response)
+      console.log("bill oluştu")
+      this.billId = response.id
+      this.router.navigate([`/sales/order/detail/${box}/${this.billId}`]);  // Yönlendirme
+    });
   }
 
 

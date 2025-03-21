@@ -90,14 +90,14 @@ export class SalesOrderService {
     return this.http.put(`${this.apiUrl}/update/${orderId}`, updatedData, { headers });
   }
   // Siparişi silme
-  deleteOrder(orderId: string): Observable<any> {
+  deleteOrder(billId: string, productId: string): Observable<any> {
     const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
 
     // Eğer token varsa, Authorization header'ına ekle
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     // DELETE isteği ile siparişi sil
-    return this.http.delete(`${this.apiUrl}/delete/${orderId}`, { headers });
+    return this.http.delete(`${this.apiUrl}/delete/`, { headers, body: { billId: billId, productId: productId } });
   }
 
 

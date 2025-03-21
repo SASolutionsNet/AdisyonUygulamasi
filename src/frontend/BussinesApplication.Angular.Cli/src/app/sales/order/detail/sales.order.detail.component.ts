@@ -18,7 +18,7 @@ import { SalesAccountingService } from '../../../shared/modules/sales/accounting
 import { Order } from '../../../shared/modules/sales/accounting/components/detail/accounting.detail.component';
 interface Tab {
   label: string;
-  tiles: { name: string, price: number, productId : string }[];  // 'tiles' should be an array of objects
+  tiles: { name: string, price: number, productId: string }[];  // 'tiles' should be an array of objects
 }
 
 @Component({
@@ -26,12 +26,12 @@ interface Tab {
   templateUrl: './sales.order.detail.component.html',
   styleUrls: ['./sales.order.detail.component.scss'],
   standalone: true,
-  imports: [MatIcon,MatPaginatorModule,OrderDetailComponent, MatCardModule, SidebarComponent, HeaderComponent],  // Import dependencies
+  imports: [MatIcon, MatPaginatorModule, OrderDetailComponent, MatCardModule, SidebarComponent, HeaderComponent],  // Import dependencies
 })
 export class SalesOrderDetailComponent implements OnInit {
 
 
- 
+
   // Initialize SalesAccounting object
   salesAccounting: SalesAccounting = new SalesAccounting();  // Initialized correctly
   tabsData: Tab[] = [];  // Array of tabs, each with a label and tiles (products)
@@ -49,7 +49,7 @@ export class SalesOrderDetailComponent implements OnInit {
     private snackBar: MatSnackBar,
     private productService: PSService,
     private accountingService: SalesAccountingService,
-    private orderService:SalesOrderService
+    private orderService: SalesOrderService
   ) { }
   sidebarVisible = false;
 
@@ -59,7 +59,7 @@ export class SalesOrderDetailComponent implements OnInit {
   }
 
   ngOnInit() {
-   
+
     // Check if orders are stored in localStorage
     const storedOrders = localStorage.getItem('salesAccountingOrders');
     if (storedOrders) {
@@ -67,7 +67,7 @@ export class SalesOrderDetailComponent implements OnInit {
     }
     this.setProductTabs();
     this.cdRef.detectChanges();
-   /* this.getOrdersByBoxParam();*/
+    this.getOrdersByBoxParam();
   }
 
   ngAfterViewChecked() {
@@ -103,7 +103,7 @@ export class SalesOrderDetailComponent implements OnInit {
           if (tabIndex === -1) {
             this.tabsData.push({
               label: product.categoryName,
-              tiles: [{ name: product.name, price: product.price, productId : product.id }]
+              tiles: [{ name: product.name, price: product.price, productId: product.id }]
             });
           } else {
             this.tabsData[tabIndex].tiles.push({ name: product.name, price: product.price, productId: product.id });
@@ -119,33 +119,47 @@ export class SalesOrderDetailComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+
+    this.activatedRoute.paramMap.subscribe(params => {
+      this.billId = params.get('billId')?.toString() ?? '';
+      this.boxParam = params.get('box')?.toString() ?? '';
+    });
+
+    // localStorage'dan salesAccountingOrders verisini al
+    let savedOrders: Order[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
+    // 'table' parametresi ile eşleşen kayıtları filtrele ve çıkar
+    savedOrders = savedOrders.filter(order => order.table == this.boxParam);
+    console.log("destroyda savedorders")
+    console.log(savedOrders)
+    if (savedOrders.length == 0)
+      this.accountingService.deleteBill(this.billId).subscribe(response => {
+        console.log(response)
+        console.log("bill silindi")
+      });
+
+  }
+
+
   // Handle tile click event
-  onTileClick(tile: { name: string, price: number, productId : string }): void {
-    var bill = {
-      table: this.boxParam,
-      totalPrice: 0
-    }
-
-    
-    this.accountingService.createBill(bill).subscribe(response => {
-
-      this.billId = response.id
-
-
+  onTileClick(tile: { name: string, price: number, productId: string }): void {
+    this.activatedRoute.paramMap.subscribe(params => {
+      this.billId = params.get('billId')?.toString() ?? '';
+      this.boxParam = params.get('box')?.toString() ?? '';
     });
 
     var addOrder = {
-      billId: "",
-      productId: "",
+      billId: this.billId,
+      productId: tile.productId,
       quantity: 1
     };
 
-      // OrderService'den addOrders fonksiyonunu çağırma *********
+    // OrderService'den addOrders fonksiyonunu çağırma *********
     this.orderService.createOrder(addOrder).subscribe(response => {
-        console.log('Siparişler başarıyla oluşturuldu:', response);
-      }, error => {
-        console.error('Sipariş oluşturma hatası:', error);
-      });
+      console.log('Siparişler başarıyla oluşturuldu:', response);
+    }, error => {
+      console.error('Sipariş oluşturma hatası:', error);
+    });
 
 
 
@@ -165,7 +179,7 @@ export class SalesOrderDetailComponent implements OnInit {
       table: this.boxParam,
       quantity: 1,
       productId: tile.productId,
-      billId : this.billId
+      billId: this.billId
     };
 
     // Add the new order to salesAccounting.orders
@@ -194,7 +208,7 @@ export class SalesOrderDetailComponent implements OnInit {
 
   // Method to get orders with matching table value from the route
   getOrdersByBoxParam(): Orders[] {
-    
+
 
     // Retrieve 'box' param from the URL using ActivatedRoute
     this.activatedRoute.paramMap.subscribe(params => {
@@ -240,7 +254,7 @@ export class SalesOrderDetailComponent implements OnInit {
     // 'table' parametresi ile eşleşen kayıtları filtrele ve çıkar
     savedOrders = savedOrders.filter(order => order.table == this.boxParam);
 
-    this.orderService.deleteOrder(order.id).subscribe(
+    this.orderService.deleteOrder(this.billId, order.productId).subscribe(
       (response) => {
         if (savedOrders.length = 0) {
           this.accountingService.deleteBill(order.billId).subscribe(
