@@ -57,6 +57,9 @@ export class SalesAccountingDetailComponent implements OnInit {
 
 
     });
+    setInterval(() => {
+      window.location.reload();
+    }, 10000);
   }
 
   ngOnChanges() {
