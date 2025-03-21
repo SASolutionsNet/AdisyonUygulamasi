@@ -111,7 +111,7 @@ namespace BillApp.Infrastructure.Repositories
                 throw new KeyNotFoundException("Order not found.");
 
             _context.Orders.Remove(order);
-
+            _context.SaveChanges();
             return order;
         }
 

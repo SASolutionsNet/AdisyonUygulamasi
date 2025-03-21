@@ -5,6 +5,7 @@ using BillApp.Application.Contracts.Order;
 using BillApp.Application.Interfaces.IServices;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Abstractions;
 
 namespace BillApp.Api
 {
@@ -144,12 +145,12 @@ namespace BillApp.Api
 
         [HttpDelete("delete-range")]
         [Authorize()]
-        public async Task<IActionResult> DeleteRange([FromQuery] List<Guid> model)
+        public async Task<IActionResult> DeleteRange([FromBody] OrderDeleteRangeRequest model)
         {
-            if (!ModelState.IsValid && model.Count == 0)
+            if (model == null)
                 return BadRequest(ModelState);
 
-            var result = await _orderService.DeleteRangeAsync(model);
+            var result = await _orderService.DeleteRangeAsync(model.BillId, model.ProductIdList);
 
             if (result.Success)
             {

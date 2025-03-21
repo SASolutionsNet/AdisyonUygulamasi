@@ -32,6 +32,16 @@ export class SalesAccountingService {
     // GET isteği ile faturaları al
     return this.http.get(`${this.apiUrl}/get-all-closed-tables`, { headers });
   }
+
+  getAllOpenBills(): Observable<any> {
+    const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
+
+    // Eğer token varsa, Authorization header'ına ekle
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    // GET isteği ile faturaları al
+    return this.http.get(`${this.apiUrl}/get-all-open-tables`, { headers });
+  }
   // Yeni bir fatura oluşturma
   createBill(bill: any): Observable<any> {
     const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al

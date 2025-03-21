@@ -103,14 +103,14 @@ export class SalesOrderService {
 
 
   // Yeni siparişler oluşturma (Liste alacak şekilde güncellendi)
-  delete_range(orderDataList: any[]): Observable<any> {
+  delete_range(billId: string, productIdList: string[]): Observable<any> {
     const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
 
     // Eğer token varsa, Authorization header'ına ekle
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     // POST isteği ile yeni siparişleri oluştur
-    return this.http.delete(`${this.apiUrl}/delete-range/${orderDataList}`, { headers });
+    return this.http.delete(`${this.apiUrl}/delete-range/`, { headers, body: {billId : billId, productIdList: productIdList} });
   }
 
 

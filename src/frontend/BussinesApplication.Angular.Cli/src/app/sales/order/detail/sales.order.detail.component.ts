@@ -1,5 +1,5 @@
 
-import { Component, OnInit, ChangeDetectorRef, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, SimpleChanges, ViewChild, OnDestroy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SalesOrderService } from "../../../shared/modules/sales/order/services/order.service";
 import { PSService } from "../../../shared/modules/ps/services/ps.service";
@@ -10,15 +10,29 @@ import { MatCardModule } from '@angular/material/card';
 import { SidebarComponent } from '../../../sidebar/sidebar.component';
 import { HeaderComponent } from '../../../header/header.component';
 import { SalesAccounting } from '../../../shared/modules/sales/accounting/models/accounting.model';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, NavigationStart, Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatIcon } from '@angular/material/icon';
 import { SalesAccountingService } from '../../../shared/modules/sales/accounting/services/accounting.service';
 import { Order } from '../../../shared/modules/sales/accounting/components/detail/accounting.detail.component';
+import { Observable, Subscription } from 'rxjs';
+import { CanDeactivate } from '@angular/router';
+import { Injectable } from '@angular/core';
+
 interface Tab {
   label: string;
   tiles: { name: string, price: number, productId: string }[];  // 'tiles' should be an array of objects
+}
+export interface CanComponentDeactivate {
+  canDeactivate: () => Observable<boolean> | boolean | Promise<boolean>;
+}
+
+@Injectable({ providedIn: 'root' })
+export class DeleteGuard implements CanDeactivate<CanComponentDeactivate> {
+  canDeactivate(component: CanComponentDeactivate) {
+    return component.canDeactivate ? component.canDeactivate() : true;
+  }
 }
 
 @Component({
@@ -28,11 +42,13 @@ interface Tab {
   standalone: true,
   imports: [MatIcon, MatPaginatorModule, OrderDetailComponent, MatCardModule, SidebarComponent, HeaderComponent],  // Import dependencies
 })
-export class SalesOrderDetailComponent implements OnInit {
+export class SalesOrderDetailComponent implements OnInit, CanComponentDeactivate {
 
 
 
   // Initialize SalesAccounting object
+  private routerSubscription!: Subscription;
+
   salesAccounting: SalesAccounting = new SalesAccounting();  // Initialized correctly
   tabsData: Tab[] = [];  // Array of tabs, each with a label and tiles (products)
   boxParam!: string;
@@ -42,6 +58,7 @@ export class SalesOrderDetailComponent implements OnInit {
   dataSource = new MatTableDataSource<any>([]); // Başlangıçta boş veri
   matchingOrders: Orders[] = [];
   billId: string = "";
+  isTableChanged: string = "";
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -53,21 +70,69 @@ export class SalesOrderDetailComponent implements OnInit {
   ) { }
   sidebarVisible = false;
 
+  canDeactivate(): Observable<boolean> | boolean {
+    // Navigasyonun hedef URL'sini al
+    const navigation = this.router.getCurrentNavigation();
+    const nextUrl = navigation?.finalUrl?.toString();
+
+
+    // A veya B sayfasına geçişte silme işlemi yap
+    const savedOrders: Order[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
+    const hasOrders = savedOrders.some(order => order.table === this.boxParam);
+
+    if (nextUrl?.includes("/sales/order/list") && nextUrl?.includes("true")) {
+      return true;
+    }
+
+    if (!hasOrders && this.billId) {
+      return this.accountingService.deleteBill(this.billId);
+    }
+
+    return true;
+  }
   // Yeni fonksiyon eklendi
   toggleSidebar() {
     this.sidebarVisible = !this.sidebarVisible;
   }
 
   ngOnInit() {
+    this.activatedRoute.params.subscribe(params => {
+      this.billId = params['billId'];
+      this.boxParam = params['box'];
+    });
 
     // Check if orders are stored in localStorage
-    const storedOrders = localStorage.getItem('salesAccountingOrders');
-    if (storedOrders) {
-      this.salesAccounting.orders = JSON.parse(storedOrders);  // Parse the stored JSON string back to an array
+    const storedOrders: Orders[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
+
+    if (storedOrders.filter(item => item.table == this.boxParam).length == 0) {
+      this.orderService.getAllOrdersForBill(this.billId).subscribe(response => {
+        if (Array.isArray(response)) {
+          storedOrders.push(...(response as Orders[]));
+        } else {
+          console.error("Beklenen dizi formatında veri alınamadı!", response);
+        }
+      });
     }
+
+    if (storedOrders) {
+      this.salesAccounting.orders = storedOrders;  // Parse the stored JSON string back to an array
+    }
+
     this.setProductTabs();
     this.cdRef.detectChanges();
     this.getOrdersByBoxParam();
+  }
+
+  deleteEmptyTable() {
+    console.log("delete empty çalıştı")
+    console.log(this.billId)
+    // localStorage'dan salesAccountingOrders verisini al
+    let savedOrders: Order[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
+    // 'table' parametresi ile eşleşen kayıtları filtrele ve çıkar
+    savedOrders = savedOrders.filter(order => order.table == this.boxParam);
+
+    if (savedOrders.length == 0 && this.billId)
+      this.accountingService.deleteBill(this.billId);
   }
 
   ngAfterViewChecked() {
@@ -119,34 +184,9 @@ export class SalesOrderDetailComponent implements OnInit {
     });
   }
 
-  ngOnDestroy(): void {
-
-    this.activatedRoute.paramMap.subscribe(params => {
-      this.billId = params.get('billId')?.toString() ?? '';
-      this.boxParam = params.get('box')?.toString() ?? '';
-    });
-
-    // localStorage'dan salesAccountingOrders verisini al
-    let savedOrders: Order[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
-    // 'table' parametresi ile eşleşen kayıtları filtrele ve çıkar
-    savedOrders = savedOrders.filter(order => order.table == this.boxParam);
-    console.log("destroyda savedorders")
-    console.log(savedOrders)
-    if (savedOrders.length == 0)
-      this.accountingService.deleteBill(this.billId).subscribe(response => {
-        console.log(response)
-        console.log("bill silindi")
-      });
-
-  }
-
 
   // Handle tile click event
   onTileClick(tile: { name: string, price: number, productId: string }): void {
-    this.activatedRoute.paramMap.subscribe(params => {
-      this.billId = params.get('billId')?.toString() ?? '';
-      this.boxParam = params.get('box')?.toString() ?? '';
-    });
 
     var addOrder = {
       billId: this.billId,
@@ -159,16 +199,6 @@ export class SalesOrderDetailComponent implements OnInit {
       console.log('Siparişler başarıyla oluşturuldu:', response);
     }, error => {
       console.error('Sipariş oluşturma hatası:', error);
-    });
-
-
-
-    // Retrieve 'box' param from the URL using ActivatedRoute
-    this.activatedRoute.paramMap.subscribe(params => {
-      this.boxParam = params.get('box')?.toString() ?? '';
-      if (this.boxParam) {
-        console.log('Box Param:', this.boxParam);  // Log box param
-      }
     });
 
     let order: Orders = {
@@ -208,7 +238,6 @@ export class SalesOrderDetailComponent implements OnInit {
 
   // Method to get orders with matching table value from the route
   getOrdersByBoxParam(): Orders[] {
-
 
     // Retrieve 'box' param from the URL using ActivatedRoute
     this.activatedRoute.paramMap.subscribe(params => {

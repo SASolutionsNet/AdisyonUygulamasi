@@ -1,28 +1,27 @@
 <div class="sidebar" [class.collapsed]="isCollapsed">
   <div class="sidebar-header">
     <h2>Adisyon Uygulaması</h2>
-    <button class="toggle-btn" (click)="toggleSidebar()">&#9776;</button> <!-- Hamburger menü simgesi -->
-
+    <button class="toggle-btn" (click)="toggleSidebar()">&#9776;</button>
   </div>
   <ul class="sidebar-menu">
     <li class="menu-item">
       <a class="menu-link">Veri <span class="arrow">▶</span></a>
       <ul class="submenu">
-        <li><a href="coredata/pscategory/list">Malzeme/Ürün Kategori Listesi</a></li>
-        <li><a href="coredata/ps/list">Malzeme/Ürün  Listesi</a></li>
+        <li><a [routerLink]="['/coredata/pscategory/list']" routerLinkActive="active">Malzeme/Ürün Kategori Listesi</a></li>
+        <li><a [routerLink]="['/coredata/ps/list']" routerLinkActive="active">Malzeme/Ürün Listesi</a></li>
       </ul>
     </li>
     <li class="menu-item">
       <a class="menu-link">Satış <span class="arrow">▶</span></a>
       <ul class="submenu">
-        <li><a href="sales/order/list">Sipariş</a></li>
-        <li><a href="sales/accounting/list">Hesap</a></li>
+        <li><a [routerLink]="['/sales/order/list/${false}']" routerLinkActive="active">Sipariş</a></li>
+        <li><a [routerLink]="['/sales/accounting/list']" routerLinkActive="active">Hesap</a></li>
       </ul>
     </li>
     <li class="menu-item">
       <a class="menu-link">Raporlar <span class="arrow">▶</span></a>
       <ul class="submenu">
-        <li><a href="/report/list">Genel Rapor</a></li>
+        <li><a [routerLink]="['/report/list']" routerLinkActive="active">Genel Rapor</a></li>
       </ul>
     </li>
   </ul>

@@ -14,6 +14,8 @@ import { DateAdapter } from '@angular/material/core';
 import { MatTabsModule } from '@angular/material/tabs';
 import { CommonModule } from '@angular/common';
 import { Order } from '../../../../../../sales/accounting/detail/sales.accounting.detail.component';
+import { SalesAccountingService } from '../../services/accounting.service';
+import { SalesAccounting } from '../../models/accounting.model';
 
 @Component({
   selector: 'sasolution-sales-accounting-list',
@@ -23,11 +25,12 @@ import { Order } from '../../../../../../sales/accounting/detail/sales.accountin
 })
 export class AccountingListComponent implements OnInit {
   private _rows: any;
-    dataLoadedEvent: any;
+  dataLoadedEvent: any;
   distinctTables: string[] = [];
-
+  bills: SalesAccounting[] = [];
   salonBoxes: string[] = Array.from({ length: 16 }, (_, i) => `S${i + 1}`);
   bahceBoxes: string[] = Array.from({ length: 16 }, (_, i) => `B${i + 1}`);
+  private reloadInterval: any;
 
 
   constructor(
@@ -35,17 +38,33 @@ export class AccountingListComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private cdRef: ChangeDetectorRef,
     private dialog: MatDialog,
+    private accountingService: SalesAccountingService,
     private dateAdapter: DateAdapter<Date>,) {
-
     // https://github.com/angular/material2/issues/4876
     this.dateAdapter.setLocale('tr');
 
   }
 
   ngOnInit() {
-    const salesAccountingOrders: Order[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
-    this.distinctTables = [...new Set(salesAccountingOrders.map(order => order.table))];
+    this.setDistinctTables();
+    // Sayfayı her 10 saniyede bir yenile
+    this.reloadInterval = setInterval(() => {
+      this.setDistinctTables()
+    }, 300);
   }
+
+  setDistinctTables() {
+    this.accountingService.getAllOpenBills().subscribe(response => {
+      if (Array.isArray(response)) {
+        this.bills = response;
+        this.distinctTables = this.bills.map(item => item.table);
+      } else {
+        this.distinctTables = [];
+        console.error("Beklenen dizi formatında veri alınamadı!", response);
+      }
+    });
+  }
+
   isOpen(box: string): boolean {
     return this.distinctTables.includes(box);
   }
@@ -54,7 +73,8 @@ export class AccountingListComponent implements OnInit {
     this.cdRef.detectChanges();
   }
   onBoxClick(box: string) {
-    this.router.navigate([`/sales/accounting/detail/${box}`]);  // Yönlendirme
+    var billId = this.bills.filter(item => item.table == box)[0].id;
+    this.router.navigate([`/sales/accounting/detail/${box}/${billId}`]);  // Yönlendirme
   }
 
 }
