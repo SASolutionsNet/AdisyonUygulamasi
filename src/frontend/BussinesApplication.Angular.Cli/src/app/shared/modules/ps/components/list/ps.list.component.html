@@ -1,80 +1,82 @@
-<!-- Filter and Add Button Container -->
-<div class="filter-add-container" style="width: 100%">
-  <mat-card class="card-container">
-    <mat-card-content>
-      <div class="filter-button-wrapper">
-        <mat-form-field class="filter-field">
-          <mat-label>Filter</mat-label>
-          <input matInput (keyup)="applyFilter($event)" placeholder="Aramak İsteğiniz Ürün" #input />
-        </mat-form-field>
+<div class="hide-on-mobile">
+  <!-- Filter and Add Button Container -->
+  <div class="filter-add-container" style="width: 100%">
+    <mat-card class="card-container">
+      <mat-card-content>
+        <div class="filter-button-wrapper">
+          <mat-form-field class="filter-field">
+            <mat-label>Filter</mat-label>
+            <input matInput (keyup)="applyFilter($event)" placeholder="Aramak İsteğiniz Ürün" #input />
+          </mat-form-field>
 
-        <!-- Add Button -->
-        <button mat-raised-button color="accent" (click)="add()" class="add-button">
-          <mat-icon>add</mat-icon> Ekle
-        </button>
-      </div>
-    </mat-card-content>
-  </mat-card>
-</div>
+          <!-- Add Button -->
+          <button mat-raised-button color="accent" (click)="add()" class="add-button">
+            <mat-icon>add</mat-icon> Ekle
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
 
-<!-- Ürün Tablosu -->
-<div class="mat-elevation-z8">
-  <table mat-table [dataSource]="dataSource">
+  <!-- Ürün Tablosu -->
+  <div class="mat-elevation-z8">
+    <table mat-table [dataSource]="dataSource">
 
-    <!-- AD Column -->
-    <ng-container matColumnDef="AD">
-      <th mat-header-cell *matHeaderCellDef> AD </th>
-      <td mat-cell *matCellDef="let row"> {{row.name}} </td>
-    </ng-container>
+      <!-- AD Column -->
+      <ng-container matColumnDef="AD">
+        <th mat-header-cell *matHeaderCellDef> AD </th>
+        <td mat-cell *matCellDef="let row"> {{row.name}} </td>
+      </ng-container>
 
-    <!-- KOD Column -->
-    <ng-container matColumnDef="KOD">
-      <th mat-header-cell *matHeaderCellDef> KOD </th>
-      <td mat-cell *matCellDef="let row"> {{row.categoryCode}} </td>
-    </ng-container>
+      <!-- KOD Column -->
+      <ng-container matColumnDef="KOD">
+        <th mat-header-cell *matHeaderCellDef> KOD </th>
+        <td mat-cell *matCellDef="let row"> {{row.categoryCode}} </td>
+      </ng-container>
 
-    <!-- FIYAT Column -->
-    <ng-container matColumnDef="FIYAT">
-      <th mat-header-cell *matHeaderCellDef> FIYAT </th>
-      <td mat-cell *matCellDef="let row"> {{row.price }} ₺ </td>
-    </ng-container>
+      <!-- FIYAT Column -->
+      <ng-container matColumnDef="FIYAT">
+        <th mat-header-cell *matHeaderCellDef> FIYAT </th>
+        <td mat-cell *matCellDef="let row"> {{row.price }} ₺ </td>
+      </ng-container>
 
-    <!-- FAVORI Column -->
-    <ng-container matColumnDef="FAVORI">
-      <th mat-header-cell *matHeaderCellDef> FAVORI </th>
-      <td mat-cell *matCellDef="let row">
-        <span *ngIf="row.isFavorite">EVET</span>
-        <span *ngIf="!row.isFavorite">HAYIR</span>
-      </td>
-    </ng-container>
+      <!-- FAVORI Column -->
+      <ng-container matColumnDef="FAVORI">
+        <th mat-header-cell *matHeaderCellDef> FAVORI </th>
+        <td mat-cell *matCellDef="let row">
+          <span *ngIf="row.isFavorite">EVET</span>
+          <span *ngIf="!row.isFavorite">HAYIR</span>
+        </td>
+      </ng-container>
 
-    <!-- DUZENLE Column -->
-    <ng-container matColumnDef="DUZENLE">
-      <th mat-header-cell *matHeaderCellDef> DUZENLE </th>
-      <td mat-cell *matCellDef="let row">
-        <button mat-raised-button color="primary" (click)="edit(row)" class="edit-button">
-          <mat-icon>edit</mat-icon> Düzenle
-        </button>
-      </td>
-    </ng-container>
+      <!-- DUZENLE Column -->
+      <ng-container matColumnDef="DUZENLE">
+        <th mat-header-cell *matHeaderCellDef> DUZENLE </th>
+        <td mat-cell *matCellDef="let row">
+          <button mat-raised-button color="primary" (click)="edit(row)" class="edit-button">
+            <mat-icon>edit</mat-icon> Düzenle
+          </button>
+        </td>
+      </ng-container>
 
-    <!-- SIL Column -->
-    <ng-container matColumnDef="SIL">
-      <th mat-header-cell *matHeaderCellDef> SIL </th>
-      <td mat-cell *matCellDef="let row">
-        <button mat-raised-button color="warn" (click)="delete(row)" class="delete-button">
-          <mat-icon>delete</mat-icon> Sil
-        </button>
-      </td>
-    </ng-container>
+      <!-- SIL Column -->
+      <ng-container matColumnDef="SIL">
+        <th mat-header-cell *matHeaderCellDef> SIL </th>
+        <td mat-cell *matCellDef="let row">
+          <button mat-raised-button color="warn" (click)="delete(row)" class="delete-button">
+            <mat-icon>delete</mat-icon> Sil
+          </button>
+        </td>
+      </ng-container>
 
-    <!-- Header and Row Definitions -->
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      <!-- Header and Row Definitions -->
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
-    <!-- Row shown when there is no matching data -->
-    <tr class="mat-row" *matNoDataRow>
-      <td class="mat-cell" colspan="7">No data matching the filter "{{input.value}}"</td>
-    </tr>
-  </table>
-</div>
+      <!-- Row shown when there is no matching data -->
+      <tr class="mat-row" *matNoDataRow>
+        <td class="mat-cell" colspan="7">No data matching the filter "{{input.value}}"</td>
+      </tr>
+    </table>
+  </div>
+  </div>

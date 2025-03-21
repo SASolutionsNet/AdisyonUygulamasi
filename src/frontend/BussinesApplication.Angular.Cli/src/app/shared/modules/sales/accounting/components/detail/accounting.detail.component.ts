@@ -7,7 +7,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ChangeDetectorRef, Component, Input, Output, EventEmitter, SimpleChanges, AfterViewInit, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 
@@ -45,7 +45,8 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
   sumSelectedOrdersCost: number = 0; // Başlangıçta toplam tutar 0
   sumPaidOrdersCost: number = 0; // Başlangıçta toplam tutar 0
 
-  constructor(private cdRef: ChangeDetectorRef, private route: ActivatedRoute,) { }
+  constructor(
+    private router: Router,private cdRef: ChangeDetectorRef, private route: ActivatedRoute,) { }
 
   ngOnInit() {
     // localStorage'dan ödenmiş siparişleri al
@@ -85,14 +86,16 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
       this.dataSource.data = [...this.ELEMENT_DATA]; // Yeni veri geldiğinde güncelle
     }
   }
-
+  goTableList() {
+    this.router.navigate([`/sales/accounting/list`]);
+  }
   // Satır tıklama işlemi
   onRowClick(row: Order): void {
     // Eğer satır ödenmişse, tıklanamaz
     if (row.paid) {
       return; // Eğer satır ödeme durumu "true" ise tıklanamaz
     }
-
+   
     // Satır tıklanabilir ise işlemi yap
     if (this.clickedRows.has(row)) {
       this.clickedRows.delete(row);  // Eğer zaten seçiliyse, çıkar

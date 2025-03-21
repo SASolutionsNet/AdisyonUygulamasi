@@ -84,3 +84,22 @@
     background-color: #e0f2f1; /* Hover durumu için açık yeşil arka plan */
   }
 }
+
+/* 600px ve daha küçük ekranlarda (telefon ve tablet) butonu gizle */
+@media (max-width: 600px) {
+  .hide-on-mobile {
+    display: none;
+  }
+}
+/* 600px ve daha küçük ekranlarda (telefon ve tablet) butonu gizle */
+@media (max-width: 478px) {
+  .hide-on-mobile {
+    display: none;
+  }
+}
+/* 600px ve daha küçük ekranlarda (telefon ve tablet) butonu gizle */
+@media (max-width: 320px) {
+  .hide-on-mobile {
+    display: none;
+  }
+}
