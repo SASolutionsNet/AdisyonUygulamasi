@@ -7,7 +7,6 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { CommonModule } from '@angular/common';
 import { SalesAccountingService } from '../sales/accounting/services/accounting.service';
 import { SalesAccounting } from '../sales/accounting/models/accounting.model';
-import { Order } from '../sales/accounting/components/detail/accounting.detail.component';
 import { Orders } from '../sales/order/models/order.model';
 @Component({
   selector: 'sasolution-dialogchangetable',

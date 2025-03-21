@@ -13,7 +13,6 @@ import { MatDialog } from '@angular/material/dialog';
 import { DateAdapter } from '@angular/material/core';
 import { MatTabsModule } from '@angular/material/tabs';
 import { CommonModule } from '@angular/common';
-import { Order } from '../../../../../../sales/accounting/detail/sales.accounting.detail.component';
 import { SalesAccountingService } from '../../services/accounting.service';
 import { SalesAccounting } from '../../models/accounting.model';
 
