@@ -99,18 +99,22 @@ export class SalesOrderDetailComponent implements OnInit, CanComponentDeactivate
       this.billId = params['billId'];
       this.boxParam = params['box'];
     });
-    console.log("billId");
-    console.log(this.billId);
+
     // Check if orders are stored in localStorage
     var storedOrders: Orders[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
-    console.log("storedOrders")
-    console.log(storedOrders)
     if (storedOrders.filter(item => item.table == this.boxParam).length == 0) {
       this.orderService.getAllOrdersForBill(this.billId).subscribe(response => {
-        if (Array.isArray(response)) {
 
-          console.log("response");
-          console.log(response as Orders[]);
+        if (Array.isArray(response)) {
+          response = response.flatMap(order =>
+            Array(order.quantity).fill({
+              ...order,
+              paid: false,
+              table: this.boxParam,
+              quantity: 1,
+              cost: order.cost / order.quantity
+            })
+          );
 
           if (storedOrders.length == 0) {
             storedOrders = response as Orders[];
@@ -123,17 +127,28 @@ export class SalesOrderDetailComponent implements OnInit, CanComponentDeactivate
         } else {
           console.error("Beklenen dizi formatında veri alınamadı!", response);
         }
+
+
+        if (storedOrders) {
+          this.salesAccounting.orders = storedOrders;  // Parse the stored JSON string back to an array
+        }
+
+        this.setProductTabs();
+        this.cdRef.detectChanges();
+        this.getOrdersByBoxParam();
       });
     }
+    else {
 
+      if (storedOrders) {
+        this.salesAccounting.orders = storedOrders;  // Parse the stored JSON string back to an array
+      }
 
-    if (storedOrders) {
-      this.salesAccounting.orders = storedOrders;  // Parse the stored JSON string back to an array
+      this.setProductTabs();
+      this.cdRef.detectChanges();
+      this.getOrdersByBoxParam();
     }
 
-    this.setProductTabs();
-    this.cdRef.detectChanges();
-    this.getOrdersByBoxParam();
   }
 
   ngAfterViewChecked() {
