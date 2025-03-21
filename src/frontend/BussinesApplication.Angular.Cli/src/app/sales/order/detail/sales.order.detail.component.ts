@@ -126,7 +126,6 @@ export class SalesOrderDetailComponent implements OnInit, CanComponentDeactivate
       });
     }
 
-    console.log(JSON.parse(JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]')));
 
     if (storedOrders) {
       this.salesAccounting.orders = storedOrders;  // Parse the stored JSON string back to an array

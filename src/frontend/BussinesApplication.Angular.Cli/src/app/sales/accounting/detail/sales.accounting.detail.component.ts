@@ -95,7 +95,6 @@ export class SalesAccountingDetailComponent implements OnInit {
         }
       });
     }
-    console.log(JSON.parse(JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]')));
 
     // 'box' parametresine göre filtreleme yapıyoruz
     const filteredOrders = orders.filter(order => order.table === this.box);
