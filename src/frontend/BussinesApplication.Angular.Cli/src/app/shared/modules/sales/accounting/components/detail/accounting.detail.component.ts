@@ -184,16 +184,6 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
 
 
   payAllOrders(): void {
-
-    //// Seçilen satırları "paid" olarak işaretleyin ve güncelleyin
-    //this.selectedRows.forEach(order => {
-    //  order.paid = true;  // Satır ödeme olarak işaretlendi
-    //  // Eğer order zaten paidRows içinde yoksa ekle
-    //  if (!this.paidRows.includes(order)) {
-    //    this.paidRows.push(order);  // Ödenen satırları güncelle
-    //  }
-    //});
-
     const tableParam = this.route.snapshot.paramMap.get('box');  // 'box' URL parametresinin adı olmalı
 
     // Tüm siparişler üzerinde döngü yaparak, paidRows içinde olmayanların durumunu "paid" olarak güncelle

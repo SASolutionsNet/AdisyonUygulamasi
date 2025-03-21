@@ -276,16 +276,22 @@ namespace BillApp.Application.Services
 
         }
 
-        public async Task<ServiceResponse<bool>> DeleteRangeAsync(List<Guid> ids)
+        public async Task<ServiceResponse<bool>> DeleteRangeAsync(Guid billId, List<Guid> productIdList)
         {
-            if (ids.Count == 0)
+            if (productIdList.Count == 0 || billId == Guid.Empty)
                 return new ServiceResponse<bool>
                 {
                     Success = false,
                     Message = "Orders not found."
                 };
+            var result = true;
 
-            var result = await _orderRepository.DeletRangeAsync(ids);
+            for (var i = 0; i < productIdList.Count; i++)
+            {
+                var deletedOrder = await DeleteOrder(billId, productIdList[i]);
+
+                result = result && deletedOrder.Success;
+            }
 
             if (result)
                 return new ServiceResponse<bool>
@@ -299,6 +305,7 @@ namespace BillApp.Application.Services
                 Success = false,
                 Message = "Orders delete failed."
             };
+
         }
 
         public Task<ServiceResponse<OrderDto>> Delete(Guid id)
