@@ -175,9 +175,7 @@ export class SalesAccountingDetailComponent implements OnInit {
 
               this.bill.id = this.billId;
               this.bill.table = tableParam;
-              this.bill.totalPrice = this.paidRows.reduce((total, order) => {
-                return total + (order.cost * order.quantity);  // Fiyat ve miktarı çarparak toplamı alıyoruz
-              }, 0);
+              this.bill.totalPrice = this.calculatePaidOrdersSumCost();
               this.bill.isClosed = true;
 
               //nonPaidOrders
@@ -228,6 +226,7 @@ export class SalesAccountingDetailComponent implements OnInit {
       }
       else {
         paidOrders = paidOrders.filter(order => order.table == tableParam);
+        this.paidRows = paidOrders;
 
         this.bill.id = this.billId;
         this.bill.table = tableParam;
