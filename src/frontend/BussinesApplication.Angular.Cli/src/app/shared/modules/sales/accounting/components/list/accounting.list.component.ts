@@ -48,9 +48,9 @@ export class AccountingListComponent implements OnInit {
   ngOnInit() {
     this.setDistinctTables();
     // Sayfayı her 10 saniyede bir yenile
-    this.reloadInterval = setInterval(() => {
-      this.setDistinctTables()
-    }, 300);
+    //this.reloadInterval = setInterval(() => {
+    //  this.setDistinctTables()
+    //}, 300);
   }
 
   setDistinctTables() {

@@ -102,12 +102,29 @@ export class SalesOrderDetailComponent implements OnInit, CanComponentDeactivate
     });
 
     // Check if orders are stored in localStorage
-    const storedOrders: Orders[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
+    var storedOrders: Orders[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
 
     if (storedOrders.filter(item => item.table == this.boxParam).length == 0) {
       this.orderService.getAllOrdersForBill(this.billId).subscribe(response => {
+        console.log("getAllOrdersForBill sales order detail")
+        console.log("storedOrders")
+        console.log(storedOrders)
+        console.log("response")
+        console.log(response)
         if (Array.isArray(response)) {
-          storedOrders.push(...(response as Orders[]));
+          console.log("if1")
+          if (storedOrders.length == 0) {
+            console.log("if2")
+            storedOrders = response as Orders[];
+          }
+          else {
+            console.log("else")
+            console.log(storedOrders)
+            console.log(response as Orders[])
+            storedOrders.push(...(response as Orders[]));
+            console.log(storedOrders)
+          }
+
         } else {
           console.error("Beklenen dizi formatında veri alınamadı!", response);
         }
@@ -121,18 +138,6 @@ export class SalesOrderDetailComponent implements OnInit, CanComponentDeactivate
     this.setProductTabs();
     this.cdRef.detectChanges();
     this.getOrdersByBoxParam();
-  }
-
-  deleteEmptyTable() {
-    console.log("delete empty çalıştı")
-    console.log(this.billId)
-    // localStorage'dan salesAccountingOrders verisini al
-    let savedOrders: Order[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
-    // 'table' parametresi ile eşleşen kayıtları filtrele ve çıkar
-    savedOrders = savedOrders.filter(order => order.table == this.boxParam);
-
-    if (savedOrders.length == 0 && this.billId)
-      this.accountingService.deleteBill(this.billId);
   }
 
   ngAfterViewChecked() {
