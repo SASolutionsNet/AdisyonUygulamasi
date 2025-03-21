@@ -19,8 +19,8 @@ export class DialogChangeTableComponent implements OnInit {
 
 
 
-  salonBoxes: string[] = Array.from({ length: 24 }, (_, i) => `S${i + 1}`);
-  bahceBoxes: string[] = Array.from({ length: 24 }, (_, i) => `B${i + 1}`);
+  salonBoxes: string[] = Array.from({ length: 16 }, (_, i) => `S${i + 1}`);
+  bahceBoxes: string[] = Array.from({ length: 16 }, (_, i) => `B${i + 1}`);
 
 
   constructor(

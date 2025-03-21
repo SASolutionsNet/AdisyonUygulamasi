@@ -96,3 +96,21 @@ td, th {
 .add-button:hover {
   background-color: #218838; /* Koyu yeşil hover efekti */
 }
+/* 600px ve daha küçük ekranlarda (telefon ve tablet) butonu gizle */
+@media (max-width: 600px) {
+  .hide-on-mobile {
+    display: none;
+  }
+}
+/* 600px ve daha küçük ekranlarda (telefon ve tablet) butonu gizle */
+@media (max-width: 478px) {
+  .hide-on-mobile {
+    display: none;
+  }
+}
+/* 600px ve daha küçük ekranlarda (telefon ve tablet) butonu gizle */
+@media (max-width: 320px) {
+  .hide-on-mobile {
+    display: none;
+  }
+}

@@ -1,105 +1,112 @@
+<div class="hide-on-mobile">
+  <br />
+  <div class="action-buttons">
+    <button mat-raised-button style="background-color: #ff4081; color: white; width: 150px; height: 50px; border-radius: 8px;" (click)="goTableList()">Geri</button>
 
-<!-- Tutarlar ve Tablo Bölümü -->
-<div style="display: flex; justify-content: space-between; width: 100%; gap: 20px;">
-
-  <!-- Tutar Bölümü -->
-  <div class="amount-container" style="flex: 1; background-color: #FF6347; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
-    <label for="amount" class="amount-label" style="font-size: 18px; font-weight: bold; color: white;">TOPLAM TUTAR:</label>
-    <span id="amount" class="amount-value" style="font-size: 22px; font-weight: bold; color: white;">{{ sumCost }}₺ (      Kalan Tutar: {{ sumCost - sumPaidOrdersCost }}₺ )</span>
   </div>
+  <br />
+  <!-- Tutarlar ve Tablo Bölümü -->
+  <div style="display: flex; justify-content: space-between; width: 100%; gap: 20px;">
 
-  <!-- İkinci Tutar Bölümü (Seçilen Satırlar İçin) -->
-  <div *ngIf="this.selectedRows.length > 0" class="amount-container" style="flex: 1; background-color: #FFD700; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
-    <label for="amount" class="amount-label" style="font-size: 18px; font-weight: bold; color: white;">TUTAR:</label>
-    <span id="amount" class="amount-value" style="font-size: 22px; font-weight: bold; color: white;">{{ sumSelectedOrdersCost }}₺</span>
-  </div>
-</div>
+    <!-- Tutar Bölümü -->
+    <div class="amount-container" style="flex: 1; background-color: #FF6347; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+      <label for="amount" class="amount-label" style="font-size: 18px; font-weight: bold; color: white;">TOPLAM TUTAR:</label>
+      <span id="amount" class="amount-value" style="font-size: 22px; font-weight: bold; color: white;">{{ sumCost }}₺ (      Kalan Tutar: {{ sumCost - sumPaidOrdersCost }}₺ )</span>
+    </div>
 
-<!-- Tablo Bölümleri -->
-<div style="display: flex; justify-content: space-between; width: 100%; gap: 20px;">
-
-  <!-- İlk Tablo Bölümü -->
-  <div style="flex: 1; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
-
-    <!-- Kaydırma Çubuğu Ekleme -->
-    <div style="max-height: 240px; overflow-y: auto;">
-      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 demo-table" style="width: 100%;">
-
-        <!-- Satır Numarası Kolonu -->
-        <ng-container matColumnDef="index">
-          <th mat-header-cell *matHeaderCellDef style="font-weight: bold; text-align: center;">#</th>
-          <td mat-cell *matCellDef="let element; let i = index" style="text-align: center;">{{ i + 1 }}</td> <!-- Satır numarasını ekliyoruz -->
-        </ng-container>
-
-        <!-- Name Column -->
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef style="font-weight: bold; text-align: left;">Ürün</th>
-          <td mat-cell *matCellDef="let element">{{ element.productName }}</td>
-        </ng-container>
-
-        <!-- Cost Column -->
-        <ng-container matColumnDef="cost">
-          <th mat-header-cell *matHeaderCellDef style="font-weight: bold; text-align: right;">Tutar</th>
-          <td mat-cell *matCellDef="let element" style="text-align: right;">{{ element.cost }}₺</td>
-        </ng-container>
-
-        <!-- Header and Row Definitions -->
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row
-            (click)="onRowClick(element)"
-            [class.selected-row]="clickedRows.has(element)"
-            [class.paid-row]="element.paid" *matRowDef="let element; columns: displayedColumns">
-        </tr>
-      </table>
-
+    <!-- İkinci Tutar Bölümü (Seçilen Satırlar İçin) -->
+    <div *ngIf="this.selectedRows.length > 0" class="amount-container" style="flex: 1; background-color: #FFD700; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+      <label for="amount" class="amount-label" style="font-size: 18px; font-weight: bold; color: white;">TUTAR:</label>
+      <span id="amount" class="amount-value" style="font-size: 22px; font-weight: bold; color: white;">{{ sumSelectedOrdersCost }}₺</span>
     </div>
   </div>
 
-  <!-- İkinci Tablo Bölümü (Seçilen Satırlar İçin) -->
-  <div *ngIf="this.selectedRows.length > 0" style="flex: 1; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+  <!-- Tablo Bölümleri -->
+  <div style="display: flex; justify-content: space-between; width: 100%; gap: 20px;">
 
-    <!-- Kaydırma Çubuğu Ekleme -->
-    <div style="max-height: 240px; overflow-y: auto;">
-      <table mat-table [dataSource]="selectedRows" class="mat-elevation-z8" style="width: 100%;">
+    <!-- İlk Tablo Bölümü -->
+    <div style="flex: 1; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+
+      <!-- Kaydırma Çubuğu Ekleme -->
+      <div style="max-height: 240px; overflow-y: auto;">
+        <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 demo-table" style="width: 100%;">
 
           <!-- Satır Numarası Kolonu -->
-  <ng-container matColumnDef="index">
-    <th mat-header-cell *matHeaderCellDef style="font-weight: bold; text-align: center;">#</th>
-    <td mat-cell *matCellDef="let element; let i = index" style="text-align: center;">{{ i + 1 }}</td> <!-- Satır numarasını ekliyoruz -->
-  </ng-container>
+          <ng-container matColumnDef="index">
+            <th mat-header-cell *matHeaderCellDef style="font-weight: bold; text-align: center;">#</th>
+            <td mat-cell *matCellDef="let element; let i = index" style="text-align: center;">{{ i + 1 }}</td> <!-- Satır numarasını ekliyoruz -->
+          </ng-container>
+
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef style="font-weight: bold; text-align: left;">Ürün</th>
+            <td mat-cell *matCellDef="let element">{{ element.productName }}</td>
+          </ng-container>
+
+          <!-- Cost Column -->
+          <ng-container matColumnDef="cost">
+            <th mat-header-cell *matHeaderCellDef style="font-weight: bold; text-align: right;">Tutar</th>
+            <td mat-cell *matCellDef="let element" style="text-align: right;">{{ element.cost }}₺</td>
+          </ng-container>
+
+          <!-- Header and Row Definitions -->
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row
+              (click)="onRowClick(element)"
+              [class.selected-row]="clickedRows.has(element)"
+              [class.paid-row]="element.paid" *matRowDef="let element; columns: displayedColumns">
+          </tr>
+        </table>
+
+      </div>
+    </div>
+
+    <!-- İkinci Tablo Bölümü (Seçilen Satırlar İçin) -->
+    <div *ngIf="this.selectedRows.length > 0" style="flex: 1; background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);">
+
+      <!-- Kaydırma Çubuğu Ekleme -->
+      <div style="max-height: 240px; overflow-y: auto;">
+        <table mat-table [dataSource]="selectedRows" class="mat-elevation-z8" style="width: 100%;">
+
+          <!-- Satır Numarası Kolonu -->
+          <ng-container matColumnDef="index">
+            <th mat-header-cell *matHeaderCellDef style="font-weight: bold; text-align: center;">#</th>
+            <td mat-cell *matCellDef="let element; let i = index" style="text-align: center;">{{ i + 1 }}</td> <!-- Satır numarasını ekliyoruz -->
+          </ng-container>
 
 
-        <!-- Name Column -->
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef style="font-weight: bold; text-align: left;">Ürün</th>
-          <td mat-cell *matCellDef="let element">{{ element.productName }}</td>
-        </ng-container>
+          <!-- Name Column -->
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef style="font-weight: bold; text-align: left;">Ürün</th>
+            <td mat-cell *matCellDef="let element">{{ element.productName }}</td>
+          </ng-container>
 
-        <!-- Cost Column -->
-        <ng-container matColumnDef="cost">
-          <th mat-header-cell *matHeaderCellDef style="font-weight: bold; text-align: right;">Tutar</th>
-          <td mat-cell *matCellDef="let element" style="text-align: right;">{{ element.cost }}₺</td>
-        </ng-container>
+          <!-- Cost Column -->
+          <ng-container matColumnDef="cost">
+            <th mat-header-cell *matHeaderCellDef style="font-weight: bold; text-align: right;">Tutar</th>
+            <td mat-cell *matCellDef="let element" style="text-align: right;">{{ element.cost }}₺</td>
+          </ng-container>
 
-        <!-- Header and Row Definitions -->
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let element; columns: displayedColumns"></tr>
-      </table>
+          <!-- Header and Row Definitions -->
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let element; columns: displayedColumns"></tr>
+        </table>
+      </div>
     </div>
   </div>
+
+
+  <br />
+  <br />
+  <div style="display: flex; width: 49%; gap: 10px;">
+    <!-- gap ile butonlar arasına boşluk ekledik -->
+    <button mat-button style="flex: 1 1 120px; height: 50px;" (click)="printOrders()">Yazdır</button>  <!-- height artırıldı -->
+    <button mat-button style="flex: 1 1 120px; height: 50px;" (click)="closeTable()">Masayı Kapat</button>
+    <button mat-button *ngIf="this.selectedRows.length > 0" style="flex: 1 1 120px; height: 50px;" (click)="paySelectedOrdersClick()">Seçilenleri Öde</button>
+    <button mat-button style="flex: 1 1 120px; height: 50px;" (click)="payAllOrders()">Tümünü Öde</button>
+  </div>
+
+
+
+
 </div>
-
-
-<br />
-<br />
-<div style="display: flex; width: 49%; gap: 10px;">
-  <!-- gap ile butonlar arasına boşluk ekledik -->
-  <button mat-button style="flex: 1 1 120px; height: 50px;" (click)="printOrders()">Yazdır</button>  <!-- height artırıldı -->
-  <button mat-button style="flex: 1 1 120px; height: 50px;" (click)="closeTable()">Masayı Kapat</button>
-  <button mat-button *ngIf="this.selectedRows.length > 0" style="flex: 1 1 120px; height: 50px;" (click)="paySelectedOrdersClick()">Seçilenleri Öde</button>
-  <button mat-button style="flex: 1 1 120px; height: 50px;" (click)="payAllOrders()">Tümünü Öde</button>
-</div>
-
-
-
-
