@@ -12,5 +12,6 @@ namespace BillApp.Application.Contracts.Order
         public string ProductName { get; set; }
         public int Quantity { get; set; }
         public float Cost { get; set; }
+        public Guid ProductId { get; set; }
     }
 }
