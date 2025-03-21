@@ -144,13 +144,12 @@ namespace BillApp.Api
 
         [HttpDelete("delete-range")]
         [Authorize()]
-        public async Task<IActionResult> DeleteRange([FromBody] List<OrderGetByIdAndDeleteRequest> model)
+        public async Task<IActionResult> DeleteRange([FromQuery] List<Guid> model)
         {
             if (!ModelState.IsValid && model.Count == 0)
                 return BadRequest(ModelState);
 
-            var ids = model.Select(x => x.Id).ToList();
-            var result = await _orderService.DeleteRangeAsync(ids);
+            var result = await _orderService.DeleteRangeAsync(model);
 
             if (result.Success)
             {
