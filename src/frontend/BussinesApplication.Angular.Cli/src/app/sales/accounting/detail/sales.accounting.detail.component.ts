@@ -91,16 +91,19 @@ export class SalesAccountingDetailComponent implements OnInit {
             orders.push(...(data));
             localStorage.setItem('salesAccountingOrders', JSON.stringify(orders));
           }
+          // 'box' parametresine göre filtreleme yapıyoruz
+          const filteredOrders = orders.filter(order => order.table === this.box);
+          this.orders = filteredOrders;  // Filtrelenmiş veriyi 'orders' array'ine atıyoruz
+          this.dataSource.data = this.orders;  // DataSource'u güncelliyoruz
         }
       });
     }
-
-    // 'box' parametresine göre filtreleme yapıyoruz
-    const filteredOrders = orders.filter(order => order.table === this.box);
-    this.orders = filteredOrders;  // Filtrelenmiş veriyi 'orders' array'ine atıyoruz
-    this.dataSource.data = this.orders;  // DataSource'u güncelliyoruz
-    console.log("datasource")
-    console.log(this.dataSource.data)
+    else {
+      // 'box' parametresine göre filtreleme yapıyoruz
+      const filteredOrders = orders.filter(order => order.table === this.box);
+      this.orders = filteredOrders;  // Filtrelenmiş veriyi 'orders' array'ine atıyoruz
+      this.dataSource.data = this.orders;  // DataSource'u güncelliyoruz
+    }
   }
 
   calculatePaidOrdersSumCost(): number {
