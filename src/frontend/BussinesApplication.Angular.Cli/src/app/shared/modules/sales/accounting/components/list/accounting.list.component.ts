@@ -43,6 +43,10 @@ export class AccountingListComponent implements OnInit {
     this.dateAdapter.setLocale('tr');
 
   }
+  resetReload() {
+    window.location.reload();
+  }
+
 
   ngOnInit() {
     this.setDistinctTables();
