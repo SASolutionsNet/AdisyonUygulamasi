@@ -107,15 +107,14 @@ export class SalesOrderDetailComponent implements OnInit, CanComponentDeactivate
 
         if (Array.isArray(response)) {
           response = response.flatMap(order =>
-            Array(order.quantity).fill({
+            Array(order.quantity).fill(null).map(() => ({
               ...order,
               paid: false,
               table: this.boxParam,
               quantity: 1,
               cost: order.cost / order.quantity,
-              id: this.generateGUID()
-
-            })
+              id: this.generateGUID() // Her öğeye ayrı GUID atanır
+            }))
           );
 
           if (storedOrders.length == 0) {
