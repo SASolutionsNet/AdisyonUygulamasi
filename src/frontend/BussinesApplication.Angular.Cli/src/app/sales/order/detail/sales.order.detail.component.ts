@@ -112,7 +112,9 @@ export class SalesOrderDetailComponent implements OnInit, CanComponentDeactivate
               paid: false,
               table: this.boxParam,
               quantity: 1,
-              cost: order.cost / order.quantity
+              cost: order.cost / order.quantity,
+              id: this.generateGUID()
+
             })
           );
 

@@ -71,7 +71,13 @@ export class SalesAccountingDetailComponent implements OnInit {
   ngAfterViewChecked() {
     this.cdRef.detectChanges();
   }
-
+  generateGUID(): string {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+      const r = Math.random() * 16 | 0;
+      const v = c === 'x' ? r : (r & 0x3 | 0x8); // v için 8, 9, a, b sayılarından biri seçilir
+      return v.toString(16);
+    });
+  }
   // LocalStorage'dan "orders" verisini alıyoruz ve box'a göre filtreliyoruz
   loadOrdersFromLocalStorage() {
     var orders: Orders[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
@@ -86,7 +92,8 @@ export class SalesAccountingDetailComponent implements OnInit {
               paid: false,
               table: this.box,
               quantity: 1,
-              cost: order.cost / order.quantity
+              cost: order.cost / order.quantity,
+              id: this.generateGUID()
             })
           );
 
