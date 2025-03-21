@@ -114,16 +114,19 @@ export class SalesOrderDetailComponent implements OnInit, CanComponentDeactivate
           console.log(storedOrders)
           if (storedOrders.length == 0) {
             storedOrders = response as Orders[];
+            localStorage.setItem('salesAccountingOrders', JSON.stringify(storedOrders));
           }
-          else
+          else {
             storedOrders.push(...(response as Orders[]));
+            localStorage.setItem('salesAccountingOrders', JSON.stringify(storedOrders));
+          }
         } else {
           console.error("Beklenen dizi formatında veri alınamadı!", response);
         }
       });
     }
 
-    localStorage.setItem('salesAccountingOrders', JSON.stringify(storedOrders));
+    console.log(JSON.parse(JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]')));
 
     if (storedOrders) {
       this.salesAccounting.orders = storedOrders;  // Parse the stored JSON string back to an array
