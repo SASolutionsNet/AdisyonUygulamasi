@@ -62,7 +62,10 @@ export class SalesAccountingDetailComponent implements OnInit {
       this.calculatePaidOrdersSumCost();
     });
 
-    window.location.reload();
+    if (!localStorage.getItem('reloaded')) {
+      localStorage.setItem('reloaded', 'true');
+      window.location.reload();
+    }
   }
 
   ngOnChanges() {
