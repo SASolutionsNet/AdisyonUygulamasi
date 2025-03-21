@@ -19,15 +19,15 @@ import { MatSortModule } from '@angular/material/sort';
 import { MatTabsModule } from '@angular/material/tabs';
 import { Orders } from '../../../shared/modules/sales/order/models/order.model';
 
-export interface Order {
-  id: string;
-  table: string;
-  productName: string;
-  cost: number;
-  paid: boolean;  // Satırların ödeme durumu
-  quantity: number;
-  productId: string;
-}
+//export interface Order {
+//  id: string;
+//  table: string;
+//  productName: string;
+//  cost: number;
+//  paid: boolean;  // Satırların ödeme durumu
+//  quantity: number;
+//  productId: string;
+//}
 @Component({
   selector: 'app-sales-accounting-detail',
   templateUrl: './sales.accounting.detail.component.html',
@@ -46,7 +46,7 @@ export class SalesAccountingDetailComponent implements OnInit {
   dataSource: MatTableDataSource<Orders> = new MatTableDataSource(this.orders);
   box: string = '';
   billId: string = '';
-  paidRows: Order[] = [];  // Ödenen satırları saklayacağız
+  paidRows: Orders[] = [];  // Ödenen satırları saklayacağız
   sumPaidOrdersCost: number = 0; // Başlangıçta toplam tutar 0
   constructor(private router: Router, private cdRef: ChangeDetectorRef, private route: ActivatedRoute, private orderService: SalesOrderService, private accountingService: SalesAccountingService, private dialog: MatDialog) { }
 
@@ -119,9 +119,9 @@ export class SalesAccountingDetailComponent implements OnInit {
 
     if (tableParam) {
       // localStorage'dan salesAccountingOrders verisini al
-      let savedOrders: Order[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
+      let savedOrders: Orders[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
       // localStorage'dan salesAccountingOrders verisini al
-      let paidOrders: Order[] = JSON.parse(localStorage.getItem('paidOrders') || '[]');
+      let paidOrders: Orders[] = JSON.parse(localStorage.getItem('paidOrders') || '[]');
       // 'table' parametresi ile eşleşen kayıtları filtrele ve çıkar
       savedOrders = savedOrders.filter(order => order.table == tableParam);
       // 'table' parametresi ile eşleşen kayıtları filtrele ve çıkar
@@ -137,8 +137,8 @@ export class SalesAccountingDetailComponent implements OnInit {
           console.log('The dialog was closed, result: ', result);
           if (result) {
             if (result.answer == 'yes') {
-              let otherSavedOrders: Order[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
-              let otherPaidOrders: Order[] = JSON.parse(localStorage.getItem('paidOrders') || '[]');
+              let otherSavedOrders: Orders[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
+              let otherPaidOrders: Orders[] = JSON.parse(localStorage.getItem('paidOrders') || '[]');
               otherSavedOrders = otherSavedOrders.filter(order => order.table != tableParam);
               otherPaidOrders = otherPaidOrders.filter(order => order.table != tableParam);
               this.paidRows = paidOrders;
@@ -213,8 +213,8 @@ export class SalesAccountingDetailComponent implements OnInit {
           }
         );
 
-        let otherSavedOrders: Order[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
-        let otherPaidOrders: Order[] = JSON.parse(localStorage.getItem('paidOrders') || '[]');
+        let otherSavedOrders: Orders[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
+        let otherPaidOrders: Orders[] = JSON.parse(localStorage.getItem('paidOrders') || '[]');
         otherSavedOrders = otherSavedOrders.filter(order => order.table != tableParam);
         otherPaidOrders = otherPaidOrders.filter(order => order.table != tableParam);
 

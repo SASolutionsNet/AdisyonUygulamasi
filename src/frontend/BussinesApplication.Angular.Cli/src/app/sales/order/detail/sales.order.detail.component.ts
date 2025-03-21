@@ -15,7 +15,6 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatIcon } from '@angular/material/icon';
 import { SalesAccountingService } from '../../../shared/modules/sales/accounting/services/accounting.service';
-import { Order } from '../../../shared/modules/sales/accounting/components/detail/accounting.detail.component';
 import { Observable, Subscription } from 'rxjs';
 import { CanDeactivate } from '@angular/router';
 import { Injectable } from '@angular/core';
@@ -77,7 +76,7 @@ export class SalesOrderDetailComponent implements OnInit, CanComponentDeactivate
 
 
     // A veya B sayfasına geçişte silme işlemi yap
-    const savedOrders: Order[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
+    const savedOrders: Orders[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
     const hasOrders = savedOrders.some(order => order.table === this.boxParam);
 
     if (nextUrl?.includes("/sales/order/list") && nextUrl?.includes("true")) {
@@ -280,7 +279,7 @@ export class SalesOrderDetailComponent implements OnInit, CanComponentDeactivate
 
 
     // localStorage'dan salesAccountingOrders verisini al
-    let savedOrders: Order[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
+    let savedOrders: Orders[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
     // 'table' parametresi ile eşleşen kayıtları filtrele ve çıkar
     savedOrders = savedOrders.filter(order => order.table == this.boxParam);
 

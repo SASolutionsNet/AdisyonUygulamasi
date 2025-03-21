@@ -17,7 +17,6 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { Order } from '../../../../../../sales/accounting/detail/sales.accounting.detail.component';
 import { SalesAccountingService } from '../../../accounting/services/accounting.service';
 import { SalesAccounting } from '../../../accounting/models/accounting.model';
 
