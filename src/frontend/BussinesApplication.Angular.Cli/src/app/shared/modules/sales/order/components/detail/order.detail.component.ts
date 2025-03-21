@@ -143,7 +143,7 @@ export class OrderDetailComponent implements OnInit, OnDestroy, AfterViewInit {
     return cost.toFixed(2);  // 2 ondalıklı basamağa yuvarlar
   }
   goTableList() {
-    this.router.navigate([`/sales/order/list`]);
+    this.router.navigate([`/sales/order/list/${false} `]);
   }
 
   // Popup açma fonksiyonu

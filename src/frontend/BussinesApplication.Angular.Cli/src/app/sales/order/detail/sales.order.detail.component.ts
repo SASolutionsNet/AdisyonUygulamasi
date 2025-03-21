@@ -58,6 +58,7 @@ export class SalesOrderDetailComponent implements OnInit, CanComponentDeactivate
   dataSource = new MatTableDataSource<any>([]); // Başlangıçta boş veri
   matchingOrders: Orders[] = [];
   billId: string = "";
+  isTableChanged: string = "";
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -70,15 +71,24 @@ export class SalesOrderDetailComponent implements OnInit, CanComponentDeactivate
   sidebarVisible = false;
 
   canDeactivate(): Observable<boolean> | boolean {
-    // Sayfadan ayrılırken tetiklenecek silme mantığı
+    // Navigasyonun hedef URL'sini al
+    const navigation = this.router.getCurrentNavigation();
+    const nextUrl = navigation?.finalUrl?.toString();
+
+
+    // A veya B sayfasına geçişte silme işlemi yap
     const savedOrders: Order[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
     const hasOrders = savedOrders.some(order => order.table === this.boxParam);
+
+    if (nextUrl?.includes("/sales/order/list") && nextUrl?.includes("true")) {
+      return true;
+    }
 
     if (!hasOrders && this.billId) {
       return this.accountingService.deleteBill(this.billId);
     }
-    return true; // Silme yapılmasa bile navigasyona izin
 
+    return true;
   }
   // Yeni fonksiyon eklendi
   toggleSidebar() {
