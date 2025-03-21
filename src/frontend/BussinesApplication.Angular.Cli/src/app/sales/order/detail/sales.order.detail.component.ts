@@ -202,14 +202,14 @@ export class SalesOrderDetailComponent implements OnInit, CanComponentDeactivate
     });
 
     let order: Orders = {
-      // id : Guid.NewGuid()
       id: this.generateGUID(),
       productName: tile.name,
       cost: tile.price,
       table: this.boxParam,
       quantity: 1,
       productId: tile.productId,
-      billId: this.billId
+      billId: this.billId,
+      paid: false
     };
 
     // Add the new order to salesAccounting.orders
