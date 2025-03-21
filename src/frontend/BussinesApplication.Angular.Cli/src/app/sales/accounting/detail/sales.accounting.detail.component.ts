@@ -81,15 +81,16 @@ export class SalesAccountingDetailComponent implements OnInit {
     if (orders.filter(item => item.table == this.box).length == 0) {
       this.orderService.getAllOrdersForBill(this.billId).subscribe((data: Orders[]) => {
 
-        data = data.map(order => ({ ...order, paid: false, table: this.box }));
-        const updatedData = data.flatMap(order =>
+        data = data.flatMap(order =>
           Array(order.quantity).fill({
             ...order,
             paid: false,
-            table: this.box
+            table: this.box,
+            quantity: 1,
+            cost: order.cost / order.quantity
           })
         );
-        console.log(updatedData)
+
         if (Array.isArray(data)) {
           if (orders.length == 0) {
             orders = data;
