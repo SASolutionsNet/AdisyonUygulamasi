@@ -17,6 +17,7 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { CommonModule } from '@angular/common';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTabsModule } from '@angular/material/tabs';
+import { Orders } from '../../../shared/modules/sales/order/models/order.model';
 
 export interface Order {
   id: string;
@@ -41,8 +42,8 @@ export class SalesAccountingDetailComponent implements OnInit {
   bill: SalesAccounting = new SalesAccounting();
   orderCreate: any[] = [];
   nonPaidOrders: any[] = [];
-  orders: Order[] = [];
-  dataSource: MatTableDataSource<Order> = new MatTableDataSource(this.orders);
+  orders: Orders[] = [];
+  dataSource: MatTableDataSource<Orders> = new MatTableDataSource(this.orders);
   box: string = '';
   billId: string = '';
   paidRows: Order[] = [];  // Ödenen satırları saklayacağız
@@ -74,15 +75,11 @@ export class SalesAccountingDetailComponent implements OnInit {
 
   // LocalStorage'dan "orders" verisini alıyoruz ve box'a göre filtreliyoruz
   loadOrdersFromLocalStorage() {
-    var orders: Order[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
+    var orders: Orders[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
     console.log("billId")
     console.log(this.billId)
     if (orders.filter(item => item.table == this.box).length == 0) {
-      this.orderService.getAllOrdersForBill(this.billId).subscribe((data: Order[]) => {
-        console.log("data")
-        console.log(data)
-        console.log("orders")
-        console.log(orders)
+      this.orderService.getAllOrdersForBill(this.billId).subscribe((data: Orders[]) => {
         if (Array.isArray(data)) {
           if (orders.length == 0) {
             orders = data;
@@ -158,9 +155,6 @@ export class SalesAccountingDetailComponent implements OnInit {
 
 
               console.log('Non-Paid Orders:', this.nonPaidOrders);
-
-
-              //this.orderService.delete_range(this.nonPaidOrders).
 
               this.orderService.delete_range(this.billId, this.nonPaidOrders).subscribe(
                 (response) => {
