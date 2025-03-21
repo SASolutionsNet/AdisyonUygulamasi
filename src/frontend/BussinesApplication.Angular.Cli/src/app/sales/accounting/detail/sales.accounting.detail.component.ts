@@ -75,19 +75,27 @@ export class SalesAccountingDetailComponent implements OnInit {
   // LocalStorage'dan "orders" verisini alıyoruz ve box'a göre filtreliyoruz
   loadOrdersFromLocalStorage() {
     var orders: Order[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
-
+    console.log("billId")
+    console.log(this.billId)
     if (orders.filter(item => item.table == this.box).length == 0) {
       this.orderService.getAllOrdersForBill(this.billId).subscribe((data: Order[]) => {
+        console.log("data")
+        console.log(data)
+        console.log("orders")
+        console.log(orders)
         if (Array.isArray(data)) {
-          if (orders.length == 0)
+          if (orders.length == 0) {
             orders = data;
-          else {
-            orders.push(...(data));
             this.saveOrdersToLocalStorage()
           }
+          else
+            orders.push(...(data));
         }
       });
     }
+
+    localStorage.setItem('salesAccountingOrders', JSON.stringify(orders));
+
 
     // 'box' parametresine göre filtreleme yapıyoruz
     const filteredOrders = orders.filter(order => order.table === this.box);
