@@ -1,5 +1,5 @@
 
-import { Component, OnInit, ChangeDetectorRef, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, SimpleChanges, ViewChild, OnDestroy } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SalesOrderService } from "../../../shared/modules/sales/order/services/order.service";
 import { PSService } from "../../../shared/modules/ps/services/ps.service";
@@ -10,12 +10,13 @@ import { MatCardModule } from '@angular/material/card';
 import { SidebarComponent } from '../../../sidebar/sidebar.component';
 import { HeaderComponent } from '../../../header/header.component';
 import { SalesAccounting } from '../../../shared/modules/sales/accounting/models/accounting.model';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationStart, Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatIcon } from '@angular/material/icon';
 import { SalesAccountingService } from '../../../shared/modules/sales/accounting/services/accounting.service';
 import { Order } from '../../../shared/modules/sales/accounting/components/detail/accounting.detail.component';
+import { Subscription } from 'rxjs';
 interface Tab {
   label: string;
   tiles: { name: string, price: number, productId: string }[];  // 'tiles' should be an array of objects
@@ -28,11 +29,13 @@ interface Tab {
   standalone: true,
   imports: [MatIcon, MatPaginatorModule, OrderDetailComponent, MatCardModule, SidebarComponent, HeaderComponent],  // Import dependencies
 })
-export class SalesOrderDetailComponent implements OnInit {
+export class SalesOrderDetailComponent implements OnInit, OnDestroy {
 
 
 
   // Initialize SalesAccounting object
+  private routerSubscription!: Subscription;
+
   salesAccounting: SalesAccounting = new SalesAccounting();  // Initialized correctly
   tabsData: Tab[] = [];  // Array of tabs, each with a label and tiles (products)
   boxParam!: string;
@@ -59,7 +62,12 @@ export class SalesOrderDetailComponent implements OnInit {
   }
 
   ngOnInit() {
-
+    // Sayfa değişikliklerini dinle
+    this.routerSubscription = this.router.events.subscribe(event => {
+      if (event instanceof NavigationStart) {
+        this.onPageLeave();  // Sayfadan çıkarken çalışacak method
+      }
+    });
     // Check if orders are stored in localStorage
     const storedOrders = localStorage.getItem('salesAccountingOrders');
     if (storedOrders) {
@@ -68,6 +76,25 @@ export class SalesOrderDetailComponent implements OnInit {
     this.setProductTabs();
     this.cdRef.detectChanges();
     this.getOrdersByBoxParam();
+  }
+
+  onPageLeave() {
+    this.activatedRoute.paramMap.subscribe(params => {
+      this.billId = params.get('billId')?.toString() ?? '';
+      this.boxParam = params.get('box')?.toString() ?? '';
+    });
+
+    // localStorage'dan salesAccountingOrders verisini al
+    let savedOrders: Order[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
+    // 'table' parametresi ile eşleşen kayıtları filtrele ve çıkar
+    savedOrders = savedOrders.filter(order => order.table == this.boxParam);
+    console.log("destroyda savedorders")
+    console.log(savedOrders)
+    if (savedOrders.length == 0)
+      this.accountingService.deleteBill(this.billId).subscribe(response => {
+        console.log(response)
+        console.log("bill silindi")
+      });
   }
 
   ngAfterViewChecked() {
@@ -119,24 +146,11 @@ export class SalesOrderDetailComponent implements OnInit {
     });
   }
 
-  ngOnDestroy(): void {
-
-    this.activatedRoute.paramMap.subscribe(params => {
-      this.billId = params.get('billId')?.toString() ?? '';
-      this.boxParam = params.get('box')?.toString() ?? '';
-    });
-
-    // localStorage'dan salesAccountingOrders verisini al
-    let savedOrders: Order[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
-    // 'table' parametresi ile eşleşen kayıtları filtrele ve çıkar
-    savedOrders = savedOrders.filter(order => order.table == this.boxParam);
-    console.log("destroyda savedorders")
-    console.log(savedOrders)
-    if (savedOrders.length == 0)
-      this.accountingService.deleteBill(this.billId).subscribe(response => {
-        console.log(response)
-        console.log("bill silindi")
-      });
+  ngOnDestroy() {
+    if (this.routerSubscription) {
+      this.routerSubscription.unsubscribe();
+    }
+    this.onPageLeave();
 
   }
 
