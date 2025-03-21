@@ -30,6 +30,7 @@ export class Orders {
   cost: number = 0;
   productId: string = "";
   billId: string = "";
+  paid: boolean = false;
 }
 @Injectable()
 export class ReportDetailOrders {
@@ -38,5 +39,5 @@ export class ReportDetailOrders {
   cost: number = 0;
   createdDate: string = "";
 
-  
+
 }
