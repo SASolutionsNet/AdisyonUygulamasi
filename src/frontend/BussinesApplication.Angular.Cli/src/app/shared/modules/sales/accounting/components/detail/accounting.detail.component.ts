@@ -10,15 +10,16 @@ import { MatSortModule } from '@angular/material/sort';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ChangeDetectorRef, Component, Input, Output, EventEmitter, SimpleChanges, AfterViewInit, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
+import { Orders } from '../../../order/models/order.model';
 
-export interface Order {
-  id: string;
-  table: string;
-  productName: string;
-  cost: number;
-  paid: boolean;  // Satırların ödeme durumu
-  quantity: number;
-}
+//export interface Order {
+//  id: string;
+//  table: string;
+//  productName: string;
+//  cost: number;
+//  paid: boolean;  // Satırların ödeme durumu
+//  quantity: number;
+//}
 
 @Component({
   selector: 'sasolution-sales-accounting-detail',
@@ -28,7 +29,7 @@ export interface Order {
 })
 export class AccountingDetailComponent implements OnInit, AfterViewInit {
 
-  @Input() ELEMENT_DATA: Order[] = []; // Dinamik veri için input
+  @Input() ELEMENT_DATA: Orders[] = []; // Dinamik veri için input
 
   @Output() closeTableClick: EventEmitter<any> = new EventEmitter<any>(); // Tile click event
   @Output() printOrdersClick: EventEmitter<any> = new EventEmitter<any>(); // Tile click event
@@ -36,17 +37,17 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
 
   displayedColumns: string[] = ['index', 'name', 'cost'];  // 'index' sütununu başlıklarımıza ekliyoruz
 
-  dataSource = new MatTableDataSource<Order>(this.ELEMENT_DATA);  // Veriyi doğru şekilde tanımlıyoruz
+  dataSource = new MatTableDataSource<Orders>(this.ELEMENT_DATA);  // Veriyi doğru şekilde tanımlıyoruz
 
-  clickedRows = new Set<Order>();
-  selectedRows: Order[] = [];  // Seçilen satırları ikinci tabloya aktaracağız
-  paidRows: Order[] = [];  // Ödenen satırları saklayacağız
+  clickedRows = new Set<Orders>();
+  selectedRows: Orders[] = [];  // Seçilen satırları ikinci tabloya aktaracağız
+  paidRows: Orders[] = [];  // Ödenen satırları saklayacağız
   sumCost: number = 0; // Başlangıçta toplam tutar 0
   sumSelectedOrdersCost: number = 0; // Başlangıçta toplam tutar 0
   sumPaidOrdersCost: number = 0; // Başlangıçta toplam tutar 0
 
   constructor(
-    private router: Router,private cdRef: ChangeDetectorRef, private route: ActivatedRoute,) { }
+    private router: Router, private cdRef: ChangeDetectorRef, private route: ActivatedRoute,) { }
 
   ngOnInit() {
     // localStorage'dan ödenmiş siparişleri al
@@ -90,12 +91,12 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
     this.router.navigate([`/sales/accounting/list`]);
   }
   // Satır tıklama işlemi
-  onRowClick(row: Order): void {
+  onRowClick(row: Orders): void {
     // Eğer satır ödenmişse, tıklanamaz
     if (row.paid) {
       return; // Eğer satır ödeme durumu "true" ise tıklanamaz
     }
-   
+
     // Satır tıklanabilir ise işlemi yap
     if (this.clickedRows.has(row)) {
       this.clickedRows.delete(row);  // Eğer zaten seçiliyse, çıkar
@@ -111,7 +112,7 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
   }
 
   // Satırın seçili olup olmadığını kontrol et
-  isRowSelected(row: Order): boolean {
+  isRowSelected(row: Orders): boolean {
     return this.clickedRows.has(row);
   }
 
@@ -157,7 +158,7 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
     console.log(tableParam)
     /* if (tableParam) {*/
     // localStorage'dan salesAccountingOrders verisini al
-    let savedOrders: Order[] = JSON.parse(localStorage.getItem('paidOrders') || '[]');
+    let savedOrders: Orders[] = JSON.parse(localStorage.getItem('paidOrders') || '[]');
     // Table parametre ile eşleşen ve paid durumu false olan kayıtları filtrele
     let filteredOrders = savedOrders.filter(order =>
       order.table === tableParam
