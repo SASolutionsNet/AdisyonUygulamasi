@@ -15,12 +15,13 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { CommonModule } from '@angular/common';
 import { SalesAccountingService } from '../../services/accounting.service';
 import { SalesAccounting } from '../../models/accounting.model';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'sasolution-sales-accounting-list',
   templateUrl: './accounting.list.component.html',
   styleUrls: ['./accounting.list.component.scss'],
-  imports: [MatTabsModule, CommonModule],
+  imports: [MatTabsModule, CommonModule, MatIconModule],
 })
 export class AccountingListComponent implements OnInit {
   private _rows: any;
