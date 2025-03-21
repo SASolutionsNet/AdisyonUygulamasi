@@ -106,23 +106,13 @@ export class SalesOrderDetailComponent implements OnInit, CanComponentDeactivate
 
     if (storedOrders.filter(item => item.table == this.boxParam).length == 0) {
       this.orderService.getAllOrdersForBill(this.billId).subscribe(response => {
-        console.log("getAllOrdersForBill sales order detail")
-        console.log("storedOrders")
-        console.log(storedOrders)
-        console.log("response")
-        console.log(response)
         if (Array.isArray(response)) {
-          console.log("if1")
           if (storedOrders.length == 0) {
-            console.log("if2")
             storedOrders = response as Orders[];
           }
           else {
-            console.log("else")
-            console.log(storedOrders)
-            console.log(response as Orders[])
             storedOrders.push(...(response as Orders[]));
-            console.log(storedOrders)
+            localStorage.setItem('salesAccountingOrders', JSON.stringify(storedOrders));
           }
 
         } else {

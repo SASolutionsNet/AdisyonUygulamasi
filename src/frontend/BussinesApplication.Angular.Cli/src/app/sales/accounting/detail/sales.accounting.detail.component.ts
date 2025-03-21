@@ -78,24 +78,13 @@ export class SalesAccountingDetailComponent implements OnInit {
 
     if (orders.filter(item => item.table == this.box).length == 0) {
       this.orderService.getAllOrdersForBill(this.billId).subscribe((data: Order[]) => {
-        console.log("getAllOrdersForBill")
         if (Array.isArray(data)) {
-          console.log("orders")
-          console.log(orders)
-          console.log("data")
-          console.log(data)
-          if (orders.length == 0) {
+          if (orders.length == 0)
             orders = data;
-          }
           else {
-            console.log("else")
-            console.log("orders")
-            console.log(orders)
-            console.log("data")
-            console.log(data)
             orders.push(...(data));
+            this.saveOrdersToLocalStorage()
           }
-
         }
       });
     }
