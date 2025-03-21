@@ -134,11 +134,26 @@ namespace BillApp.Api
 
             if (result.Success)
             {
-                if (result.Data == null)
-                    return NotFound("Order not found.");
-
                 var mappedResult = _mapper.Map<OrderDto, OrderResponse>(result.Data);
                 return Ok(mappedResult);
+            }
+
+            return StatusCode(500, "Request Failed");
+
+        }
+
+        [HttpDelete("delete-range")]
+        [Authorize()]
+        public async Task<IActionResult> DeleteRange([FromQuery] List<Guid> model)
+        {
+            if (!ModelState.IsValid && model.Count == 0)
+                return BadRequest(ModelState);
+
+            var result = await _orderService.DeleteRangeAsync(model);
+
+            if (result.Success)
+            {
+                return Ok();
             }
 
             return StatusCode(500, "Request Failed");

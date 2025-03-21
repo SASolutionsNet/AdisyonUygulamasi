@@ -36,7 +36,7 @@ namespace BillApp.Application.Services
 
 
             mappedModel.CreatedUser = _currentUserService.Username ?? "";
-            mappedModel.IsClosed = true;
+
             var createdBill = await _billRepository.CreateAsync(mappedModel);
 
             var mappedReturnModel = _mapper.Map<Bill, BillDto>(createdBill);

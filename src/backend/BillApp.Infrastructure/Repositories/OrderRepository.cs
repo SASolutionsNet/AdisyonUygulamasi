@@ -3,11 +3,13 @@ using BillApp.Domain.Order;
 using BillApp.Domain.Product;
 using BillApp.Infrastructure.Contexts;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
 
 namespace BillApp.Infrastructure.Repositories
 {
@@ -99,6 +101,31 @@ namespace BillApp.Infrastructure.Repositories
             await _context.SaveChangesAsync();
 
             return existingOrder;
+        }
+
+        public async Task<Order> HardDeleteAsync(Guid id)
+        {
+            var order = await GetByIdAsync(id).ConfigureAwait(false);
+
+            if (order == null)
+                throw new KeyNotFoundException("Order not found.");
+
+            _context.Orders.Remove(order);
+
+            return order;
+        }
+
+        public async Task<bool> DeletRangeAsync(List<Guid> ids)
+        {
+            var orders = await _context.Orders.Where(e => ids.Contains(e.Id)).ToListAsync();
+
+            if (orders.Any())
+            {
+                _context.Orders.RemoveRange(orders);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            return false;
         }
     }
 }
