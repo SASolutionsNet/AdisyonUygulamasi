@@ -270,6 +270,7 @@ namespace BillApp.Application.Services
                 ProductName = x.Product != null ? x.Product.Name : "",
                 Quantity = x.Quantity,
                 Cost = x.Product != null ? x.Quantity * x.Product.Price : 0,
+                ProductId = x.Product != null ? x.ProductId : Guid.Empty,
             }).ToList();
 
             return new ServiceResponse<List<OrderForBillDto>> { Data = result, Message = "Orders found for the bill", Success = true };
