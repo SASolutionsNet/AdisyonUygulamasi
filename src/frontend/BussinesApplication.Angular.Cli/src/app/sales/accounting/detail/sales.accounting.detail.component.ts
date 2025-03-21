@@ -76,10 +76,12 @@ export class SalesAccountingDetailComponent implements OnInit {
   // LocalStorage'dan "orders" verisini alıyoruz ve box'a göre filtreliyoruz
   loadOrdersFromLocalStorage() {
     var orders: Orders[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
-    console.log("billId")
-    console.log(this.billId)
+    console.log("orders")
+    console.log(orders)
     if (orders.filter(item => item.table == this.box).length == 0) {
       this.orderService.getAllOrdersForBill(this.billId).subscribe((data: Orders[]) => {
+        console.log("data")
+        console.log(data)
         if (Array.isArray(data)) {
           if (orders.length == 0) {
             orders = data;
@@ -97,6 +99,8 @@ export class SalesAccountingDetailComponent implements OnInit {
     const filteredOrders = orders.filter(order => order.table === this.box);
     this.orders = filteredOrders;  // Filtrelenmiş veriyi 'orders' array'ine atıyoruz
     this.dataSource.data = this.orders;  // DataSource'u güncelliyoruz
+    console.log("datasource")
+    console.log(this.dataSource.data)
   }
 
   calculatePaidOrdersSumCost(): number {
