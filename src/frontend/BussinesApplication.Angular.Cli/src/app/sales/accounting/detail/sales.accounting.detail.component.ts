@@ -86,16 +86,16 @@ export class SalesAccountingDetailComponent implements OnInit {
         if (Array.isArray(data)) {
           if (orders.length == 0) {
             orders = data;
-            this.saveOrdersToLocalStorage()
+            localStorage.setItem('salesAccountingOrders', JSON.stringify(orders));
           }
-          else
+          else {
             orders.push(...(data));
+            localStorage.setItem('salesAccountingOrders', JSON.stringify(orders));
+          }
         }
       });
     }
-
-    localStorage.setItem('salesAccountingOrders', JSON.stringify(orders));
-
+    console.log(JSON.parse(JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]')));
 
     // 'box' parametresine göre filtreleme yapıyoruz
     const filteredOrders = orders.filter(order => order.table === this.box);
