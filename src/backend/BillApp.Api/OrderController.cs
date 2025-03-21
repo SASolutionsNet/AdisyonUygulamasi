@@ -142,6 +142,25 @@ namespace BillApp.Api
 
         }
 
+        [HttpDelete("delete-range")]
+        [Authorize()]
+        public async Task<IActionResult> DeleteRange([FromBody] List<OrderGetByIdAndDeleteRequest> model)
+        {
+            if (!ModelState.IsValid && model.Count == 0)
+                return BadRequest(ModelState);
+
+            var ids = model.Select(x => x.Id).ToList();
+            var result = await _orderService.DeleteRangeAsync(ids);
+
+            if (result.Success)
+            {
+                return Ok();
+            }
+
+            return StatusCode(500, "Request Failed");
+
+        }
+
         [HttpGet("get-orders-for-bill")]
         [Authorize()]
         public async Task<IActionResult> GetOrdersForBill([FromQuery] Guid id)

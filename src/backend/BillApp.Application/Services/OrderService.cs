@@ -130,18 +130,12 @@ namespace BillApp.Application.Services
 
             var result = await _orderRepository.HardDeleteAsync(id);
 
-            if (result)
-                return new ServiceResponse<OrderDto>
-                {
-                    Success = true,
-                    Message = "Order deleted (hard delete applied)"
-                };
-            else
-                return new ServiceResponse<OrderDto>
-                {
-                    Success = true,
-                    Message = "Order delete failed."
-                };
+            return new ServiceResponse<OrderDto>
+            {
+                Success = true,
+                Message = "Order deleted (hard delete applied)"
+            };
+            ;
         }
 
 
@@ -239,6 +233,31 @@ namespace BillApp.Application.Services
 
             return new ServiceResponse<List<OrderForBillDto>> { Data = result, Message = "Orders found for the bill", Success = true };
 
+        }
+
+        public async Task<ServiceResponse<bool>> DeleteRangeAsync(List<Guid> ids)
+        {
+            if (ids.Count == 0)
+                return new ServiceResponse<bool>
+                {
+                    Success = false,
+                    Message = "Orders not found."
+                };
+
+            var result = await _orderRepository.DeletRangeAsync(ids);
+
+            if (result)
+                return new ServiceResponse<bool>
+                {
+                    Success = true,
+                    Message = "Orders deleted."
+                };
+
+            return new ServiceResponse<bool>
+            {
+                Success = false,
+                Message = "Orders delete failed."
+            };
         }
     }
 }
