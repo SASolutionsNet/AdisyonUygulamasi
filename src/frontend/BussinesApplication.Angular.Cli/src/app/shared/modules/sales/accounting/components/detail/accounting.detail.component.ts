@@ -48,7 +48,7 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
   constructor(private cdRef: ChangeDetectorRef, private route: ActivatedRoute,) { }
 
   ngOnInit() {
-     // localStorage'dan ödenmiş siparişleri al
+    // localStorage'dan ödenmiş siparişleri al
     const savedPaidOrders = JSON.parse(localStorage.getItem('paidOrders') || '[]');
     this.paidRows = savedPaidOrders;  // Sayfa yüklendiğinde 'paidOrders' verilerini al
 
@@ -135,8 +135,8 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
   // Orders fiyatlarının toplamını hesaplayan fonksiyon
   calculateSumCost(): void {
     this.sumCost = this.dataSource.data.reduce((total, order) => {
-        return total + (order.cost * order.quantity);  // Fiyat ve miktarı çarparak toplamı alıyoruz
-      }, 0);
+      return total + (order.cost * order.quantity);  // Fiyat ve miktarı çarparak toplamı alıyoruz
+    }, 0);
   }
 
   // SelectedOrders fiyatlarının toplamını hesaplayan fonksiyon
@@ -147,24 +147,24 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
     }, 0);
   }
 
- 
+
   calculatePaidOrdersSumCost(): void {
     // ActivatedRoute'den table parametresini al
     const tableParam = this.route.snapshot.paramMap.get('box');  // 'box' URL parametresinin adı olmalı
     console.log(tableParam)
-   /* if (tableParam) {*/
-      // localStorage'dan salesAccountingOrders verisini al
-      let savedOrders: Order[] = JSON.parse(localStorage.getItem('paidOrders') || '[]');
-      // Table parametre ile eşleşen ve paid durumu false olan kayıtları filtrele
-      let filteredOrders = savedOrders.filter(order =>
-        order.table === tableParam 
-      );
-      console.log(this.paidRows)
+    /* if (tableParam) {*/
+    // localStorage'dan salesAccountingOrders verisini al
+    let savedOrders: Order[] = JSON.parse(localStorage.getItem('paidOrders') || '[]');
+    // Table parametre ile eşleşen ve paid durumu false olan kayıtları filtrele
+    let filteredOrders = savedOrders.filter(order =>
+      order.table === tableParam
+    );
+    console.log(this.paidRows)
 
-      // Filtrelenen kayıtlarda quantity ve cost değerlerinin çarpımını hesapla
-      this.sumPaidOrdersCost = filteredOrders.reduce((total, order) => {
-        return total + (order.quantity * order.cost);  // Fiyat ve miktarı çarparak toplamı alıyoruz
-      }, 0);
+    // Filtrelenen kayıtlarda quantity ve cost değerlerinin çarpımını hesapla
+    this.sumPaidOrdersCost = filteredOrders.reduce((total, order) => {
+      return total + (order.quantity * order.cost);  // Fiyat ve miktarı çarparak toplamı alıyoruz
+    }, 0);
     /*}*/
   }
 
@@ -185,30 +185,33 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
 
   payAllOrders(): void {
 
-    // Seçilen satırları "paid" olarak işaretleyin ve güncelleyin
-    this.selectedRows.forEach(order => {
-      order.paid = true;  // Satır ödeme olarak işaretlendi
-      // Eğer order zaten paidRows içinde yoksa ekle
-      if (!this.paidRows.includes(order)) {
-        this.paidRows.push(order);  // Ödenen satırları güncelle
-      }
-    });
+    //// Seçilen satırları "paid" olarak işaretleyin ve güncelleyin
+    //this.selectedRows.forEach(order => {
+    //  order.paid = true;  // Satır ödeme olarak işaretlendi
+    //  // Eğer order zaten paidRows içinde yoksa ekle
+    //  if (!this.paidRows.includes(order)) {
+    //    this.paidRows.push(order);  // Ödenen satırları güncelle
+    //  }
+    //});
+
+    const tableParam = this.route.snapshot.paramMap.get('box');  // 'box' URL parametresinin adı olmalı
 
     // Tüm siparişler üzerinde döngü yaparak, paidRows içinde olmayanların durumunu "paid" olarak güncelle
-    this.dataSource.data.forEach(order => {
-      // Eğer order paidRows içinde değilse, bu siparişi ödenmiş olarak işaretle
-      if (!this.paidRows.includes(order)) {
-        order.paid = true;
-        this.paidRows.push(order);  // Ödenmiş satırı paidRows'a ekle
-      }
-    });
+    this.dataSource.data.filter(paidOrder =>
+      paidOrder.table === tableParam).forEach(order => {
+        // Eğer order paidRows içinde değilse, bu siparişi ödenmiş olarak işaretle
+        if (!this.paidRows.includes(order)) {
+          order.paid = true;
+          this.paidRows.push(order);  // Ödenmiş satırı paidRows'a ekle
+        }
+      });
 
     // Seçilen satırları localStorage'a kaydedin
     const updatedOrders = this.paidRows;
     localStorage.setItem('paidOrders', JSON.stringify(updatedOrders)); // Veriyi localStorage'a kaydedin
 
     //this.calculateSumCost();  // Toplamı yeniden hesaplayın
-    //this.calculatePaidOrdersSumCost();
+    this.calculatePaidOrdersSumCost();
 
     // Seçilen satırları sıfırla
     this.selectedRows = [];

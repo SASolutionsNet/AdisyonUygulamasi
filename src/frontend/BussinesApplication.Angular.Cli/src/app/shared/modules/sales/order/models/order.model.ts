@@ -29,6 +29,7 @@ export class Orders {
   productName: string = "";
   cost: number = 0;
   productId: string = "";
+  billId: string = "";
 }
 @Injectable()
 export class ReportDetailOrders {

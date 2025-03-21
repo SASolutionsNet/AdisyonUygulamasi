@@ -75,7 +75,7 @@ export class ReportListComponent implements OnInit {
   }
 
   setData() {
-    this.accountingService.getAllBills().subscribe((data: SalesAccounting[]) => {
+    this.accountingService.getAllClosedBills().subscribe((data: SalesAccounting[]) => {
       // Her bir item için createdDate'i dönüştürme
       data.forEach(item => {
         // createdDate'i Date nesnesine dönüştür
@@ -87,7 +87,7 @@ export class ReportListComponent implements OnInit {
         // Bu değeri item'ın createdDate'ine atıyoruz
         item.createdDate = formattedDate;
 
-       
+
       });
 
       // Veriyi DataSource'a atıyoruz

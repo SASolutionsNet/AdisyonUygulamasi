@@ -41,7 +41,7 @@ export class SalesAccountingDetailComponent implements OnInit {
   bill: SalesAccounting = new SalesAccounting();
 
   orderCreate: any[] = [];
-
+  nonPaidOrders: any[] = [];
   orders: Order[] = [];
   dataSource: MatTableDataSource<Order> = new MatTableDataSource(this.orders);
   box: string = '';
@@ -121,29 +121,40 @@ export class SalesAccountingDetailComponent implements OnInit {
 
               this.bill.table = tableParam;
               this.bill.totalPrice = this.calculatePaidOrdersSumCost();
+              this.bill.isClosed = true;
 
-              this.accountingService.createBill(this.bill).subscribe(response => {
+              //nonPaidOrders
+              this.nonPaidOrders = savedOrders
+                .filter(savedOrder => !paidOrders.some(paidOrder => paidOrder.id === savedOrder.id))  // paidOrders içinde olmayanlar
+                .map(order => order.id);  // Sadece id'leri alıyoruz
 
-                for (var i = 0; i < paidOrders.length; i++) {
-                  var model = {
-                    billId: response.id,
-                    productId: paidOrders[i].productId,
-                    quantity: paidOrders[i].quantity
-                  }
-                  this.orderCreate.push(model);
+
+              console.log('Non-Paid Orders:', this.nonPaidOrders);
+
+
+              //this.orderService.delete_range(this.nonPaidOrders).
+
+              this.orderService.delete_range(this.nonPaidOrders).subscribe(
+                (response) => {
+                  console.log('Non-Paid Orders başarıyla silindi:', response);
+
+                },
+                (error) => {
+                  console.error('Non-Paid Orders silinirken bir hata oluştu:', error);
+
                 }
+              );
 
-                // OrderService'den addOrders fonksiyonunu çağırma *********
-                this.orderService.addOrders(this.orderCreate).subscribe(response => {
-                  console.log('Siparişler başarıyla oluşturuldu:', response);
-                }, error => {
-                  console.error('Sipariş oluşturma hatası:', error);
-                });
-
-
-              }, error => {
-                console.error('Bill oluşturma hatası:', error);
-              });
+              this.accountingService.updateBill(this.bill).subscribe(
+                (response) => {
+                  // Güncelleme başarılı olduğunda yapılacak işlemler
+                  console.log('Fatura başarıyla güncellendi:', response);
+                },
+                (error) => {
+                  // Güncelleme hatası durumunda yapılacak işlemler
+                  console.error('Fatura güncellenirken bir hata oluştu:', error);
+                }
+              );
 
               // Yeni listeyi tekrar localStorage'a kaydet
               localStorage.setItem('salesAccountingOrders', JSON.stringify(otherSavedOrders));

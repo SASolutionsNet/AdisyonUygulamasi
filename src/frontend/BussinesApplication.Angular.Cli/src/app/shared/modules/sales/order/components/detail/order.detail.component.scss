@@ -3,6 +3,129 @@
   --phone-breakpoint: 480px;
   --primary-color: #3498db;
 }
+/*
+.amount-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #2c3e50; // Koyu gri tonlarında arka plan
+  padding: 20px 25px; // Yükseklik ve yatay boşluk
+  border-radius: 10px; // Yumuşak köşeler
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); // Hafif bir gölge ekledik
+  width: 100%;
+  max-width: 400px; // Maksimum genişlik belirleyerek fazla genişlemesini engelledik
+  margin: 0 auto; // Ortalamak için margin
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; // Modern bir yazı tipi
+}
+
+.amount-label {
+  font-size: 18px; // Etiket için okunabilir bir boyut
+  font-weight: 600; // Etiketin daha belirgin olması için kalın yazı
+  color: #ecf0f1; // Açık gri rengiyle modern bir görünüm
+  text-transform: uppercase; // Etiketi büyük harf yaparak şıklık ekledik
+  letter-spacing: 1px; // Harfler arasında biraz boşluk ekledik
+}
+
+.amount-value {
+  font-size: 22px; // Tutarı daha belirgin yapmak için biraz daha büyük yazı tipi
+  font-weight: 700; // Tutarın güçlü ve dikkat çekici olması için kalın
+  color: #e74c3c; // Parlak kırmızı tonu, dikkat çeker ve modern görünür
+  display: flex;
+  align-items: center;
+  gap: 5px; // Sayı ve sembol arasında boşluk
+}
+
+.amount-value::after {
+  content: "₺"; // Tutar kısmının sonuna para birimi ekliyoruz
+  font-size: 18px; // Simgeyi biraz küçültüyoruz
+  color: #e74c3c; // Aynı kırmızı tonu ile uyum sağlasın diye
+}*/
+
+.amount-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #2c3e50; // Koyu gri tonlarında arka plan
+  padding: 20px 25px; // Yükseklik ve yatay boşluk
+  border-radius: 10px; // Yumuşak köşeler
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15); // Hafif bir gölge ekledik
+  width: 100%;
+  max-width: 400px; // Maksimum genişlik belirleyerek fazla genişlemesini engelledik
+  margin: 0 auto; // Ortalamak için margin
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; // Modern bir yazı tipi
+  flex-direction: row; // Yatayda hizalama
+
+  @media (max-width: 768px) { // Tablet ve daha küçük ekranlar
+    padding: 15px; // İçerik etrafındaki boşlukları küçültüyoruz
+    flex-direction: column; // Dikeyde hizalama
+    max-width: 90%; // Ekran boyutuna göre genişliği ayarlıyoruz
+  }
+
+  @media (max-width: 480px) { // Mobil ekranlar
+    padding: 10px; // Daha küçük ekranlarda boşlukları azaltıyoruz
+    flex-direction: column; // Dikey hizalama
+    max-width: 95%; // Daha küçük ekranlar için yüzde bazlı genişlik
+  }
+}
+
+.amount-label {
+  font-size: 18px; // Etiket için okunabilir bir boyut
+  font-weight: 600; // Etiketin daha belirgin olması için kalın yazı
+  color: #ecf0f1; // Açık gri rengiyle modern bir görünüm
+  text-transform: uppercase; // Etiketi büyük harf yaparak şıklık ekledik
+  letter-spacing: 1px; // Harfler arasında biraz boşluk ekledik
+
+  @media (max-width: 768px) { // Tablet ve daha küçük ekranlar
+    font-size: 16px; // Etiket boyutunu biraz küçültüyoruz
+  }
+
+  @media (max-width: 480px) { // Mobil ekranlar
+    font-size: 14px; // Etiket boyutunu daha da küçültüyoruz
+  }
+}
+
+.amount-value {
+  font-size: 22px; // Tutarı daha belirgin yapmak için biraz daha büyük yazı tipi
+  font-weight: 700; // Tutarın güçlü ve dikkat çekici olması için kalın
+  color: #e74c3c; // Parlak kırmızı tonu, dikkat çeker ve modern görünür
+  display: flex;
+  align-items: center;
+  gap: 5px; // Sayı ve sembol arasında boşluk
+
+  @media (max-width: 768px) { // Tablet ve daha küçük ekranlar
+    font-size: 20px; // Tutar boyutunu biraz küçültüyoruz
+  }
+
+  @media (max-width: 480px) { // Mobil ekranlar
+    font-size: 18px; // Tutar boyutunu daha da küçültüyoruz
+  }
+}
+
+.amount-value::after {
+  content: "₺"; // Tutar kısmının sonuna para birimi ekliyoruz
+  font-size: 18px; // Simgeyi biraz küçültüyoruz
+  color: #e74c3c; // Aynı kırmızı tonu ile uyum sağlasın diye
+
+  @media (max-width: 768px) { // Tablet ve daha küçük ekranlar
+    font-size: 16px; // Simgeyi daha küçük yapıyoruz
+  }
+
+  @media (max-width: 480px) { // Mobil ekranlar
+    font-size: 14px; // Simgeyi mobil ekranlar için daha da küçültüyoruz
+  }
+}
+
+
+
+.product-tile {
+  transition: background-color 0.3s ease; // Renk değişiminin yumuşak bir geçişle olmasını sağlar
+
+  &:active {
+    background-color: aliceblue; // Tıklama anında mavi olur
+    color: white; // Metin rengini beyaz yaparak okunabilirliği artırabilirsin
+  }
+}
+
 
 .responsive-container {
   display: flex;

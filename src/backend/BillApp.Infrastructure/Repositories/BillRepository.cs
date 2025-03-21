@@ -45,8 +45,8 @@ namespace BillApp.Infrastructure.Repositories
                 throw new KeyNotFoundException("Bill not found.");
             }
 
-            existingBill.IsDel = true;
 
+            _context.Bills.Remove(existingBill);
             await _context.SaveChangesAsync();
             return existingBill;
         }

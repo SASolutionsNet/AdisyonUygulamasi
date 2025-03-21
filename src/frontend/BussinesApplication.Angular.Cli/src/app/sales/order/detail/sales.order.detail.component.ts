@@ -14,9 +14,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatIcon } from '@angular/material/icon';
+import { SalesAccountingService } from '../../../shared/modules/sales/accounting/services/accounting.service';
+import { Order } from '../../../shared/modules/sales/accounting/components/detail/accounting.detail.component';
 interface Tab {
   label: string;
-  tiles: { name: string, price: number, productId : string }[];  // 'tiles' should be an array of objects
+  tiles: { name: string, price: number, productId: string }[];  // 'tiles' should be an array of objects
 }
 
 @Component({
@@ -24,9 +26,12 @@ interface Tab {
   templateUrl: './sales.order.detail.component.html',
   styleUrls: ['./sales.order.detail.component.scss'],
   standalone: true,
-  imports: [MatIcon,MatPaginatorModule,OrderDetailComponent, MatCardModule, SidebarComponent, HeaderComponent],  // Import dependencies
+  imports: [MatIcon, MatPaginatorModule, OrderDetailComponent, MatCardModule, SidebarComponent, HeaderComponent],  // Import dependencies
 })
 export class SalesOrderDetailComponent implements OnInit {
+
+
+
   // Initialize SalesAccounting object
   salesAccounting: SalesAccounting = new SalesAccounting();  // Initialized correctly
   tabsData: Tab[] = [];  // Array of tabs, each with a label and tiles (products)
@@ -36,12 +41,15 @@ export class SalesOrderDetailComponent implements OnInit {
   salesAccountings: SalesAccounting[] = [];  // List of sales accounting data
   dataSource = new MatTableDataSource<any>([]); // Başlangıçta boş veri
   matchingOrders: Orders[] = [];
+  billId: string = "";
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private cdRef: ChangeDetectorRef,
     private snackBar: MatSnackBar,
     private productService: PSService,
+    private accountingService: SalesAccountingService,
+    private orderService: SalesOrderService
   ) { }
   sidebarVisible = false;
 
@@ -51,7 +59,7 @@ export class SalesOrderDetailComponent implements OnInit {
   }
 
   ngOnInit() {
-   
+
     // Check if orders are stored in localStorage
     const storedOrders = localStorage.getItem('salesAccountingOrders');
     if (storedOrders) {
@@ -95,7 +103,7 @@ export class SalesOrderDetailComponent implements OnInit {
           if (tabIndex === -1) {
             this.tabsData.push({
               label: product.categoryName,
-              tiles: [{ name: product.name, price: product.price, productId : product.id }]
+              tiles: [{ name: product.name, price: product.price, productId: product.id }]
             });
           } else {
             this.tabsData[tabIndex].tiles.push({ name: product.name, price: product.price, productId: product.id });
@@ -111,10 +119,49 @@ export class SalesOrderDetailComponent implements OnInit {
     });
   }
 
-  // Handle tile click event
-  onTileClick(tile: { name: string, price: number, productId : string }): void {
+  ngOnDestroy(): void {
 
-   
+    this.activatedRoute.paramMap.subscribe(params => {
+      this.billId = params.get('billId')?.toString() ?? '';
+      this.boxParam = params.get('box')?.toString() ?? '';
+    });
+
+    // localStorage'dan salesAccountingOrders verisini al
+    let savedOrders: Order[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
+    // 'table' parametresi ile eşleşen kayıtları filtrele ve çıkar
+    savedOrders = savedOrders.filter(order => order.table == this.boxParam);
+    console.log("destroyda savedorders")
+    console.log(savedOrders)
+    if (savedOrders.length == 0)
+      this.accountingService.deleteBill(this.billId).subscribe(response => {
+        console.log(response)
+        console.log("bill silindi")
+      });
+
+  }
+
+
+  // Handle tile click event
+  onTileClick(tile: { name: string, price: number, productId: string }): void {
+    this.activatedRoute.paramMap.subscribe(params => {
+      this.billId = params.get('billId')?.toString() ?? '';
+      this.boxParam = params.get('box')?.toString() ?? '';
+    });
+
+    var addOrder = {
+      billId: this.billId,
+      productId: tile.productId,
+      quantity: 1
+    };
+
+    // OrderService'den addOrders fonksiyonunu çağırma *********
+    this.orderService.createOrder(addOrder).subscribe(response => {
+      console.log('Siparişler başarıyla oluşturuldu:', response);
+    }, error => {
+      console.error('Sipariş oluşturma hatası:', error);
+    });
+
+
 
     // Retrieve 'box' param from the URL using ActivatedRoute
     this.activatedRoute.paramMap.subscribe(params => {
@@ -131,7 +178,8 @@ export class SalesOrderDetailComponent implements OnInit {
       cost: tile.price,
       table: this.boxParam,
       quantity: 1,
-      productId: tile.productId 
+      productId: tile.productId,
+      billId: this.billId
     };
 
     // Add the new order to salesAccounting.orders
@@ -160,7 +208,7 @@ export class SalesOrderDetailComponent implements OnInit {
 
   // Method to get orders with matching table value from the route
   getOrdersByBoxParam(): Orders[] {
-    
+
 
     // Retrieve 'box' param from the URL using ActivatedRoute
     this.activatedRoute.paramMap.subscribe(params => {
@@ -180,6 +228,7 @@ export class SalesOrderDetailComponent implements OnInit {
 
   // Handle button click event (to remove order)
   handleButtonClick(order: Orders): void {
+
     console.log('Button clicked for order:', order);
 
     // Remove order from salesAccounting.orders based on product name
@@ -198,6 +247,36 @@ export class SalesOrderDetailComponent implements OnInit {
 
     // Optionally, you can call the getOrdersByBoxParam method again if you want to filter based on the box param
     this.getOrdersByBoxParam();
+
+
+    // localStorage'dan salesAccountingOrders verisini al
+    let savedOrders: Order[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
+    // 'table' parametresi ile eşleşen kayıtları filtrele ve çıkar
+    savedOrders = savedOrders.filter(order => order.table == this.boxParam);
+
+    this.orderService.deleteOrder(this.billId, order.productId).subscribe(
+      (response) => {
+        if (savedOrders.length = 0) {
+          this.accountingService.deleteBill(order.billId).subscribe(
+            (response) => {
+              // Silme işlemi başarılı olduğunda yapılacak işlemler
+              console.log('Fatura başarıyla silindi:', response);
+            },
+            (error) => {
+              // Silme işlemi sırasında bir hata oluştuğunda yapılacak işlemler
+              console.error('Fatura silinirken bir hata oluştu:', error);
+            }
+          );
+        }
+        // Silme işlemi başarılı olduğunda yapılacak işlemler
+        console.log('Sipariş başarıyla silindi:', response);
+      },
+      (error) => {
+        // Silme işlemi sırasında bir hata oluştuğunda yapılacak işlemler
+        console.error('Sipariş silinirken bir hata oluştu:', error);
+
+      }
+    );
   }
 
 

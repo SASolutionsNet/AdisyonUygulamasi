@@ -57,7 +57,7 @@ import { SalesAccountingDetailComponent } from './accounting/detail/sales.accoun
         component: SalesOrderListComponent
       },
       {
-        path: 'order/detail/:box',
+        path: 'order/detail/:box/:billId',
         component: SalesOrderDetailComponent
       },
       {
@@ -68,7 +68,7 @@ import { SalesAccountingDetailComponent } from './accounting/detail/sales.accoun
         path: 'accounting/detail/:box',
         component: SalesAccountingDetailComponent
       }
-   
+
     ]),
 
 
@@ -82,7 +82,7 @@ import { SalesAccountingDetailComponent } from './accounting/detail/sales.accoun
 
 
 
-/*    UserService*/
+    /*    UserService*/
   ]
 })
 

@@ -58,6 +58,23 @@ namespace BillApp.Api
         }
 
         [Authorize]
+        [HttpGet("get-all-closed-tables")]
+        public async Task<IActionResult> GetAllClosedTables()
+        {
+            var result = await _billService.GetAllClosedTables();
+
+            if (result.Success)
+            {
+                if (result.Data == null)
+                    return NotFound("Open tables not found.");
+
+                return Ok(result.Data);
+            }
+            else
+                return StatusCode(500, "Request Failed");
+        }
+
+        [Authorize]
         [HttpGet("get-by-id")]
         public async Task<IActionResult> GetById([FromBody] BillGetByIdAndDeleteRequest model)
         {

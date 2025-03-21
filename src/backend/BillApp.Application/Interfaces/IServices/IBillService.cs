@@ -12,6 +12,7 @@ namespace BillApp.Application.Interfaces.IServices
     public interface IBillService : IApplicationService<BillDto>
     {
         Task<ServiceResponse<IEnumerable<BillDto>>> GetAllOpenTables();
+        Task<ServiceResponse<IEnumerable<BillDto>>> GetAllClosedTables();
         byte[] GenerateInvoicePdf(BillDto bill);
     }
 }
