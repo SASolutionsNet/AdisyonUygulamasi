@@ -53,7 +53,7 @@ import { SalesAccountingDetailComponent } from './accounting/detail/sales.accoun
     MatSnackBarModule,
     RouterModule.forChild([
       {
-        path: 'order/list',
+        path: 'order/list/:isTableChanged',
         component: SalesOrderListComponent
       },
       {
