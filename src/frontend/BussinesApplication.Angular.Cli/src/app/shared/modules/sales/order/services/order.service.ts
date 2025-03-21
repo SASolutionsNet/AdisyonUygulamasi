@@ -12,7 +12,7 @@ import { environment } from '../../../../../../environments/environment';
   providedIn: 'root'
 })
 export class SalesOrderService {
-  private apiUrl = `${environment.apiUrl}/Order`; 
+  private apiUrl = `${environment.apiUrl}/Order`;
   constructor(
     private http: HttpClient) {
   }
@@ -99,6 +99,21 @@ export class SalesOrderService {
     // DELETE isteği ile siparişi sil
     return this.http.delete(`${this.apiUrl}/delete/${orderId}`, { headers });
   }
+
+
+
+  // Yeni siparişler oluşturma (Liste alacak şekilde güncellendi)
+  delete_range(orderDataList: any[]): Observable<any> {
+    const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
+
+    // Eğer token varsa, Authorization header'ına ekle
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    // POST isteği ile yeni siparişleri oluştur
+    return this.http.delete(`${this.apiUrl}/delete-range/${orderDataList}`, { headers });
+  }
+
+
   // Siparişi ID ile almak
   getOrderById(orderId: string): Observable<any> {
     const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al

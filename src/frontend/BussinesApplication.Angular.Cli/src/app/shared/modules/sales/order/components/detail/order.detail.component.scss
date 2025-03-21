@@ -4,6 +4,17 @@
   --primary-color: #3498db;
 }
 
+
+.product-tile {
+  transition: background-color 0.3s ease; // Renk değişiminin yumuşak bir geçişle olmasını sağlar
+
+  &:active {
+    background-color: aliceblue; // Tıklama anında mavi olur
+    color: white; // Metin rengini beyaz yaparak okunabilirliği artırabilirsin
+  }
+}
+
+
 .responsive-container {
   display: flex;
   flex-direction: column;
