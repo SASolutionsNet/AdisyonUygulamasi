@@ -59,8 +59,7 @@ export class SalesAccountingDetailComponent implements OnInit {
       this.box = boxParam !== null ? boxParam : '';  // Eğer null ise boş bir string atıyoruz
       this.billId = billParam !== null ? billParam : '';  // Eğer null ise boş bir string atıyoruz
       this.loadOrdersFromLocalStorage();  // Sayfaya her döndüğünde veriyi yükle
-
-
+      this.calculatePaidOrdersSumCost();
     });
 
   }
@@ -76,22 +75,21 @@ export class SalesAccountingDetailComponent implements OnInit {
   // LocalStorage'dan "orders" verisini alıyoruz ve box'a göre filtreliyoruz
   loadOrdersFromLocalStorage() {
     var orders: Orders[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
-    console.log("orders")
-    console.log(orders)
     if (orders.filter(item => item.table == this.box).length == 0) {
       this.orderService.getAllOrdersForBill(this.billId).subscribe((data: Orders[]) => {
 
-        data = data.flatMap(order =>
-          Array(order.quantity).fill({
-            ...order,
-            paid: false,
-            table: this.box,
-            quantity: 1,
-            cost: order.cost / order.quantity
-          })
-        );
-
         if (Array.isArray(data)) {
+
+          data = data.flatMap(order =>
+            Array(order.quantity).fill({
+              ...order,
+              paid: false,
+              table: this.box,
+              quantity: 1,
+              cost: order.cost / order.quantity
+            })
+          );
+
           if (orders.length == 0) {
             orders = data;
             localStorage.setItem('salesAccountingOrders', JSON.stringify(orders));
