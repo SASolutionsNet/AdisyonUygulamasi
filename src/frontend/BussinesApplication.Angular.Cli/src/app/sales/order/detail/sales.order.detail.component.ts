@@ -103,14 +103,15 @@ export class SalesOrderDetailComponent implements OnInit, CanComponentDeactivate
     console.log(this.billId);
     // Check if orders are stored in localStorage
     var storedOrders: Orders[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
-
+    console.log("storedOrders")
+    console.log(storedOrders)
     if (storedOrders.filter(item => item.table == this.boxParam).length == 0) {
       this.orderService.getAllOrdersForBill(this.billId).subscribe(response => {
         if (Array.isArray(response)) {
-          console.log("response")
-          console.log(response)
-          console.log("storedOrders")
-          console.log(storedOrders)
+
+          console.log("response");
+          console.log(response as Orders[]);
+
           if (storedOrders.length == 0) {
             storedOrders = response as Orders[];
             localStorage.setItem('salesAccountingOrders', JSON.stringify(storedOrders));
