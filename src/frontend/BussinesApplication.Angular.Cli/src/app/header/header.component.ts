@@ -25,6 +25,13 @@ export class HeaderComponent implements OnInit {
     console.log('Header component initialized');
   }
 
+  clearLocalStorage() {
+    console.log("local storage cleaned")
+    localStorage.removeItem("paidOrders");
+    localStorage.removeItem("salesAccountingOrders");
+
+  }
+
   getCurrentUserInfo(): void {
     this.userService.getCurrentUser().subscribe(
       (response) => {
@@ -46,7 +53,7 @@ export class HeaderComponent implements OnInit {
         // Çıkış işlemi başarıyla tamamlandığında yapılacak işlemler
         console.log('Çıkış başarılı!');
         // Örneğin, kullanıcıyı login sayfasına yönlendirebilirsiniz
-         this.router.navigate(['/user/login']);
+        this.router.navigate(['/user/login']);
       },
       error: (err) => {
         console.error('Çıkış işlemi sırasında hata:', err);

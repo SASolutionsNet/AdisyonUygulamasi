@@ -66,9 +66,9 @@
 .user-info {
   display: flex;
   align-items: center;
-  justify-content: flex-start; /* Sol hizalama */
-  margin-left: 200px; /* Sol taraftan biraz boşluk */
-  flex-grow: 1; /* Sağdaki çıkış butonundan uzaklaştırmak için */
+  gap: 10px;
+  margin-left: auto; /* Bu satır değişti */
+  margin-right: 20px; /* Sağdan boşluk ekledik */
 }
 
 /* Kullanıcı adı metni */
@@ -77,28 +77,37 @@
   font-size: 14px; /* Kullanıcı adı font boyutunu küçülttük */
   font-weight: 500;
 }
-
-/* Çıkış yap butonu */
+/* Çıkış butonu için düzeltme */
 .logout-btn {
-  padding: 6px 18px; /* Buton boyutunu küçültüyoruz */
-  font-size: 12px; /* Buton yazı boyutunu küçültüyoruz */
-  background-color: #e74c3c; /* Kırmızı renk */
+  padding: 6px 18px;
+  font-size: 12px;
+  background-color: #e74c3c;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  position: absolute; /* Butonu header'ın en sağ köşesine sabitle */
-  right: 10px; /* Sağda konumlandır */
-  top: 50%; /* Yatay ortalamak için */
-  transform: translateY(-50%); /* Yatay ortalamayı sağlamak için */
+  /* position: absolute kaldırıldı */
+  /* transform: translateY(-50%) kaldırıldı */
 }
+
 
 /* Çıkış butonuna hover efekti */
 .logout-btn:hover {
   background-color: #c0392b; /* Hover durumunda daha koyu kırmızı */
 }
 
+/* Temizle butonu eklendi */
+.clear-btn {
+  padding: 6px 18px;
+  font-size: 12px;
+  background-color: #3498db;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
 
 /* Logo container */
 .logo {
