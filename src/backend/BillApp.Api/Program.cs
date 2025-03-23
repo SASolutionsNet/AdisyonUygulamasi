@@ -1,9 +1,12 @@
+using BillApp.Api.Hubs;
 using BillApp.Application.Services;
 using BillApp.Infrastructure;
 using BillApp.Infrastructure.Extensions;
 using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSignalR();
 
 // CORS Politikasý Tanýmlama
 var allowedOrigins = builder.Configuration.GetSection("AllowedOrigins").Get<string[]>();
@@ -15,7 +18,8 @@ builder.Services.AddCors(options =>
           {
               policy.WithOrigins(allowedOrigins)
                     .AllowAnyHeader()
-                    .AllowAnyMethod();
+                    .AllowAnyMethod()
+                    .AllowCredentials();
           });
 });
 
@@ -80,6 +84,7 @@ if (!int.TryParse(portString, out int port) || port < 1024 || port > 65535)
 
 // Kestrel'i HTTP Üzerinden Çalýþtýr
 var url = $"http://0.0.0.0:{port}";
+app.MapHub<OrderHub>("/api/orderhub");
 
 app.MapControllers();
 app.Run(url);

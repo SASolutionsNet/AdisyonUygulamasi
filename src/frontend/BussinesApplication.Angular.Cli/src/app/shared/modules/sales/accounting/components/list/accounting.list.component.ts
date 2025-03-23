@@ -16,6 +16,7 @@ import { CommonModule } from '@angular/common';
 import { SalesAccountingService } from '../../services/accounting.service';
 import { SalesAccounting } from '../../models/accounting.model';
 import { MatIconModule } from '@angular/material/icon';
+import { SignalrService } from '../../../order/services/signalr.service';
 
 @Component({
   selector: 'sasolution-sales-accounting-list',
@@ -34,6 +35,7 @@ export class AccountingListComponent implements OnInit {
 
 
   constructor(
+    private signalRService: SignalrService,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private cdRef: ChangeDetectorRef,
@@ -44,23 +46,23 @@ export class AccountingListComponent implements OnInit {
     this.dateAdapter.setLocale('tr');
 
   }
-  resetReload() {
-    window.location.reload();
-  }
-
 
   ngOnInit() {
     this.setDistinctTables();
-    // Sayfayı her 10 saniyede bir yenile
-    //this.reloadInterval = setInterval(() => {
-    //  this.setDistinctTables()
-    //}, 300);
+
+    this.signalRService.startConnection();
+    this.signalRService.addOrderListener(() => {
+      console.log("Sipraiş güncellemsi oldu.");
+      this.setDistinctTables();
+    });
+
   }
 
   setDistinctTables() {
     this.accountingService.getAllOpenBills().subscribe(response => {
       if (Array.isArray(response)) {
         this.bills = response;
+        console.log(this.bills)
         this.distinctTables = this.bills.map(item => item.table);
       } else {
         this.distinctTables = [];
@@ -72,6 +74,12 @@ export class AccountingListComponent implements OnInit {
   isOpen(box: string): boolean {
     return this.distinctTables.includes(box);
   }
+
+
+  hasOrder(box: string): boolean {
+    return this.bills.filter(x => x.table == box)[0].orders.length != 0;
+  }
+
   ngAfterViewChecked() {
     //explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
     this.cdRef.detectChanges();

@@ -1,10 +1,14 @@
 ﻿using AutoMapper;
+using BillApp.Api.Hubs;
 using BillApp.Api.Models.Order.Request;
 using BillApp.Api.Models.Order.Response;
 using BillApp.Application.Contracts.Order;
 using BillApp.Application.Interfaces.IServices;
+using BillApp.Domain.Bill;
+using BillApp.Domain.Order;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.IdentityModel.Abstractions;
 
 namespace BillApp.Api
@@ -17,11 +21,13 @@ namespace BillApp.Api
 
         private readonly IOrderService _orderService;
         private readonly IMapper _mapper;
+        private readonly IHubContext<OrderHub> _hubContext;
 
-        public OrderController(IOrderService orderService, IMapper mapper)
+        public OrderController(IOrderService orderService, IMapper mapper, IHubContext<OrderHub> hubContext)
         {
             _orderService = orderService;
             _mapper = mapper;
+            _hubContext = hubContext;
         }
 
         [Authorize]
@@ -36,6 +42,29 @@ namespace BillApp.Api
                     return NotFound("Orders not found.");
 
                 return Ok(result.Data);
+            }
+            else
+                return StatusCode(500, "Request Failed");
+        }
+
+
+        [Authorize]
+        [HttpGet("get-order-with-bill-product")]
+        public async Task<IActionResult> GetOrdersWithBillAndProductData([FromQuery] Guid billId)
+        {
+            if (billId == Guid.Empty)
+                return BadRequest("Bill id empty.");
+
+            var result = await _orderService.GetOrdersWithBillAndProductData(billId);
+
+            if (result.Success)
+            {
+                if (result.Data == null)
+                    return NotFound("Active orders not found.");
+
+                var mappedResult = _mapper.Map<IEnumerable<OrderWithBillDto>, IEnumerable<OrderWithBillAndProductResponse>>(result.Data);
+
+                return Ok(mappedResult);
             }
             else
                 return StatusCode(500, "Request Failed");
@@ -78,6 +107,8 @@ namespace BillApp.Api
 
             if (result.Success)
             {
+                await _hubContext.Clients.All.SendAsync("ReceiveOrderUpdate");
+
                 var mappedResult = _mapper.Map<OrderDto, OrderResponse>(result.Data);
                 return Ok(mappedResult);
             }
@@ -135,6 +166,8 @@ namespace BillApp.Api
 
             if (result.Success)
             {
+                await _hubContext.Clients.All.SendAsync("ReceiveOrderUpdate");
+
                 var mappedResult = _mapper.Map<OrderDto, OrderResponse>(result.Data);
                 return Ok(mappedResult);
             }

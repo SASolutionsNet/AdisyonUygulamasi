@@ -9,6 +9,7 @@ using iText.Kernel.Pdf;
 using iText.Layout;
 using iText.Layout.Element;
 using iText.Layout.Properties;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 
@@ -94,7 +95,7 @@ namespace BillApp.Application.Services
 
         public async Task<ServiceResponse<IEnumerable<BillDto>>> GetAllOpenTables()
         {
-            var bills = _billRepository.GetQueryable().Where(x => x.IsClosed == false);
+            var bills = _billRepository.GetQueryable().Where(x => x.IsClosed == false).Include(p => p.Orders);
 
             var mappedReturnModel = _mapper.Map<IEnumerable<Bill>, IEnumerable<BillDto>>(bills);
             return new ServiceResponse<IEnumerable<BillDto>>

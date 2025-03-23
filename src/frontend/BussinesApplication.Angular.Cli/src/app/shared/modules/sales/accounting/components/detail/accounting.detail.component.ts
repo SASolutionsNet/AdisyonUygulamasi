@@ -47,35 +47,38 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
   sumPaidOrdersCost: number = 0; // Başlangıçta toplam tutar 0
 
   constructor(
-    private router: Router, private cdRef: ChangeDetectorRef, private route: ActivatedRoute,) { }
+    private router: Router, private cdRef: ChangeDetectorRef, private route: ActivatedRoute) { }
 
   ngOnInit() {
-    // localStorage'dan ödenmiş siparişleri al
-    const savedPaidOrders = JSON.parse(localStorage.getItem('paidOrders') || '[]');
-    this.paidRows = savedPaidOrders;  // Sayfa yüklendiğinde 'paidOrders' verilerini al
-
-    // Ödenmiş siparişleri dataSource'tan çıkarmak
-    this.dataSource.data.forEach(order => {
-      // Ödenmiş siparişlerle eşleşen satırları işaretle
-      const matchingPaidOrders = this.paidRows.filter(paidOrder =>
-        paidOrder.id === order.id && paidOrder.table === order.table);
-
-      // Eğer eşleşen ödenmiş siparişler varsa ve miktarları eşitse
-      const isPaid = matchingPaidOrders.length === order.quantity;
-
-      if (isPaid) {
-        order.paid = true;  // Bu satır 'paid' olarak işaretlendi
-      } else {
-        order.paid = false;  // Eğer eşleşme yoksa, 'paid' olarak işaretleme
-      }
-    });
-
-    // Yeni güncellenmiş veriyi dataSource'a atayın
-    this.dataSource.data = [...this.dataSource.data]; // Bu satır çok önemli!
+    this.fillDataSource();
 
     this.calculateSumCost();  // Toplamı yeniden hesaplayın
     this.calculateSelectedOrdersSumCost();
     this.calculatePaidOrdersSumCost();
+  }
+
+  fillDataSource() {
+    // localStorage'dan ödenmiş siparişleri al
+    const savedPaidOrders = JSON.parse(localStorage.getItem('paidOrders') || '[]');
+    this.paidRows = savedPaidOrders;  // Sayfa yüklendiğinde 'paidOrders' verilerini al
+
+    // Ödenmiş siparişleri productId bazında grupla
+    const paidCounts: Record<string, number> = savedPaidOrders.reduce((acc: Record<string, number>, order: Orders) => {
+      acc[order.productId] = (acc[order.productId] || 0) + 1;
+      return acc;
+    }, {}); // Boş bir obje ile başlatıyoruz
+
+    // dataSource içindeki her siparişi kontrol et
+    this.dataSource.data.forEach(order => {
+      // Ödenen sipariş miktarını al (yoksa 0 kabul et)
+      const paidCount = paidCounts[order.productId] || 0;
+
+      // Eğer siparişin tamamı ödendiyse true, değilse false
+      order.paid = paidCount >= order.quantity;
+    });
+
+    // Yeni güncellenmiş veriyi dataSource'a atayın
+    this.dataSource.data = [...this.dataSource.data]; // Bu satır çok önemli!
   }
 
   ngAfterViewInit() {
@@ -139,7 +142,7 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
   // Orders fiyatlarının toplamını hesaplayan fonksiyon
   calculateSumCost(): void {
     this.sumCost = this.dataSource.data.reduce((total, order) => {
-      return total + (order.cost * order.quantity);  // Fiyat ve miktarı çarparak toplamı alıyoruz
+      return total + (order.price * order.quantity);  // Fiyat ve miktarı çarparak toplamı alıyoruz
     }, 0);
   }
 
@@ -147,7 +150,7 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
   calculateSelectedOrdersSumCost(): void {
 
     this.sumSelectedOrdersCost = this.selectedRows.reduce((total, order) => {
-      return total + (order.cost * order.quantity);  // Fiyat ve miktarı çarparak toplamı alıyoruz
+      return total + (order.price * order.quantity);  // Fiyat ve miktarı çarparak toplamı alıyoruz
     }, 0);
   }
 
@@ -167,7 +170,7 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
 
     // Filtrelenen kayıtlarda quantity ve cost değerlerinin çarpımını hesapla
     this.sumPaidOrdersCost = filteredOrders.reduce((total, order) => {
-      return total + (order.quantity * order.cost);  // Fiyat ve miktarı çarparak toplamı alıyoruz
+      return total + (order.quantity * order.price);  // Fiyat ve miktarı çarparak toplamı alıyoruz
     }, 0);
     /*}*/
   }

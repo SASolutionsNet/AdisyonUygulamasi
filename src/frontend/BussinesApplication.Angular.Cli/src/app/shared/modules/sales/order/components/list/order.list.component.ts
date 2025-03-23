@@ -19,6 +19,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { SalesAccountingService } from '../../../accounting/services/accounting.service';
 import { SalesAccounting } from '../../../accounting/models/accounting.model';
+import { SignalrService } from '../../services/signalr.service';
 
 @Component({
   selector: 'sasolution-sales-order-list',
@@ -49,7 +50,9 @@ export class OrderListComponent implements OnInit {
     private dateAdapter: DateAdapter<Date>,
     private orderService: SalesOrderService,
     private productService: PSService,
-    private accountingService: SalesAccountingService
+    private accountingService: SalesAccountingService,
+    private signalRService: SignalrService,
+
   ) {
 
     // https://github.com/angular/material2/issues/4876
@@ -57,16 +60,13 @@ export class OrderListComponent implements OnInit {
 
   }
 
-  resetReload() {
-    window.location.reload();
-  }
-
   ngOnInit() {
     this.setDistinctTables();
-    // Sayfayı her 10 saniyede bir yenile
-    //this.reloadInterval = setInterval(() => {
-    //  this.setDistinctTables()
-    //}, 300);
+    this.signalRService.startConnection();
+    this.signalRService.addOrderListener(() => {
+      console.log("Sipraiş güncellemsi oldu.");
+      this.setDistinctTables();
+    });
   }
 
   setDistinctTables() {
@@ -81,12 +81,12 @@ export class OrderListComponent implements OnInit {
     });
   }
 
-
-
   isOpen(box: string): boolean {
     return this.distinctTables.includes(box);
   }
-
+  hasOrder(box: string): boolean {
+    return this.bills.filter(x => x.table == box)[0].orders.length != 0;
+  }
   ngAfterViewChecked() {
     //explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
     this.cdRef.detectChanges();
@@ -106,14 +106,7 @@ export class OrderListComponent implements OnInit {
     }
     else {
       this.billId = existingBills[0].id;
-
       this.router.navigate([`/sales/order/detail/${box}/${this.billId}`]);  // Yönlendirme
-
     }
-
-
   }
-
-
-
 }

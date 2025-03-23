@@ -78,7 +78,7 @@ namespace BillApp.Infrastructure.Repositories
 
         public IQueryable<Order> GetQueryable()
         {
-            return _context.Orders.AsQueryable();
+            return  _context.Orders.AsQueryable();
         }
 
         public async Task<Order?> GetByIdAsync(Guid id)

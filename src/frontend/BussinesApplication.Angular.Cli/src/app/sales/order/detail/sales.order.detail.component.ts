@@ -18,6 +18,7 @@ import { SalesAccountingService } from '../../../shared/modules/sales/accounting
 import { Observable, Subscription } from 'rxjs';
 import { CanDeactivate } from '@angular/router';
 import { Injectable } from '@angular/core';
+import { SignalrService } from '../../../shared/modules/sales/order/services/signalr.service';
 
 interface Tab {
   label: string;
@@ -42,13 +43,7 @@ export class DeleteGuard implements CanDeactivate<CanComponentDeactivate> {
   imports: [MatIcon, MatPaginatorModule, OrderDetailComponent, MatCardModule, SidebarComponent, HeaderComponent],  // Import dependencies
 })
 export class SalesOrderDetailComponent implements OnInit, CanComponentDeactivate {
-
-
-
-  // Initialize SalesAccounting object
-  private routerSubscription!: Subscription;
-
-  salesAccounting: SalesAccounting = new SalesAccounting();  // Initialized correctly
+  salesAccounting: SalesAccounting = new SalesAccounting();
   tabsData: Tab[] = [];  // Array of tabs, each with a label and tiles (products)
   boxParam!: string;
   orders: Orders[] = [];  // Array to hold order data
@@ -65,7 +60,8 @@ export class SalesOrderDetailComponent implements OnInit, CanComponentDeactivate
     private snackBar: MatSnackBar,
     private productService: PSService,
     private accountingService: SalesAccountingService,
-    private orderService: SalesOrderService
+    private orderService: SalesOrderService,
+    private signalRService: SignalrService,
   ) { }
   sidebarVisible = false;
 
@@ -74,10 +70,7 @@ export class SalesOrderDetailComponent implements OnInit, CanComponentDeactivate
     const navigation = this.router.getCurrentNavigation();
     const nextUrl = navigation?.finalUrl?.toString();
 
-
-    // A veya B sayfasına geçişte silme işlemi yap
-    const savedOrders: Orders[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
-    const hasOrders = savedOrders.some(order => order.table === this.boxParam);
+    const hasOrders = this.salesAccounting.orders.some(order => order.table === this.boxParam);
 
     if (nextUrl?.includes("/sales/order/list") && nextUrl?.includes("true")) {
       return true;
@@ -89,7 +82,7 @@ export class SalesOrderDetailComponent implements OnInit, CanComponentDeactivate
 
     return true;
   }
-  // Yeni fonksiyon eklendi
+
   toggleSidebar() {
     this.sidebarVisible = !this.sidebarVisible;
   }
@@ -99,64 +92,44 @@ export class SalesOrderDetailComponent implements OnInit, CanComponentDeactivate
       this.billId = params['billId'];
       this.boxParam = params['box'];
     });
+    this.setProductTabs();
+    this.getOrders();
 
-    // Check if orders are stored in localStorage
-    var storedOrders: Orders[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
-    if (storedOrders.filter(item => item.table == this.boxParam).length == 0) {
-      this.orderService.getAllOrdersForBill(this.billId).subscribe(response => {
+    this.signalRService.startConnection();
+    this.signalRService.addOrderListener(() => {
+      console.log("Sipraiş güncellemsi oldu.");
+      this.getOrders();
+    });
 
-        if (Array.isArray(response)) {
-          response = response.flatMap(order =>
-            Array(order.quantity).fill(null).map(() => ({
-              ...order,
-              paid: false,
-              table: this.boxParam,
-              quantity: 1,
-              productId: order.productId,
-              cost: order.cost / order.quantity,
-              id: this.generateGUID() // Her öğeye ayrı GUID atanır
-            }))
-          );
+  }
 
-          if (storedOrders.length == 0) {
-            storedOrders = response as Orders[];
-            localStorage.setItem('salesAccountingOrders', JSON.stringify(storedOrders));
-          }
-          else {
-            storedOrders.push(...(response as Orders[]));
-            localStorage.setItem('salesAccountingOrders', JSON.stringify(storedOrders));
-          }
-        } else {
-          console.error("Beklenen dizi formatında veri alınamadı!", response);
-        }
+  getOrders() {
+    this.orderService.getOrdersWithBillAndProduct(this.billId).subscribe((data: Orders[]) => {
+      console.log("orders")
+      console.log(data)
+      data = data.flatMap(order =>
+        Array(order.quantity).fill(null).map(() => ({
+          ...order,
+          paid: false,
+          table: order.table,
+          quantity: 1,
+          cost: order.price,
+          productId: order.productId,
+          id: order.id
+        }))
+      );
 
-
-        if (storedOrders) {
-          this.salesAccounting.orders = storedOrders;  // Parse the stored JSON string back to an array
-        }
-
-        this.setProductTabs();
-        this.cdRef.detectChanges();
-        this.getOrdersByBoxParam();
-      });
-    }
-    else {
-
-      if (storedOrders) {
-        this.salesAccounting.orders = storedOrders;  // Parse the stored JSON string back to an array
-      }
-
-      this.setProductTabs();
-      this.cdRef.detectChanges();
+      this.salesAccounting.orders = data;
       this.getOrdersByBoxParam();
-    }
-
+      this.cdRef.detectChanges();
+    });
   }
 
   ngAfterViewChecked() {
     //explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
     this.cdRef.detectChanges();
   }
+
   ngOnChanges(changes: SimpleChanges): void {
     // Burada değişen değerleri kontrol edebiliriz
     if (changes['tabsData']) {
@@ -213,44 +186,20 @@ export class SalesOrderDetailComponent implements OnInit, CanComponentDeactivate
     };
 
     // OrderService'den addOrders fonksiyonunu çağırma *********
-    this.orderService.createOrder(addOrder).subscribe(response => {
-      console.log('Siparişler başarıyla oluşturuldu:', response);
+    this.orderService.createOrder(addOrder).subscribe((response: Orders) => {
+
+      if (Array.isArray(this.salesAccounting.orders)) {
+        // Instead of directly pushing to the array, update the reference
+        this.salesAccounting.orders.push(response);
+        this.salesAccounting.orders = [...this.salesAccounting.orders]; // Create a new array reference
+        this.cdRef.detectChanges(); // Trigger change detection
+      }
+
+      this.cdRef.detectChanges();  // Manually trigger change detection
+      this.getOrdersByBoxParam();
+
     }, error => {
       console.error('Sipariş oluşturma hatası:', error);
-    });
-
-    let order: Orders = {
-      id: this.generateGUID(),
-      productName: tile.name,
-      cost: tile.price,
-      table: this.boxParam,
-      quantity: 1,
-      productId: tile.productId,
-      billId: this.billId,
-      paid: false
-    };
-
-    // Add the new order to salesAccounting.orders
-    if (Array.isArray(this.salesAccounting.orders)) {
-      // Instead of directly pushing to the array, update the reference
-      this.salesAccounting.orders.push(order);
-      this.salesAccounting.orders = [...this.salesAccounting.orders]; // Create a new array reference
-      this.cdRef.detectChanges(); // Trigger change detection
-    }
-
-    // Save the updated orders to localStorage
-    localStorage.setItem('salesAccountingOrders', JSON.stringify(this.salesAccounting.orders));
-
-    console.log('Updated orders:', this.salesAccounting.orders);
-    this.cdRef.detectChanges();  // Manually trigger change detection
-    this.getOrdersByBoxParam();
-  }
-
-  generateGUID(): string {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-      const r = Math.random() * 16 | 0;
-      const v = c === 'x' ? r : (r & 0x3 | 0x8); // v için 8, 9, a, b sayılarından biri seçilir
-      return v.toString(16);
     });
   }
 
@@ -265,6 +214,8 @@ export class SalesOrderDetailComponent implements OnInit, CanComponentDeactivate
         // Filter orders where the table value matches the box param
         this.matchingOrders = this.salesAccounting.orders.filter(order => order.table === boxParam);
 
+        console.log('salesAccounting.orders:');  // Log the filtered orders
+        console.log(this.salesAccounting.orders);  // Log the filtered orders
         console.log('Matching Orders:', this.matchingOrders);  // Log the filtered orders
       }
     });
@@ -289,35 +240,25 @@ export class SalesOrderDetailComponent implements OnInit, CanComponentDeactivate
       }
     }
 
-    // Update the localStorage with the new orders array
-    localStorage.setItem('salesAccountingOrders', JSON.stringify(this.salesAccounting.orders));
+    this.orderService.deleteOrder(this.billId, order.productId).subscribe((response) => {
 
-    // Optionally, you can call the getOrdersByBoxParam method again if you want to filter based on the box param
-    this.getOrdersByBoxParam();
+      var savedOrdersForbill = this.salesAccounting.orders.filter(x => x.billId = this.billId);
 
-
-    // localStorage'dan salesAccountingOrders verisini al
-    let savedOrders: Orders[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
-    // 'table' parametresi ile eşleşen kayıtları filtrele ve çıkar
-    savedOrders = savedOrders.filter(order => order.table == this.boxParam);
-
-    this.orderService.deleteOrder(this.billId, order.productId).subscribe(
-      (response) => {
-        if (savedOrders.length = 0) {
-          this.accountingService.deleteBill(order.billId).subscribe(
-            (response) => {
-              // Silme işlemi başarılı olduğunda yapılacak işlemler
-              console.log('Fatura başarıyla silindi:', response);
-            },
-            (error) => {
-              // Silme işlemi sırasında bir hata oluştuğunda yapılacak işlemler
-              console.error('Fatura silinirken bir hata oluştu:', error);
-            }
-          );
-        }
-        // Silme işlemi başarılı olduğunda yapılacak işlemler
-        console.log('Sipariş başarıyla silindi:', response);
-      },
+      if (savedOrdersForbill.length = 0) {
+        this.accountingService.deleteBill(order.billId).subscribe(
+          (response) => {
+            // Silme işlemi başarılı olduğunda yapılacak işlemler
+            console.log('Fatura başarıyla silindi:', response);
+          },
+          (error) => {
+            // Silme işlemi sırasında bir hata oluştuğunda yapılacak işlemler
+            console.error('Fatura silinirken bir hata oluştu:', error);
+          }
+        );
+      }
+      // Silme işlemi başarılı olduğunda yapılacak işlemler
+      console.log('Sipariş başarıyla silindi:', response);
+    },
       (error) => {
         // Silme işlemi sırasında bir hata oluştuğunda yapılacak işlemler
         console.error('Sipariş silinirken bir hata oluştu:', error);
@@ -325,6 +266,4 @@ export class SalesOrderDetailComponent implements OnInit, CanComponentDeactivate
       }
     );
   }
-
-
 }
