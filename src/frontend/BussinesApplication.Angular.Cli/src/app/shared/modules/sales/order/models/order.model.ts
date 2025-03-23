@@ -27,7 +27,7 @@ export class Orders {
   table: string = "";
   quantity: number = 0;
   productName: string = "";
-  cost: number = 0;
+  price: number = 0;
   productId: string = "";
   billId: string = "";
   paid: boolean = false;

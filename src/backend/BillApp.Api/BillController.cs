@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using BillApp.Api.Hubs;
 using BillApp.Api.Models.Bill.Request;
 using BillApp.Api.Models.Bill.Response;
 using BillApp.Application.Contracts.Bill;
@@ -6,6 +7,7 @@ using BillApp.Application.Interfaces.IServices;
 using BillApp.Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 
 namespace BillApp.Api
 {
@@ -16,11 +18,14 @@ namespace BillApp.Api
     {
         private readonly IBillService _billService;
         private readonly IMapper _mapper;
+        private readonly IHubContext<OrderHub> _hubContext;
 
-        public BillController(IBillService billService, IMapper mapper)
+
+        public BillController(IBillService billService, IMapper mapper, IHubContext<OrderHub> hubContext)
         {
             _billService = billService;
             _mapper = mapper;
+            _hubContext = hubContext;
         }
 
         [Authorize]
@@ -111,6 +116,7 @@ namespace BillApp.Api
 
             if (result.Success)
             {
+                await _hubContext.Clients.All.SendAsync("ReceiveOrderUpdate");
                 var mappedResult = _mapper.Map<BillDto, BillResponse>(result.Data);
                 return Ok(mappedResult);
             }
@@ -130,6 +136,7 @@ namespace BillApp.Api
 
             if (result.Success)
             {
+                await _hubContext.Clients.All.SendAsync("ReceiveOrderUpdate");
                 var mappedResult = _mapper.Map<BillDto, BillResponse>(result.Data);
                 return Ok(mappedResult);
             }
@@ -151,6 +158,7 @@ namespace BillApp.Api
                 if (result.Data == null)
                     return NotFound("Bill not found.");
 
+                await _hubContext.Clients.All.SendAsync("ReceiveOrderUpdate");
                 var mappedResult = _mapper.Map<BillDto, BillResponse>(result.Data);
                 return Ok(mappedResult);
             }

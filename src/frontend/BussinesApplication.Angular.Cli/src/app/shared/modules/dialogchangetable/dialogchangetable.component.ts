@@ -63,7 +63,9 @@ export class DialogChangeTableComponent implements OnInit {
   isOpen(box: string): boolean {
     return this.distinctTables.includes(box);
   }
-
+  hasOrder(box: string): boolean {
+    return this.bills.filter(x => x.table == box)[0].orders.length != 0;
+  }
   ngAfterViewChecked() {
     //explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
     this.cdRef.detectChanges();

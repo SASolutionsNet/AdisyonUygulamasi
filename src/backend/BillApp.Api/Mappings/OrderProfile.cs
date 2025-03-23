@@ -11,6 +11,7 @@ namespace BillApp.Api.Mappings
         {
             this.CreateMap<OrderDto, OrderResponse>().ReverseMap();
             this.CreateMap<OrderForBillDto, OrderForBillResponse>().ReverseMap();
+            this.CreateMap<OrderWithBillDto, OrderWithBillAndProductResponse>().ReverseMap();
             this.CreateMap<OrderCreateRequest, OrderDto>().ReverseMap();
             this.CreateMap<OrderUpdateRequest, OrderDto>().ReverseMap();
         }

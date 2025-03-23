@@ -26,7 +26,7 @@ import { Orders, SalesOrder } from '../../models/order.model';
   styleUrls: ['./order.detail.component.scss'],
   imports: [MatPaginatorModule, MatGridListModule, MatTabsModule, CommonModule, MatTableModule, MatPaginatorModule, MatSortModule, MatButtonModule, MatIconModule],
 })
-export class OrderDetailComponent implements OnInit, OnDestroy, AfterViewInit {
+export class OrderDetailComponent implements OnInit, AfterViewInit {
 
   @Input() tabs: any[] = [];  // Dinamik tablar için input
   @Input() ELEMENT_DATA: Orders[] = []; // Dinamik veri için input
@@ -67,9 +67,10 @@ export class OrderDetailComponent implements OnInit, OnDestroy, AfterViewInit {
     this.updateGridColumns();
     this.resizeObserver.observe(this.elementRef.nativeElement);
     this.dataSource.data = [...this.ELEMENT_DATA]; // Ensure a new array reference is set
-    this.cdRef.detectChanges();  // Trigger change detection after updating data
+    //this.cdRef.detectChanges();  // Trigger change detection after updating data
     this.calculateSumCost();  // Başlangıçta toplam tutarı hesapla
   }
+
   updateGridColumns() {
     const containerWidth = this.elementRef.nativeElement.offsetWidth;
 
@@ -84,22 +85,18 @@ export class OrderDetailComponent implements OnInit, OnDestroy, AfterViewInit {
     this.cdRef.detectChanges();
   }
 
-  ngOnDestroy(): void {
-    // Cleanup logic here
-  }
-
   ngAfterViewInit(): void {
     // Paginator ve Sort işlemleri ngAfterViewInit içinde yapılır, çünkü bu işlem görünümdeki öğeler tamamlandıktan sonra yapılır
     this.dataSource.sort = this.sort;
     // Yenileme için Change Detection tetikleme
-    this.cdRef.detectChanges();
+    //this.cdRef.detectChanges();
     this.calculateSumCost();  // Başlangıçta toplam tutarı hesapla
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['ELEMENT_DATA']) {
       this.dataSource.data = [...this.ELEMENT_DATA]; // Ensure a new array reference is set
-      this.cdRef.detectChanges();  // Trigger change detection after updating data
+      //this.cdRef.detectChanges();  // Trigger change detection after updating data
       this.calculateSumCost();  // Başlangıçta toplam tutarı hesapla
     }
   }
@@ -108,32 +105,25 @@ export class OrderDetailComponent implements OnInit, OnDestroy, AfterViewInit {
     // Eğer herhangi bir değişiklik algılanırsa, explicit olarak change detection yapıyoruz
     this.cdRef.detectChanges();
   }
-  // Handle page change
-  onPageChanged(event: any) {
-    console.log('Page changed: ', event);
-  }
+
   // Orders fiyatlarının toplamını hesaplayan fonksiyon
   calculateSumCost(): void {
     this.sumCost = this.dataSource.data.reduce((total, order) => {
-      return total + (order.cost * order.quantity);  // Fiyat ve miktarı çarparak toplamı alıyoruz
+      return total + (order.price * order.quantity);  // Fiyat ve miktarı çarparak toplamı alıyoruz
     }, 0);
-
-    console.log("this.sumCost", this.sumCost);
   }
+
   // Her tıklamada tetiklenecek fonksiyon
   onTileClick(tileNumber: number): void {
 
-    console.log('Tile clicked:', tileNumber); // Tıklanan tile'ı görmek için log ekliyoruz
     this.tileClicked.emit(tileNumber); // Tıklanan numarayı dışarıya gönderiyoruz
     //explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
-    this.cdRef.detectChanges();
+    //this.cdRef.detectChanges();
     this.calculateSumCost();  // Herhangi bir tile tıklandığında toplamı yeniden hesapla
   }
 
   // 'Order' satırına tıklandığında tetiklenen fonksiyon
   onClick(element: Orders): void {
-
-    console.log('Tıklanan satır:', element);  // Burada veriyi kontrol edebilirsiniz
     this.buttonClicked.emit(element);  // 'Order' objesini dışarıya gönderiyoruz
     this.calculateSumCost();  // Başlangıçta toplam tutarı hesapla
   }
@@ -150,7 +140,6 @@ export class OrderDetailComponent implements OnInit, OnDestroy, AfterViewInit {
   openPopup() {
     this.activatedRoute.paramMap.subscribe(params => {
       const id = params.get('box');  // Dinamik olarak parametreyi alıyoruz
-      console.log('Dinamik URL parametresi:', id);
 
       if (id === null) {
         console.error('Dinamik URL parametresi alınamadı!');

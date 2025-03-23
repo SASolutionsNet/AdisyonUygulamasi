@@ -4,23 +4,30 @@ using BillApp.Application.Interfaces.IRepositories;
 using BillApp.Application.Interfaces.IServices;
 using BillApp.Application.Utilities;
 using BillApp.Domain.Order;
+using BillApp.Domain.Product;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using System.util.collections;
 
 namespace BillApp.Application.Services
 {
     public class OrderService : IOrderService
     {
         private readonly IOrderRepository _orderRepository;
+        private readonly IBillRepository _billRepository;
+        private readonly IProductRepository _productRepository;
         private readonly IBillService _billService;
         private readonly ICurrentUserService _currentUserService;
         private readonly IMapper _mapper;
 
-        public OrderService(IOrderRepository orderRepository, IBillService billService, ICurrentUserService currentUserService, IMapper mapper)
+        public OrderService(IOrderRepository orderRepository, IBillRepository billRepository, IProductRepository productRepository, IBillService billService, ICurrentUserService currentUserService, IMapper mapper)
         {
             _orderRepository = orderRepository;
             _billService = billService;
             _currentUserService = currentUserService;
             _mapper = mapper;
+            _billRepository = billRepository;
+            _productRepository = productRepository;
         }
 
         public async Task<ServiceResponse<OrderDto>> Create(OrderDto dto)
@@ -190,6 +197,43 @@ namespace BillApp.Application.Services
                 Data = mappedReturnModel,
                 Success = true,
                 Message = "Orders retrieved successfully."
+            };
+        }
+
+        
+
+        public async Task<ServiceResponse<IEnumerable<OrderWithBillDto>>> GetOrdersWithBillAndProductData(Guid billId)
+        {
+            var ordersQuery = _orderRepository.GetQueryable();
+            var billQuery = _billRepository.GetQueryable().Where(x => x.Id == billId);
+            var productQuery = _productRepository.GetQueryable();
+
+            var result = ordersQuery
+                .Join(billQuery,
+                      order => order.BillId,
+                      bill => bill.Id,
+                      (order, bill) => new { order, bill })
+                .Join(productQuery,
+                      orderBill => orderBill.order.ProductId,
+                      product => product.Id,
+                      (orderBill, produt) => new { orderBill.order, orderBill.bill, produt })
+                .Select(x => new OrderWithBillDto
+                {
+                    Id = x.order.Id,
+                    Table = x.bill.Table,
+                    BillId = x.bill.Id,
+                    Quantity = x.order.Quantity,
+                    Price = x.produt.Price,
+                    ProductName = x.produt.Name,
+                    ProductId = x.produt.Id,
+                })
+                .ToList();
+
+            return new ServiceResponse<IEnumerable<OrderWithBillDto>>
+            {
+                Data = result,
+                Success = true,
+                Message = "Active orders retrieved successfully."
             };
         }
 

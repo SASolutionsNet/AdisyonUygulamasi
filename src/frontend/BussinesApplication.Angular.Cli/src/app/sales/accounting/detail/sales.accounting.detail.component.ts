@@ -18,6 +18,8 @@ import { CommonModule } from '@angular/common';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTabsModule } from '@angular/material/tabs';
 import { Orders } from '../../../shared/modules/sales/order/models/order.model';
+import { firstValueFrom } from 'rxjs';
+import { SignalrService } from '../../../shared/modules/sales/order/services/signalr.service';
 
 //export interface Order {
 //  id: string;
@@ -48,7 +50,15 @@ export class SalesAccountingDetailComponent implements OnInit {
   billId: string = '';
   paidRows: Orders[] = [];  // Ödenen satırları saklayacağız
   sumPaidOrdersCost: number = 0; // Başlangıçta toplam tutar 0
-  constructor(private router: Router, private cdRef: ChangeDetectorRef, private route: ActivatedRoute, private orderService: SalesOrderService, private accountingService: SalesAccountingService, private dialog: MatDialog) { }
+  constructor(
+    private router: Router,
+    private cdRef: ChangeDetectorRef,
+    private route: ActivatedRoute,
+    private orderService: SalesOrderService,
+    private accountingService: SalesAccountingService,
+    private dialog: MatDialog,
+    private signalRService: SignalrService,
+  ) { }
 
 
 
@@ -56,22 +66,17 @@ export class SalesAccountingDetailComponent implements OnInit {
     this.route.paramMap.subscribe(params => {
       const boxParam = params.get('box');
       const billParam = params.get('billId');
-      this.box = boxParam !== null ? boxParam : '';  // Eğer null ise boş bir string atıyoruz
-      this.billId = billParam !== null ? billParam : '';  // Eğer null ise boş bir string atıyoruz
-      this.loadOrdersFromLocalStorage();  // Sayfaya her döndüğünde veriyi yükle
-      this.calculatePaidOrdersSumCost();
+      this.box = boxParam !== null ? boxParam : '';
+      this.billId = billParam !== null ? billParam : '';
+      this.loadOrders();
     });
 
-    if (!localStorage.getItem('reloaded')) {
-      localStorage.setItem('reloaded', 'true');
-      window.location.reload();
-    }
-    else {
-
-      localStorage.removeItem('reloaded');
-    }
-
-
+    this.signalRService.startConnection();
+    this.signalRService.addOrderListener(() => {
+      console.log("Sipraiş güncellemsi oldu.");
+      this.loadOrders();
+      this.calculatePaidOrdersSumCost();
+    });
   }
 
   ngOnChanges() {
@@ -82,6 +87,41 @@ export class SalesAccountingDetailComponent implements OnInit {
     this.cdRef.detectChanges();
   }
 
+  loadOrders() {
+    this.orderService.getOrdersWithBillAndProduct(this.billId).subscribe((respsonse: Orders[]) => {
+
+      respsonse = respsonse.flatMap(order =>
+        Array(order.quantity).fill(null).map(() => ({
+          ...order,
+          paid: false,
+          table: this.box,
+          quantity: 1,
+          cost: order.price / order.quantity,
+          productId: order.productId,
+          id: order.id
+        }))
+      );
+
+      this.orders = respsonse;  // Filtrelenmiş veriyi 'orders' array'ine atıyoruz
+      this.dataSource.data = respsonse;  // DataSource'u güncelliyoruz
+
+      if (this.orders.length == 0)
+        this.router.navigate(['/sales/accounting/list']).then(() => {
+          window.location.reload(); // Sayfayı yeniden yükler
+        });
+      this.calculatePaidOrdersSumCost();
+
+    });
+  }
+
+  calculatePaidOrdersSumCost(): number {
+    this.sumPaidOrdersCost = this.paidRows.reduce((total, order) => {
+      return total + (order.price * order.quantity);  // Fiyat ve miktarı çarparak toplamı alıyoruz
+    }, 0);
+
+    return this.sumPaidOrdersCost;
+  }
+
   generateGUID(): string {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
       const r = Math.random() * 16 | 0;
@@ -90,76 +130,31 @@ export class SalesAccountingDetailComponent implements OnInit {
     });
   }
 
-  // LocalStorage'dan "orders" verisini alıyoruz ve box'a göre filtreliyoruz
-  loadOrdersFromLocalStorage() {
-    var orders: Orders[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
-    if (orders.filter(item => item.table == this.box).length == 0) {
-      this.orderService.getAllOrdersForBill(this.billId).subscribe((data: Orders[]) => {
-
-        if (Array.isArray(data)) {
-
-          data = data.flatMap(order =>
-            Array(order.quantity).fill(null).map(() => ({
-              ...order,
-              paid: false,
-              table: this.box,
-              quantity: 1,
-              cost: order.cost / order.quantity,
-              productId: order.productId,
-              id: this.generateGUID() // Her öğeye ayrı GUID atanır
-            }))
-          );
-          if (orders.length == 0) {
-            orders = data;
-            localStorage.setItem('salesAccountingOrders', JSON.stringify(orders));
-          }
-          else {
-            orders.push(...(data));
-            localStorage.setItem('salesAccountingOrders', JSON.stringify(orders));
-          }
-          // 'box' parametresine göre filtreleme yapıyoruz
-          const filteredOrders = orders.filter(order => order.table === this.box);
-          this.orders = filteredOrders;  // Filtrelenmiş veriyi 'orders' array'ine atıyoruz
-          this.dataSource.data = this.orders;  // DataSource'u güncelliyoruz
-        }
-      });
-    }
-    else {
-      // 'box' parametresine göre filtreleme yapıyoruz
-      const filteredOrders = orders.filter(order => order.table === this.box);
-      this.orders = filteredOrders;  // Filtrelenmiş veriyi 'orders' array'ine atıyoruz
-      this.dataSource.data = this.orders;  // DataSource'u güncelliyoruz
-    }
-  }
-
-  calculatePaidOrdersSumCost(): number {
-    this.sumPaidOrdersCost = this.paidRows.reduce((total, order) => {
-      return total + (order.cost * order.quantity);  // Fiyat ve miktarı çarparak toplamı alıyoruz
-    }, 0);
-
-    return this.sumPaidOrdersCost;
-  }
-
-  // LocalStorage'a "orders" verisini kaydediyoruz
-  saveOrdersToLocalStorage() {
-    localStorage.setItem('salesAccountingOrders', JSON.stringify(this.orders));
-  }
-
-  closeTable(): void {
+  async closeTable() {
 
     // ActivatedRoute'den table parametresini al
     const tableParam = this.route.snapshot.paramMap.get('box');  // 'table' URL parametresinin adı olmalı
 
-    if (tableParam) {
-      // localStorage'dan salesAccountingOrders verisini al
-      let savedOrders: Orders[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
-      // localStorage'dan salesAccountingOrders verisini al
-      let paidOrders: Orders[] = JSON.parse(localStorage.getItem('paidOrders') || '[]');
-      // 'table' parametresi ile eşleşen kayıtları filtrele ve çıkar
-      savedOrders = savedOrders.filter(order => order.table == tableParam);
-      // 'table' parametresi ile eşleşen kayıtları filtrele ve çıkar
-      paidOrders = paidOrders.filter(order => order.table == tableParam);
 
+    if (tableParam) {
+
+      let savedOrders = this.orders;
+
+      let paidOrders: Orders[] = JSON.parse(localStorage.getItem('paidOrders') || '[]');
+      let otherPaidOrders = paidOrders.filter(order => order.table != tableParam);
+      paidOrders = paidOrders.filter(order => order.table == tableParam);
+      this.paidRows = paidOrders;
+
+
+      this.bill.id = this.billId;
+      this.bill.table = tableParam;
+      this.bill.totalPrice = this.calculatePaidOrdersSumCost();
+      this.bill.isClosed = true;
+
+      console.log("paidOrders")
+      console.log(paidOrders)
+
+      // 'table' parametresi ile eşleşen kayıtları filtrele ve çıkar
       var flag = (paidOrders.length != savedOrders.length) // hala ödenmemiş hesap varsa true
 
       if (flag) {
@@ -170,33 +165,32 @@ export class SalesAccountingDetailComponent implements OnInit {
           console.log('The dialog was closed, result: ', result);
           if (result) {
             if (result.answer == 'yes') {
-              let otherSavedOrders: Orders[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
-              let otherPaidOrders: Orders[] = JSON.parse(localStorage.getItem('paidOrders') || '[]');
-              otherSavedOrders = otherSavedOrders.filter(order => order.table != tableParam);
-              otherPaidOrders = otherPaidOrders.filter(order => order.table != tableParam);
-              this.paidRows = paidOrders;
-
-              this.bill.id = this.billId;
-              this.bill.table = tableParam;
-              this.bill.totalPrice = this.calculatePaidOrdersSumCost();
-              this.bill.isClosed = true;
 
               //nonPaidOrders
-              this.nonPaidOrders = [...new Set(savedOrders
-                .filter(savedOrder => !paidOrders.some(paidOrder => paidOrder.id === savedOrder.id))  // paidOrders içinde olmayanlar
-                .map(order => order.productId))]; // Sadece product id'leri alıyoruz
+              this.nonPaidOrders = Object.values(
+                savedOrders.reduce((acc, order) => {
+                  const existing = acc[order.productId] || { ...order, quantity: 0 };
+                  existing.quantity += 1; // Her siparişin miktarı 1 olduğu için sayacı artır
+
+                  acc[order.productId] = existing;
+                  return acc;
+                }, {} as Record<string, any>)
+              ).map(order => {
+                const paidCount = paidOrders.filter(paid => paid.productId === order.productId).length;
+                const remainingQuantity = order.quantity - paidCount;
+
+                return remainingQuantity > 0 ? order.productId : null;
+              }).filter(productId => productId !== null); // Sadece kalan miktarı olanları tut
 
 
-              console.log('Non-Paid Orders:', this.nonPaidOrders);
-
+              console.log("nonPaidOrders")
+              console.log(this.nonPaidOrders)
               this.orderService.delete_range(this.billId, this.nonPaidOrders).subscribe(
                 (response) => {
                   console.log('Non-Paid Orders başarıyla silindi:', response);
-
                 },
                 (error) => {
                   console.error('Non-Paid Orders silinirken bir hata oluştu:', error);
-
                 }
               );
 
@@ -211,31 +205,15 @@ export class SalesAccountingDetailComponent implements OnInit {
                 }
               );
 
-              // Yeni listeyi tekrar localStorage'a kaydet
-              localStorage.setItem('salesAccountingOrders', JSON.stringify(otherSavedOrders));
-              // Yeni listeyi tekrar localStorage'a kaydet
               localStorage.setItem('paidOrders', JSON.stringify(otherPaidOrders));
-
-              // Kayıt silindi, konsola yaz
               console.log(`Table ${tableParam} ile eşleşen kayıtlar silindi.`);
               this.router.navigate(['/sales/accounting/list']);
 
             }
           }
-          else {
-
-          }
         });
       }
       else {
-        paidOrders = paidOrders.filter(order => order.table == tableParam);
-        this.paidRows = paidOrders;
-
-        this.bill.id = this.billId;
-        this.bill.table = tableParam;
-        this.bill.totalPrice = this.calculatePaidOrdersSumCost();
-        this.bill.isClosed = true;
-
         this.accountingService.updateBill(this.bill).subscribe(
           (response) => {
             // Güncelleme başarılı olduğunda yapılacak işlemler
@@ -246,19 +224,9 @@ export class SalesAccountingDetailComponent implements OnInit {
             console.error('Fatura güncellenirken bir hata oluştu:', error);
           }
         );
-
-        let otherSavedOrders: Orders[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
-        let otherPaidOrders: Orders[] = JSON.parse(localStorage.getItem('paidOrders') || '[]');
-        otherSavedOrders = otherSavedOrders.filter(order => order.table != tableParam);
-        otherPaidOrders = otherPaidOrders.filter(order => order.table != tableParam);
-
-
-        // Yeni listeyi tekrar localStorage'a kaydet
-        localStorage.setItem('salesAccountingOrders', JSON.stringify(otherSavedOrders));
-        // Yeni listeyi tekrar localStorage'a kaydet
         localStorage.setItem('paidOrders', JSON.stringify(otherPaidOrders));
-        this.router.navigate(['/sales/accounting/list']);
 
+        this.router.navigate(['/sales/accounting/list']);
       }
     }
     else {
@@ -275,9 +243,7 @@ export class SalesAccountingDetailComponent implements OnInit {
     });
     console.log("yazdır1");
   }
+
   payAllOrders(): void {
-
-
-
   }
 }

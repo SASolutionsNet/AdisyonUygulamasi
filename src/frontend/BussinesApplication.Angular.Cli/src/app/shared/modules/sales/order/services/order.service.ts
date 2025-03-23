@@ -46,6 +46,17 @@ export class SalesOrderService {
     //GET isteği ile tüm siparişleri al
     return this.http.get(`${this.apiUrl}/get-orders-for-bill/?id=${id}`, { headers });
   }
+
+  // Aktif siparişleri al
+  getOrdersWithBillAndProduct(billId: string): Observable<any> {
+    const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
+
+    // Eğer token varsa, Authorization header'ına ekle
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    //GET isteği ile tüm siparişleri al
+    return this.http.get(`${this.apiUrl}/get-order-with-bill-product/?billId=${billId}`, { headers });
+  }
   // Yeni sipariş oluşturma
   createOrder(orderData: any): Observable<any> {
     const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
@@ -80,14 +91,14 @@ export class SalesOrderService {
   }
 
   // Siparişi güncelleme
-  updateOrder(orderId: string, updatedData: any): Observable<any> {
+  updateOrder(updatedData: any): Observable<any> {
     const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
 
     // Eğer token varsa, Authorization header'ına ekle
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     // PUT isteği ile siparişi güncelle
-    return this.http.put(`${this.apiUrl}/update/${orderId}`, updatedData, { headers });
+    return this.http.put(`${this.apiUrl}/update`, updatedData, { headers });
   }
   // Siparişi silme
   deleteOrder(billId: string, productId: string): Observable<any> {
@@ -100,6 +111,15 @@ export class SalesOrderService {
     return this.http.delete(`${this.apiUrl}/delete/`, { headers, body: { billId: billId, productId: productId } });
   }
 
+  //Sipariş ödeme
+  payOrder(id: string): Observable<any> {
+    const token = localStorage.getItem('authToken'); // Token'ı localStorage'dan al
+
+    const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
+
+    return this.http.post(`${this.apiUrl}/pay-order`, { id }, { headers });
+  }
+
 
 
   // Yeni siparişler oluşturma (Liste alacak şekilde güncellendi)
@@ -110,7 +130,7 @@ export class SalesOrderService {
     const headers = new HttpHeaders().set('Authorization', `Bearer ${token}`);
 
     // POST isteği ile yeni siparişleri oluştur
-    return this.http.delete(`${this.apiUrl}/delete-range/`, { headers, body: {billId : billId, productIdList: productIdList} });
+    return this.http.delete(`${this.apiUrl}/delete-range/`, { headers, body: { billId: billId, productIdList: productIdList } });
   }
 
 
