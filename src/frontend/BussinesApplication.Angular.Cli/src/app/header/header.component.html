@@ -1,4 +1,3 @@
-
 <div class="header">
   <div class="header-content">
     <div class="logo">
@@ -10,7 +9,8 @@
     </div>
     <div class="user-info">
       <span>Hoş geldiniz, {{user?.userName}}</span>
-      <button class="logout-btn" (click)="logout()">Çıkış Yap</button>
+        <button class="clear-btn" (click)="clearLocalStorage()">Verileri Temizle</button>
+        <button class="logout-btn" (click)="logout()">Çıkış Yap</button>
     </div>
     <!-- Hamburger Menu Icon (mobile) -->
     <button class="hamburger-menu" aria-label="Open Menu">&#9776;</button>
