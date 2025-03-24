@@ -63,27 +63,16 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
   }
 
   fillDataSource() {
-    // localStorage'dan ödenmiş siparişleri al
-    const savedPaidOrders = JSON.parse(localStorage.getItem('paidOrders') || '[]');
-    this.paidRows = savedPaidOrders;  // Sayfa yüklendiğinde 'paidOrders' verilerini al
+    const savedPaidOrders: Orders[] = JSON.parse(localStorage.getItem('paidOrders') || '[]');
 
-    // Ödenmiş siparişleri productId bazında grupla
-    const paidCounts: Record<string, number> = savedPaidOrders.reduce((acc: Record<string, number>, order: Orders) => {
-      acc[order.productId] = (acc[order.productId] || 0) + 1;
-      return acc;
-    }, {}); // Boş bir obje ile başlatıyoruz
-
-    // dataSource içindeki her siparişi kontrol et
-    this.dataSource.data.forEach(order => {
-      // Ödenen sipariş miktarını al (yoksa 0 kabul et)
-      const paidCount = paidCounts[order.productId] || 0;
-
-      // Eğer siparişin tamamı ödendiyse true, değilse false
-      order.paid = paidCount >= order.quantity;
-    });
-
-    // Yeni güncellenmiş veriyi dataSource'a atayın
-    this.dataSource.data = [...this.dataSource.data]; // Bu satır çok önemli!
+    // DataSource'daki her item'ın paid durumunu güncelle
+    this.dataSource.data = this.dataSource.data.map(order => ({
+      ...order,
+      paid: savedPaidOrders.some(paidOrder =>
+        paidOrder.uniqueId === order.uniqueId &&
+        paidOrder.table === order.table
+      )
+    }));
   }
 
   ngAfterViewInit() {
@@ -93,6 +82,9 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['ELEMENT_DATA']) {
       this.dataSource.data = [...this.ELEMENT_DATA]; // Yeni veri geldiğinde güncelle
+      this.calculateSumCost();  // Toplamı yeniden hesaplayın
+      this.calculateSelectedOrdersSumCost();
+      this.calculatePaidOrdersSumCost();
     }
   }
   goTableList() {
@@ -179,14 +171,18 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
 
   payAllOrdersByCash(): void {
     const tableParam = this.route.snapshot.paramMap.get('box');  // 'box' URL parametresinin adı olmalı
+    const paidIds = new Set(this.paidRows.map(order => order.uniqueId));
 
     // Tüm siparişler üzerinde döngü yaparak, paidRows içinde olmayanların durumunu "paid" olarak güncelle
     this.dataSource.data.filter(paidOrder =>
       paidOrder.table === tableParam).forEach(order => {
         // Eğer order paidRows içinde değilse, bu siparişi ödenmiş olarak işaretle
-        if (!this.paidRows.includes(order)) {
+        if (!paidIds.has(order.uniqueId)) {
+          if (order.paid != true) {
+            order.paymentMethods = "cash";
+          }
           order.paid = true;
-          order.paymentMethods = "cash";
+
           this.paidRows.push(order);  // Ödenmiş satırı paidRows'a ekle
         }
       });
@@ -204,14 +200,22 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
   }
   payAllOrdersByCard(): void {
     const tableParam = this.route.snapshot.paramMap.get('box');  // 'box' URL parametresinin adı olmalı
+    console.log("paidRows", this.paidRows)
+    const paidIds = new Set(this.paidRows.map(order => order.uniqueId));
+
+    console.log("paidIds", paidIds);
+    console.log(" this.dataSource.data", this.dataSource.data);
 
     // Tüm siparişler üzerinde döngü yaparak, paidRows içinde olmayanların durumunu "paid" olarak güncelle
     this.dataSource.data.filter(paidOrder =>
       paidOrder.table === tableParam).forEach(order => {
         // Eğer order paidRows içinde değilse, bu siparişi ödenmiş olarak işaretle
-        if (!this.paidRows.includes(order)) {
+        if (!paidIds.has(order.uniqueId)) {
+          if (order.paid != true) {
+            order.paymentMethods = "card";
+          }
           order.paid = true;
-          order.paymentMethods = "card";
+         
           this.paidRows.push(order);  // Ödenmiş satırı paidRows'a ekle
         }
       });
@@ -231,44 +235,61 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
 
   // Seçilen satırları "paid" olarak işaretleme
   paySelectedOrdersByCardClick(): void {
-    // Seçilen satırları "paid" olarak işaretleyin ve güncelleyin
-    this.selectedRows.forEach(order => {
-      order.paid = true;  // Satır ödeme olarak işaretlendi
-      order.paymentMethods = "card";
-      this.paidRows.push(order);  // Ödenen satırları güncelle
+    // Seçilen siparişlerin uniqueId'lerini al
+    const selectedIds = new Set(this.selectedRows.map(order => order.uniqueId));
+
+    // DataSource'u IMMUTABLE şekilde güncelle
+    this.dataSource.data = this.dataSource.data.map(order => {
+      if (selectedIds.has(order.uniqueId)) {
+        return { ...order, paid: true, paymentMethods: "card" }; // Yeni obje oluştur
+      }
+      return order;
     });
 
-    // Seçilen satırları localStorage'a kaydedin
-    const updatedOrders = this.paidRows;
-    localStorage.setItem('paidOrders', JSON.stringify(updatedOrders)); // Veriyi localStorage'a kaydedin
+    // LocalStorage'a yeni durumu kaydet
+    const updatedPaidOrders = [
+      ...JSON.parse(localStorage.getItem('paidOrders') || "[]"),
+      ...this.selectedRows.map(order => ({ ...order, paid: true, paymentMethods: "card" }))
+    ];
+    localStorage.setItem('paidOrders', JSON.stringify(updatedPaidOrders));
 
-    this.calculateSumCost();  // Toplamı yeniden hesaplayın
+    // Değişiklikleri manuel olarak tetikle
     this.calculatePaidOrdersSumCost();
 
-    // Seçilen satırları sıfırla
+    this.cdRef.detectChanges();
+
+    // Seçimleri temizle
     this.selectedRows = [];
-    this.clickedRows.clear();  // Seçili satırları temizle
+    this.clickedRows.clear();
   }
 
   // Seçilen satırları "paid" olarak işaretleme
-  paySelectedOrdersClick(): void {
-    // Seçilen satırları "paid" olarak işaretleyin ve güncelleyin
-    this.selectedRows.forEach(order => {
-      order.paid = true;  // Satır ödeme olarak işaretlendi
-      order.paymentMethods = "cash";
-      this.paidRows.push(order);  // Ödenen satırları güncelle
+  paySelectedOrdersByCashClick(): void { //cash olarak
+    // Seçilen siparişlerin uniqueId'lerini al
+    const selectedIds = new Set(this.selectedRows.map(order => order.uniqueId));
+
+    // DataSource'u IMMUTABLE şekilde güncelle
+    this.dataSource.data = this.dataSource.data.map(order => {
+      if (selectedIds.has(order.uniqueId)) {
+        return { ...order, paid: true, paymentMethods: "cash" }; // Yeni obje oluştur
+      }
+      return order;
     });
 
-    // Seçilen satırları localStorage'a kaydedin
-    const updatedOrders = this.paidRows;
-    localStorage.setItem('paidOrders', JSON.stringify(updatedOrders)); // Veriyi localStorage'a kaydedin
-
-    this.calculateSumCost();  // Toplamı yeniden hesaplayın
+    // LocalStorage'a yeni durumu kaydet
+    const updatedPaidOrders = [
+      ...JSON.parse(localStorage.getItem('paidOrders') || "[]"),
+      ...this.selectedRows.map(order => ({ ...order, paid: true, paymentMethods: "cash" }))
+    ];
+    localStorage.setItem('paidOrders', JSON.stringify(updatedPaidOrders));
     this.calculatePaidOrdersSumCost();
 
-    // Seçilen satırları sıfırla
+    // Değişiklikleri manuel olarak tetikle
+    this.cdRef.detectChanges();
+
+    // Seçimleri temizle
     this.selectedRows = [];
-    this.clickedRows.clear();  // Seçili satırları temizle
+    this.clickedRows.clear();
   }
 
 }

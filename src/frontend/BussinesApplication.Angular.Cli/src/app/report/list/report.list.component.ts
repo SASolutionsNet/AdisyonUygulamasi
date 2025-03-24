@@ -34,7 +34,7 @@ export class ReportListComponent implements OnInit {
   range!: FormGroup;
   dataSource = new MatTableDataSource<SalesAccounting>();
   filteredDataSource = new MatTableDataSource<SalesAccounting>();
-  displayedColumns: string[] = ['no', 'table', 'createdDate', 'totalPrice', 'action'];
+  displayedColumns: string[] = ['no', 'table', 'createdDate', 'cardPrice', 'cashPrice', 'totalPrice', 'action'];
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
