@@ -169,6 +169,10 @@ namespace BillApp.Application.Services
                 bill.IsClosed = dto.IsClosed;
             if (!dto.TotalPrice.Equals(bill.TotalPrice))
                 bill.TotalPrice = dto.TotalPrice;
+            if (!dto.CashPaidTotalPrice.Equals(bill.CashPaidTotalPrice))
+                bill.CashPaidTotalPrice = dto.CashPaidTotalPrice;
+            if (!dto.CreditCardPaidTotalPrice.Equals(bill.CreditCardPaidTotalPrice))
+                bill.CreditCardPaidTotalPrice = dto.CreditCardPaidTotalPrice;
 
             bill.UpdatedUser = _currentUserService.Username ?? "";
             bill.UpdatedDate = DateTime.UtcNow;
