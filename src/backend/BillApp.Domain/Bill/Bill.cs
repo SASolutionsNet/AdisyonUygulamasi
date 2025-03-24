@@ -11,6 +11,8 @@ namespace BillApp.Domain.Bill
         public string Table { get; set; }
         public bool IsClosed { get; set; }
         public float TotalPrice { get; set; }
+        public float CashPaidTotalPrice { get; set; }
+        public float CreditCardPaidTotalPrice { get; set; }
         public virtual List<Order.Order> Orders { get; set; } = new();
     }
 }
