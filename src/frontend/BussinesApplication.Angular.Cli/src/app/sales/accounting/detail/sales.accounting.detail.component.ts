@@ -50,6 +50,8 @@ export class SalesAccountingDetailComponent implements OnInit {
   billId: string = '';
   paidRows: Orders[] = [];  // Ödenen satırları saklayacağız
   sumPaidOrdersCost: number = 0; // Başlangıçta toplam tutar 0
+  sumCashPaidOrdersCost: number = 0; // Başlangıçta toplam tutar 0
+  sumCreditCardPaidOrdersCost: number = 0; // Başlangıçta toplam tutar 0
   constructor(
     private router: Router,
     private cdRef: ChangeDetectorRef,
@@ -75,7 +77,6 @@ export class SalesAccountingDetailComponent implements OnInit {
     this.signalRService.addOrderListener(() => {
       console.log("Sipraiş güncellemsi oldu.");
       this.loadOrders();
-      this.calculatePaidOrdersSumCost();
     });
   }
 
@@ -109,17 +110,29 @@ export class SalesAccountingDetailComponent implements OnInit {
         this.router.navigate(['/sales/accounting/list']).then(() => {
           window.location.reload(); // Sayfayı yeniden yükler
         });
-      this.calculatePaidOrdersSumCost();
+
+      this.calculateSum();
 
     });
   }
 
-  calculatePaidOrdersSumCost(): number {
+  calculatePaidOrdersSumCost(paymentMethod: string) {
+    if (paymentMethod == "cash") {
+      this.sumCashPaidOrdersCost = this.paidRows.filter(x => x.paymentMethods == "cash").reduce((total, order) => {
+        return total + (order.price * order.quantity);  // Fiyat ve miktarı çarparak toplamı alıyoruz
+      }, 0);
+    }
+    else if (paymentMethod == "card") {
+      this.sumCreditCardPaidOrdersCost = this.paidRows.filter(x => x.paymentMethods == "card").reduce((total, order) => {
+        return total + (order.price * order.quantity);  // Fiyat ve miktarı çarparak toplamı alıyoruz
+      }, 0);
+    }
+  }
+
+  calculateSum() {
     this.sumPaidOrdersCost = this.paidRows.reduce((total, order) => {
       return total + (order.price * order.quantity);  // Fiyat ve miktarı çarparak toplamı alıyoruz
     }, 0);
-
-    return this.sumPaidOrdersCost;
   }
 
   generateGUID(): string {
@@ -130,7 +143,7 @@ export class SalesAccountingDetailComponent implements OnInit {
     });
   }
 
-  async closeTable() {
+  closeTable() {
 
     // ActivatedRoute'den table parametresini al
     const tableParam = this.route.snapshot.paramMap.get('box');  // 'table' URL parametresinin adı olmalı
@@ -145,11 +158,16 @@ export class SalesAccountingDetailComponent implements OnInit {
       paidOrders = paidOrders.filter(order => order.table == tableParam);
       this.paidRows = paidOrders;
 
+      this.calculateSum();
+      this.calculatePaidOrdersSumCost("cash");
+      this.calculatePaidOrdersSumCost("card");
 
       this.bill.id = this.billId;
       this.bill.table = tableParam;
-      this.bill.totalPrice = this.calculatePaidOrdersSumCost();
+      this.bill.totalPrice = this.sumPaidOrdersCost;
       this.bill.isClosed = true;
+      this.bill.cashPaidTotalPrice = this.sumCashPaidOrdersCost;
+      this.bill.creditCardPaidTotalPrice = this.sumCreditCardPaidOrdersCost;
 
       console.log("paidOrders")
       console.log(paidOrders)
