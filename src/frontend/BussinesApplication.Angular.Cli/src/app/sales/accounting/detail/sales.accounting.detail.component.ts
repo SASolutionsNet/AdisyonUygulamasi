@@ -21,15 +21,7 @@ import { Orders } from '../../../shared/modules/sales/order/models/order.model';
 import { firstValueFrom } from 'rxjs';
 import { SignalrService } from '../../../shared/modules/sales/order/services/signalr.service';
 
-//export interface Order {
-//  id: string;
-//  table: string;
-//  productName: string;
-//  cost: number;
-//  paid: boolean;  // Satırların ödeme durumu
-//  quantity: number;
-//  productId: string;
-//}
+
 @Component({
   selector: 'app-sales-accounting-detail',
   templateUrl: './sales.accounting.detail.component.html',
@@ -88,29 +80,41 @@ export class SalesAccountingDetailComponent implements OnInit {
   }
 
   loadOrders() {
-    this.orderService.getOrdersWithBillAndProduct(this.billId).subscribe((respsonse: Orders[]) => {
+    this.orderService.getOrdersWithBillAndProduct(this.billId).subscribe((response: Orders[]) => {
+      // LocalStorage'dan ödenmiş siparişleri al
+      const savedPaidOrders: Orders[] = JSON.parse(localStorage.getItem('paidOrders') || '[]');
 
-      respsonse = respsonse.flatMap(order =>
-        Array(order.quantity).fill(null).map(() => ({
-          ...order,
-          paid: false,
-          table: this.box,
-          quantity: 1,
-          cost: order.price / order.quantity,
-          productId: order.productId,
-          id: order.id
-        }))
+      // Verileri parçalarken unique ID'ler oluştur
+      const processedOrders = response.flatMap(originalOrder =>
+        Array(originalOrder.quantity).fill(null).map((_, index) => {
+          // Her bir parçalanmış item için unique ID
+          const uniqueId = `${originalOrder.id}-${index}`;
+
+          // Bu item'ın ödenip ödenmediğini kontrol et
+          const isPaid = savedPaidOrders.some(paidOrder =>
+            paidOrder.uniqueId === uniqueId &&
+            paidOrder.table === this.box
+          );
+
+          return {
+            ...originalOrder,
+            uniqueId: uniqueId, // Yeni unique ID
+            id: originalOrder.id, // Orijinal ID'yi koru
+            paid: isPaid,
+            quantity: 1,
+          };
+        })
       );
 
-      this.orders = respsonse;  // Filtrelenmiş veriyi 'orders' array'ine atıyoruz
-      this.dataSource.data = respsonse;  // DataSource'u güncelliyoruz
+      this.orders = processedOrders;
+      this.dataSource.data = processedOrders;
 
-      if (this.orders.length == 0)
+      if (this.orders.length === 0) {
         this.router.navigate(['/sales/accounting/list']).then(() => {
-          window.location.reload(); // Sayfayı yeniden yükler
+          window.location.reload();
         });
+      }
       this.calculatePaidOrdersSumCost();
-
     });
   }
 

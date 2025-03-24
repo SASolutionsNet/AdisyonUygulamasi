@@ -31,6 +31,7 @@ export class Orders {
   productId: string = "";
   billId: string = "";
   paid: boolean = false;
+  uniqueId: string = "";
 }
 @Injectable()
 export class ReportDetailOrders {
