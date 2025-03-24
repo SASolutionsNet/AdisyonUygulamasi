@@ -13,7 +13,8 @@ namespace BillApp.Application.Contracts.Bill
         public string Table { get; set; }
         public bool IsClosed { get; set; }
         public float TotalPrice { get; set; }
-
+        public float CashPaidTotalPrice { get; set; }
+        public float CreditCardPaidTotalPrice { get; set; }
         public List<OrderDto> Orders { get; set; } = new();
 
 
