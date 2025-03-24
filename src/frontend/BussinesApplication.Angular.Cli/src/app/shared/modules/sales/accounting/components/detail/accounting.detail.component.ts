@@ -50,7 +50,7 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
   }
 
   fillDataSource() {
-    const savedPaidOrders : Orders[] = JSON.parse(localStorage.getItem('paidOrders') || '[]');
+    const savedPaidOrders: Orders[] = JSON.parse(localStorage.getItem('paidOrders') || '[]');
 
     // DataSource'daki her item'ın paid durumunu güncelle
     this.dataSource.data = this.dataSource.data.map(order => ({
@@ -173,12 +173,8 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
 
   calculatePaidOrdersSumCost(): void {
     // ActivatedRoute'den table parametresini al
-    const tableParam = this.route.snapshot.paramMap.get('box');  // 'box' URL parametresinin adı olmalı
-    console.log(tableParam)
-    /* if (tableParam) {*/
-    // localStorage'dan salesAccountingOrders verisini al
+    const tableParam = this.route.snapshot.paramMap.get('box');
     let savedOrders: Orders[] = JSON.parse(localStorage.getItem('paidOrders') || '[]');
-    // Table parametre ile eşleşen ve paid durumu false olan kayıtları filtrele
     let filteredOrders = savedOrders.filter(order =>
       order.table === tableParam
     );
@@ -188,7 +184,6 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
     this.sumPaidOrdersCost = filteredOrders.reduce((total, order) => {
       return total + (order.quantity * order.price);  // Fiyat ve miktarı çarparak toplamı alıyoruz
     }, 0);
-    /*}*/
   }
 
 

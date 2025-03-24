@@ -49,6 +49,8 @@ export class DialogChangeTableComponent implements OnInit {
   }
 
   setDistinctTables() {
+    console.log("setDistinctTables");
+
     this.accountingService.getAllOpenBills().subscribe(response => {
       if (Array.isArray(response)) {
         this.bills = response;
@@ -64,7 +66,12 @@ export class DialogChangeTableComponent implements OnInit {
     return this.distinctTables.includes(box);
   }
   hasOrder(box: string): boolean {
-    return this.bills.filter(x => x.table == box)[0].orders.length != 0;
+    var bill = this.bills.filter(x => x.table == box)[0];
+
+    if (bill)
+      return bill.orders.length != 0;
+    else
+      return false;
   }
   ngAfterViewChecked() {
     //explicit change detection to avoid "expression-has-changed-after-it-was-checked-error"
@@ -73,31 +80,20 @@ export class DialogChangeTableComponent implements OnInit {
 
 
   onBoxClick(box: string) {
-    // 1. salesAccountingOrders verisini alıyoruz (localStorage'dan alabilirsiniz veya bu veriyi direkt component içinde tutuyor olabilirsiniz)
-    const orders: Orders[] = JSON.parse(localStorage.getItem('salesAccountingOrders') || '[]');
 
-    var billId = this.bills.filter(item => item.table = this.data.id)[0].id;
+    var billId = this.bills.filter(item => item.table == this.data.id)[0].id;
 
-
-    // 2. this.data.id ile eşleşen orders öğelerini buluyoruz ve güncelliyoruz
-    const updatedOrders = orders.map(order => {
-      if (order.table === this.data.id) {
-        // 3. Bu öğelerin table değerini box ile değiştiriyoruz
-        order.table = box;  // Eğer box değeri varsa, table'ı box ile değiştiriyoruz.
-      }
-      return order;
-    });
-
-    // 4. Güncellenmiş veriyi localStorage'a kaydediyoruz
-    localStorage.setItem('salesAccountingOrders', JSON.stringify(updatedOrders));
     var bill: SalesAccounting = new SalesAccounting();
     bill.id = billId;
     bill.table = box;
 
     this.accountingService.updateBill(bill).subscribe(
       (response) => {
-        // Güncelleme başarılı olduğunda yapılacak işlemler
-        console.log('Fatura başarıyla güncellendi:', response);
+        // 5. Yönlendirme işlemi ve dialog kapama
+        console.log("updated");
+        this.router.navigate([`/sales/order/list/${true}`]);
+        this.dialogRef.close();
+
       },
       (error) => {
         // Güncelleme hatası durumunda yapılacak işlemler
@@ -105,10 +101,6 @@ export class DialogChangeTableComponent implements OnInit {
       }
     );
 
-
-    // 5. Yönlendirme işlemi ve dialog kapama
-    this.router.navigate([`/sales/order/list/${true}`]);
-    this.dialogRef.close();
   }
 
 
