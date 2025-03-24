@@ -213,10 +213,6 @@ export class SalesOrderDetailComponent implements OnInit, CanComponentDeactivate
       if (boxParam) {
         // Filter orders where the table value matches the box param
         this.matchingOrders = this.salesAccounting.orders.filter(order => order.table === boxParam);
-
-        console.log('salesAccounting.orders:');  // Log the filtered orders
-        console.log(this.salesAccounting.orders);  // Log the filtered orders
-        console.log('Matching Orders:', this.matchingOrders);  // Log the filtered orders
       }
     });
 

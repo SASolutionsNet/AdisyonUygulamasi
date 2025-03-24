@@ -13,14 +13,6 @@ import { MatTableDataSource } from '@angular/material/table';
 import { Orders } from '../../../order/models/order.model';
 import { MatButtonModule } from '@angular/material/button';
 
-//export interface Order {
-//  id: string;
-//  table: string;
-//  productName: string;
-//  cost: number;
-//  paid: boolean;  // Satırların ödeme durumu
-//  quantity: number;
-//}
 
 @Component({
   selector: 'sasolution-sales-accounting-detail',
@@ -136,12 +128,8 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
 
   calculatePaidOrdersSumCost(): void {
     // ActivatedRoute'den table parametresini al
-    const tableParam = this.route.snapshot.paramMap.get('box');  // 'box' URL parametresinin adı olmalı
-    console.log(tableParam)
-
-    // localStorage'dan salesAccountingOrders verisini al
+    const tableParam = this.route.snapshot.paramMap.get('box');
     let savedOrders: Orders[] = JSON.parse(localStorage.getItem('paidOrders') || '[]');
-    // Table parametre ile eşleşen ve paid durumu false olan kayıtları filtrele
     let filteredOrders = savedOrders.filter(order =>
       order.table === tableParam
     );
@@ -151,7 +139,6 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
     this.sumPaidOrdersCost = filteredOrders.reduce((total, order) => {
       return total + (order.quantity * order.price);  // Fiyat ve miktarı çarparak toplamı alıyoruz
     }, 0);
-
   }
 
 

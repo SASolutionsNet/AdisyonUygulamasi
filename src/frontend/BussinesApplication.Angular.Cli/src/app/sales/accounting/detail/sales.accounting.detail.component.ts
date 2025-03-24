@@ -21,15 +21,7 @@ import { Orders } from '../../../shared/modules/sales/order/models/order.model';
 import { firstValueFrom } from 'rxjs';
 import { SignalrService } from '../../../shared/modules/sales/order/services/signalr.service';
 
-//export interface Order {
-//  id: string;
-//  table: string;
-//  productName: string;
-//  cost: number;
-//  paid: boolean;  // Satırların ödeme durumu
-//  quantity: number;
-//  productId: string;
-//}
+
 @Component({
   selector: 'app-sales-accounting-detail',
   templateUrl: './sales.accounting.detail.component.html',
