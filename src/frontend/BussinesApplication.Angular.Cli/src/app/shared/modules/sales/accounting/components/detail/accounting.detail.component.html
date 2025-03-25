@@ -99,11 +99,35 @@
   <br />
   <br />
   <div style="display: flex; width: 49%; gap: 10px;">
-    <!-- gap ile butonlar arasına boşluk ekledik -->
-    <button mat-button style="flex: 1 1 120px; height: 50px;" (click)="printOrders()">Yazdır</button>  <!-- height artırıldı -->
-    <button mat-button style="flex: 1 1 120px; height: 50px;" (click)="closeTable()">Masayı Kapat</button>
-    <button mat-button *ngIf="this.selectedRows.length > 0" style="flex: 1 1 120px; height: 50px;" (click)="paySelectedOrdersClick()">Seçilenleri Öde</button>
-    <button mat-button style="flex: 1 1 120px; height: 50px;" (click)="payAllOrders()">Tümünü Öde</button>
+    <div style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: space-between;">
+      <!-- İlk Butonlar -->
+      <div style="flex: 1 1 120px; min-width: 160px;">
+        <button mat-raised-button style="height: 60px; width: 100%; background-color: #4caf50; color: white; font-size: 16px; border-radius: 8px;" (click)="printOrders()">Yazdır</button>
+      </div>
+      <div style="flex: 1 1 120px; min-width: 160px;">
+        <button mat-raised-button style="height: 60px; width: 100%; background-color: #3f51b5; color: white; font-size: 16px; border-radius: 8px;" (click)="payAllOrdersByCash()">Tümünü Nakit Öde</button>
+      </div>
+
+      <!-- Üst satır butonları -->
+      <div style="flex: 1 1 120px; min-width: 160px;">
+        <button mat-raised-button style="height: 60px; width: 100%; background-color: #3f51b5; color: white; font-size: 16px; border-radius: 8px;" (click)="payAllOrdersByCard()">Tümünü Kart Öde</button>
+        
+      </div>
+      <div style="flex: 1 1 120px; min-width: 160px;">
+        <button mat-raised-button style="height: 60px; width: 100%; background-color: #4caf50; color: white; font-size: 16px; border-radius: 8px;" (click)="closeTable()">Masayı Kapat</button>
+      </div>
+
+      <!-- Alttaki butonlar (Seçilenleri Öde) -->
+      <div style="flex: 1 1 120px; min-width: 160px;">
+        <button mat-raised-button style="height: 60px; width: 100%; background-color: #e91e63; color: white; font-size: 16px; border-radius: 8px;" *ngIf="this.selectedRows.length > 0" (click)="paySelectedOrdersByCashClick()">Seçilenleri Nakit Öde</button>
+      </div>
+      <div style="flex: 1 1 120px; min-width: 160px;">
+        <button mat-raised-button style="height: 60px; width: 100%; background-color: #e91e63; color: white; font-size: 16px; border-radius: 8px;" *ngIf="this.selectedRows.length > 0" (click)="paySelectedOrdersByCardClick()">Seçilenleri Kart Öde</button>
+      </div>
+    </div>
+
+
+
   </div>
 
 

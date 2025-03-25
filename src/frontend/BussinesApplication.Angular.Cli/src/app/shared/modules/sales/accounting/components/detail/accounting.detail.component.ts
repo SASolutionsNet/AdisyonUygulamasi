@@ -11,13 +11,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ChangeDetectorRef, Component, Input, Output, EventEmitter, SimpleChanges, AfterViewInit, OnInit } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { Orders } from '../../../order/models/order.model';
+import { MatButtonModule } from '@angular/material/button';
 
 
 @Component({
   selector: 'sasolution-sales-accounting-detail',
   templateUrl: './accounting.detail.component.html',
   styleUrls: ['./accounting.detail.component.scss'],
-  imports: [MatGridListModule, MatTabsModule, CommonModule, MatTableModule, MatPaginatorModule, MatSortModule]
+  imports: [MatGridListModule, MatTabsModule, CommonModule, MatTableModule, MatPaginatorModule, MatSortModule, MatButtonModule,]
 })
 export class AccountingDetailComponent implements OnInit, AfterViewInit {
 
@@ -37,6 +38,10 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
   sumCost: number = 0; // Başlangıçta toplam tutar 0
   sumSelectedOrdersCost: number = 0; // Başlangıçta toplam tutar 0
   sumPaidOrdersCost: number = 0; // Başlangıçta toplam tutar 0
+
+
+  sumCashCost: number = 0; // Başlangıçta toplam nakit tutar 0
+  sumCardCost: number = 0; // Başlangıçta toplam kart tutar 0
 
   constructor(
     private router: Router, private cdRef: ChangeDetectorRef, private route: ActivatedRoute) { }
@@ -69,6 +74,9 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['ELEMENT_DATA']) {
       this.dataSource.data = [...this.ELEMENT_DATA]; // Yeni veri geldiğinde güncelle
+      this.calculateSumCost();  // Toplamı yeniden hesaplayın
+      this.calculateSelectedOrdersSumCost();
+      this.calculatePaidOrdersSumCost();
     }
   }
   goTableList() {
@@ -99,59 +107,6 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
   isRowSelected(row: Orders): boolean {
     return this.clickedRows.has(row);
   }
-
-  // Seçilen satırları "paid" olarak işaretleme
-  paySelectedOrdersClick(): void {
-    // Seçilen siparişlerin uniqueId'lerini al
-    const selectedIds = new Set(this.selectedRows.map(order => order.uniqueId));
-
-    // DataSource'u IMMUTABLE şekilde güncelle
-    this.dataSource.data = this.dataSource.data.map(order => {
-      if (selectedIds.has(order.uniqueId)) {
-        return { ...order, paid: true }; // Yeni obje oluştur
-      }
-      return order;
-    });
-
-    // LocalStorage'a yeni durumu kaydet
-    const updatedPaidOrders = [
-      ...JSON.parse(localStorage.getItem('paidOrders') || "[]"),
-      ...this.selectedRows.map(order => ({ ...order, paid: true }))
-    ];
-    localStorage.setItem('paidOrders', JSON.stringify(updatedPaidOrders));
-
-    // Değişiklikleri manuel olarak tetikle
-    this.cdRef.detectChanges();
-
-    // Seçimleri temizle
-    this.selectedRows = [];
-    this.clickedRows.clear();
-  }
-
-  //paySelectedOrdersClick(): void {
-  //  this.selectedRows.forEach(order => {
-  //    const paidOrder = {
-  //      ...order,
-  //      paid: true,
-  //      uniqueId: order.uniqueId // Unique ID'yi koru
-  //    };
-
-  //    this.paidRows.push(paidOrder);
-  //  });
-
-  //  // Mevcut ödenmişleri koruyarak yeni ekle
-  //  const existingPaid = JSON.parse(localStorage.getItem('paidOrders') || "[]");
-  //  const updatedPaid = [...existingPaid, ...this.paidRows];
-
-  //  // Tekilleştirme yap (aynı uniqueId'ye sahip olanları filtrele)
-  //  const uniquePaidOrders = updatedPaid.filter((v, i, a) =>
-  //    a.findIndex(t => (t.uniqueId === v.uniqueId && t.table === v.table)) === i
-  //  );
-
-  //  localStorage.setItem('paidOrders', JSON.stringify(uniquePaidOrders));
-
-  //  this.dataSource.data = [...this.dataSource.data];
-  //}
 
 
 
@@ -201,15 +156,53 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
   }
 
 
-  payAllOrders(): void {
+  payAllOrdersByCash(): void {
     const tableParam = this.route.snapshot.paramMap.get('box');  // 'box' URL parametresinin adı olmalı
+    const paidIds = new Set(this.paidRows.map(order => order.uniqueId));
 
     // Tüm siparişler üzerinde döngü yaparak, paidRows içinde olmayanların durumunu "paid" olarak güncelle
     this.dataSource.data.filter(paidOrder =>
       paidOrder.table === tableParam).forEach(order => {
         // Eğer order paidRows içinde değilse, bu siparişi ödenmiş olarak işaretle
-        if (!this.paidRows.includes(order)) {
+        if (!paidIds.has(order.uniqueId)) {
+          if (order.paid != true) {
+            order.paymentMethods = "cash";
+          }
           order.paid = true;
+
+          this.paidRows.push(order);  // Ödenmiş satırı paidRows'a ekle
+        }
+      });
+
+    // Seçilen satırları localStorage'a kaydedin
+    const updatedOrders = this.paidRows;
+    localStorage.setItem('paidOrders', JSON.stringify(updatedOrders)); // Veriyi localStorage'a kaydedin
+
+    //this.calculateSumCost();  // Toplamı yeniden hesaplayın
+    this.calculatePaidOrdersSumCost();
+
+    // Seçilen satırları sıfırla
+    this.selectedRows = [];
+    this.clickedRows.clear();  // Seçili satırları temizle
+  }
+  payAllOrdersByCard(): void {
+    const tableParam = this.route.snapshot.paramMap.get('box');  // 'box' URL parametresinin adı olmalı
+    console.log("paidRows", this.paidRows)
+    const paidIds = new Set(this.paidRows.map(order => order.uniqueId));
+
+    console.log("paidIds", paidIds);
+    console.log(" this.dataSource.data", this.dataSource.data);
+
+    // Tüm siparişler üzerinde döngü yaparak, paidRows içinde olmayanların durumunu "paid" olarak güncelle
+    this.dataSource.data.filter(paidOrder =>
+      paidOrder.table === tableParam).forEach(order => {
+        // Eğer order paidRows içinde değilse, bu siparişi ödenmiş olarak işaretle
+        if (!paidIds.has(order.uniqueId)) {
+          if (order.paid != true) {
+            order.paymentMethods = "card";
+          }
+          order.paid = true;
+         
           this.paidRows.push(order);  // Ödenmiş satırı paidRows'a ekle
         }
       });
@@ -226,4 +219,65 @@ export class AccountingDetailComponent implements OnInit, AfterViewInit {
     this.clickedRows.clear();  // Seçili satırları temizle
   }
 
+
+  // Seçilen satırları "paid" olarak işaretleme
+  paySelectedOrdersByCardClick(): void {
+    // Seçilen siparişlerin uniqueId'lerini al
+    const selectedIds = new Set(this.selectedRows.map(order => order.uniqueId));
+
+    // DataSource'u IMMUTABLE şekilde güncelle
+    this.dataSource.data = this.dataSource.data.map(order => {
+      if (selectedIds.has(order.uniqueId)) {
+        return { ...order, paid: true, paymentMethods: "card" }; // Yeni obje oluştur
+      }
+      return order;
+    });
+
+    // LocalStorage'a yeni durumu kaydet
+    const updatedPaidOrders = [
+      ...JSON.parse(localStorage.getItem('paidOrders') || "[]"),
+      ...this.selectedRows.map(order => ({ ...order, paid: true, paymentMethods: "card" }))
+    ];
+    localStorage.setItem('paidOrders', JSON.stringify(updatedPaidOrders));
+
+    // Değişiklikleri manuel olarak tetikle
+    this.calculatePaidOrdersSumCost();
+
+    this.cdRef.detectChanges();
+
+    // Seçimleri temizle
+    this.selectedRows = [];
+    this.clickedRows.clear();
+  }
+
+  // Seçilen satırları "paid" olarak işaretleme
+  paySelectedOrdersByCashClick(): void { //cash olarak
+    // Seçilen siparişlerin uniqueId'lerini al
+    const selectedIds = new Set(this.selectedRows.map(order => order.uniqueId));
+
+    // DataSource'u IMMUTABLE şekilde güncelle
+    this.dataSource.data = this.dataSource.data.map(order => {
+      if (selectedIds.has(order.uniqueId)) {
+        return { ...order, paid: true, paymentMethods: "cash" }; // Yeni obje oluştur
+      }
+      return order;
+    });
+
+    // LocalStorage'a yeni durumu kaydet
+    const updatedPaidOrders = [
+      ...JSON.parse(localStorage.getItem('paidOrders') || "[]"),
+      ...this.selectedRows.map(order => ({ ...order, paid: true, paymentMethods: "cash" }))
+    ];
+    localStorage.setItem('paidOrders', JSON.stringify(updatedPaidOrders));
+    this.calculatePaidOrdersSumCost();
+
+    // Değişiklikleri manuel olarak tetikle
+    this.cdRef.detectChanges();
+
+    // Seçimleri temizle
+    this.selectedRows = [];
+    this.clickedRows.clear();
+  }
+
 }
+
